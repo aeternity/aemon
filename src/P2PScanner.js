@@ -158,6 +158,10 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionResponse(client, response) {
+        if (!response.success) {
+            return
+        }
+
         if (!this.stats.messages.response.hasOwnProperty(response.message.name)) {
             this.stats.messages.response[response.message.name] = 0
         }

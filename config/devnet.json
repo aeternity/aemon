@@ -1,0 +1,9 @@
+{
+    "networkId": "devnet",
+    "genesisHash": "kh_2KhFJSdz1BwrvEWe9fFBRBpWoweoaZuTiYLWwUPh21ptuDE8UQ",
+    "peers": [
+        "aenode://pp_2Kwvz5XJujZDPtE5WtuwSy8Ue8W6STq9qHhmrXABevLBgCcswY@127.0.0.1:30015",
+    ],
+    "publicKey": "pp_2s6CoAr8tKWN3SMfaauZZXu1Fr7tr8x6BTGoY4kBmCozQi68Bc",
+    "privateKey": "pp_2mcSsrqC72Lr4YYMZb6zqS8Zd5un4LKRwKphyuqfVd2zCrTEcV"
+}
