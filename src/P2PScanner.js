@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import P2PClient from './P2PClient.js'
 import P2PServer from './P2PServer.js'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
+import InMemoryMetrics from './Metrics/InMemoryMetrics.js'
 
 const peerToString = (peer) => {
     return `${peer.publicKey}@${peer.host}:${peer.port}`
@@ -15,31 +16,12 @@ export default class P2PScanner extends EventEmitter {
         this.localPeer = localPeer
         this.connections = new Map()
         this.server = new P2PServer(network, localPeer)
-        this.stats = {
-            connections: {
-                current: 0,
-                handshake: 0,
-                disconnect: 0,
-                end: 0,
-                close: 0,
-                total: 0,
-            },
-            peers: {
-                unique: 0,
-                total: 0,
-            },
-            messages: {
-                sent: {},
-                received: {},
-                response: {},
-            },
-            errors: {}
-        }
+        this.metrics = new InMemoryMetrics()
     }
 
     printStats() {
         const callback = () => {
-            console.log(JSON.stringify(this.stats))
+            console.log(this.metrics.data)
 
             if (this.connections.size === 0) {
                 this.stop()
@@ -72,9 +54,7 @@ export default class P2PScanner extends EventEmitter {
 
         this.connections.set(peer.publicKey, client.connection)
 
-        this.stats.connections.current++
-        this.stats.connections.total++
-        this.stats.peers.unique++
+        this.metrics.inc('connections')
 
         const connectionHandler = (handler) => {
             return (...args) => {
@@ -95,8 +75,6 @@ export default class P2PScanner extends EventEmitter {
         this.emit('connection', client.connection)
 
         client.connect()
-        // connection.connect(peer)
-        // this.connections.set(peer.publicKey, connection)
     }
 
     onNetworkPeer(peer) {
@@ -110,68 +88,53 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionHandshake(client) {
-        this.stats.connections.handshake++
+        this.metrics.inc('connections_total', {status: "handshake"})
         client.startPinging()
     }
 
     onConnectionDisconnect(client) {
-        this.stats.connections.disconnect++
+        this.metrics.inc('connections_total', {status: "disconnect"})
         // clients.delete(peer.publicKey)
     }
 
     onConnectionError(client, error) {
         console.log(peerToString(client.peer), `Error: ${error.message}`)
-        if (!this.stats.errors.hasOwnProperty(error.code)) {
-            this.stats.errors[error.code] = 0
-        }
 
-        this.stats.errors[error.code]++
+        this.metrics.inc('errors_total', {code: error.code})
     }
 
     onConnectionEnd(client) {
-        this.stats.connections.end++
+        this.metrics.inc('connections_total', {status: "end"})
         // console.log(peerToString(peer), "Connection end.")
     }
 
     onConnectionClose(client, hadError) {
-        this.stats.connections.current--
-        this.stats.connections.close++
+        this.metrics.dec('connections')
+        this.metrics.inc('connections_total', {status: "close"})
         console.log(peerToString(client.peer), "Connection closed. Error: ", Boolean(hadError))
         this.connections.delete(client.peer.publicKey)        
     }
 
     onConnectionSent(client, message) {
-        if (!this.stats.messages.sent.hasOwnProperty(message.name)) {
-            this.stats.messages.sent[message.name] = 0
-        }
-
-        this.stats.messages.sent[message.name]++
+        this.metrics.inc('messages_total', {direction: 'sent', type: message.name})
     }
 
     onConnectionReceived(client, message) {
-        // console.log('RECV: ', client, message)
-        if (!this.stats.messages.received.hasOwnProperty(message.name)) {
-            this.stats.messages.received[message.name] = 0
-        }
-
-        this.stats.messages.received[message.name]++
+        this.metrics.inc('messages_total', {direction: 'received', type: message.name})
     }
 
     onConnectionResponse(client, response) {
         if (!response.success) {
+            this.metrics.inc('responses_total', {direction: 'received', type: 'error'})
             return
         }
 
-        if (!this.stats.messages.response.hasOwnProperty(response.message.name)) {
-            this.stats.messages.response[response.message.name] = 0
-        }
-
-        this.stats.messages.response[response.message.name]++
+        this.metrics.inc('responses_total', {direction: 'received', type: response.message.name})
     }
 
     onConnectionPong(client, pong) {
         // console.log(peerToString(peer), `pong, peers count: ${pong.peers.length}`)
-        this.stats.peers.total += pong.peers.length
+        this.metrics.inc('peers_total', {}, pong.peers.length)
 
         // this.network.updatePeers(peer, pong.peers)
         // peer.addPeers(pong.peers)
