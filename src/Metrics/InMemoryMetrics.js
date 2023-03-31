@@ -30,6 +30,12 @@ export default class InMemoryMetrics {
         }
     }
 
+    async dump() {
+        return new Promise((resolve) => {
+            resolve(this.data)
+        })
+    }
+
     inc(metric, labels = {}, i = 1) {
         this.#initializeMetric(metric, labels)
 

@@ -3,32 +3,21 @@ import P2PClient from './P2PClient.js'
 import P2PServer from './P2PServer.js'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
 import InMemoryMetrics from './Metrics/InMemoryMetrics.js'
+import PrometheusMetrics from './Metrics/PrometheusMetrics.js'
 
 const peerToString = (peer) => {
     return `${peer.publicKey}@${peer.host}:${peer.port}`
 }
 
 export default class P2PScanner extends EventEmitter {
-    constructor(network, localPeer) {
+    constructor(network, localPeer, metrics) {
         super()
 
         this.network = network
         this.localPeer = localPeer
+        this.metrics = metrics
         this.connections = new Map()
         this.server = new P2PServer(network, localPeer)
-        this.metrics = new InMemoryMetrics()
-    }
-
-    printStats() {
-        const callback = () => {
-            console.log(this.metrics.data)
-
-            if (this.connections.size === 0) {
-                this.stop()
-            }
-        }
-
-        this.printTimer = setInterval(callback.bind(this), 500)
     }
 
     scan(serverPort, serverHost) {
@@ -43,8 +32,6 @@ export default class P2PScanner extends EventEmitter {
 
     stop() {
         this.server.close()
-        clearInterval(this.printTimer)
-        console.log(this.network.toString())
         this.emit('stop')
     }
 
@@ -133,7 +120,7 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionPong(client, pong) {
-        // console.log(peerToString(peer), `pong, peers count: ${pong.peers.length}`)
+        // console.log(peerToString(client.peer), `pong, peers count: ${pong.peers.length}`)
         this.metrics.inc('peers_total', {}, pong.peers.length)
 
         // this.network.updatePeers(peer, pong.peers)

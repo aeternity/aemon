@@ -6,6 +6,7 @@ import P2PClient from '../src/P2PClient.js'
 import P2PServer from '../src/P2PServer.js'
 import P2PScanner from '../src/P2PScanner.js'
 import Peer from '../src/Peer.js'
+import InMemoryMetrics from '../src/Metrics/InMemoryMetrics.js'
 
 const randomPort = () => {
     const min = 30015
@@ -40,7 +41,7 @@ test('Connects to initial network peers', t => {
     const {network, clientPeer, serverPeer} = fixtures()
 
     const server = new P2PServer(network, serverPeer)
-    const scanner = new P2PScanner(network, clientPeer)
+    const scanner = new P2PScanner(network, clientPeer, new InMemoryMetrics())
 
     network.addPeer(serverPeer)
 
@@ -61,7 +62,7 @@ test('Listens for peer connections', t => {
     const {network, clientPeer, serverPeer} = fixtures()
 
     const client = new P2PClient(network, clientPeer, serverPeer)
-    const scanner = new P2PScanner(network, serverPeer)
+    const scanner = new P2PScanner(network, serverPeer, new InMemoryMetrics())
     
     return new Promise((resolve, reject) => {
         client.connection.on('handshake', () => {
