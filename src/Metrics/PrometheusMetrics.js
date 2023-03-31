@@ -11,10 +11,11 @@ export default class PrometheusMetrics {
             connections: new Gauge({
               name: prefix + '_connections',
               help: 'Currently open noise connections',
+              labelNames: ['status'],
             }),
-            errors_total: new Counter({
-              name: prefix + '_errors_total',
-              help: 'Errors by type',
+            connection_errors_total: new Counter({
+              name: prefix + '_connection_errors_total',
+              help: 'Connection errors by type',
               labelNames: ['code'],
             }),
             messages_total: new Counter({
@@ -25,11 +26,11 @@ export default class PrometheusMetrics {
             responses_total: new Counter({
               name: prefix + '_responses_total',
               help: 'P2P message responses by message type',
-              labelNames: ['direction', 'type'],
+              labelNames: ['direction', 'type', 'errorReason'],
             }),
-            peers_total: new Gauge({
+            peers: new Gauge({
               name: prefix + '_peers',
-              help: 'Network peers shared with ping messages',
+              help: 'Network peers',
             }),
         }
 
@@ -41,11 +42,14 @@ export default class PrometheusMetrics {
     }
 
     inc(metric, labels = {}, i = 1) {
-        // console.log('inc', metric, labels, i)
         this.metrics[metric].inc(labels, i)
     }
 
     dec(metric, labels = {}, i = 1) {
         this.metrics[metric].dec(labels, i)
+    }
+
+    set(metric, labels = {}, i = 1) {
+        this.metrics[metric].set(labels, i)
     }
 }

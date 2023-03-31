@@ -21,6 +21,9 @@ export default class P2PScanner extends EventEmitter {
     }
 
     scan(serverPort, serverHost) {
+        this.metrics.inc('connections', {}, 0)
+        this.metrics.set('peers', {}, this.network.peers.length)
+
         this.network.on('peer', this.onNetworkPeer.bind(this))
         this.network.peers.map(this.connectToPeer.bind(this))
 
@@ -49,15 +52,18 @@ export default class P2PScanner extends EventEmitter {
             }
         }
 
-        client.connection.on('handshake', connectionHandler(this.onConnectionHandshake))
-        client.connection.on('pong', connectionHandler(this.onConnectionPong))
-        client.connection.on('sent', connectionHandler(this.onConnectionSent))
-        client.connection.on('received', connectionHandler(this.onConnectionReceived))
-        client.connection.on('response', connectionHandler(this.onConnectionResponse))
+        client.connection.on('connect', connectionHandler(this.onConnectionConnect))
         client.connection.on('disconnect', connectionHandler(this.onConnectionDisconnect))
         client.connection.on('error', connectionHandler(this.onConnectionError))
         client.connection.on('end', connectionHandler(this.onConnectionEnd))
         client.connection.on('close', connectionHandler(this.onConnectionClose))
+
+        client.connection.on('sent', connectionHandler(this.onConnectionSent))
+        client.connection.on('received', connectionHandler(this.onConnectionReceived))
+
+        client.connection.on('response', connectionHandler(this.onConnectionResponse))
+        client.connection.on('ping', connectionHandler(this.onConnectionPing))
+        client.connection.on('pong', connectionHandler(this.onConnectionPong))
 
         this.emit('connection', client.connection)
 
@@ -71,11 +77,12 @@ export default class P2PScanner extends EventEmitter {
             return
         }
 
+        this.metrics.inc('peers')
         this.connectToPeer(peer)
     }
 
-    onConnectionHandshake(client) {
-        this.metrics.inc('connections_total', {status: "handshake"})
+    onConnectionConnect(client) {
+        this.metrics.inc('connections_total', {status: "connect"})
         client.startPinging()
     }
 
@@ -87,7 +94,8 @@ export default class P2PScanner extends EventEmitter {
     onConnectionError(client, error) {
         console.log(peerToString(client.peer), `Error: ${error.message}`)
 
-        this.metrics.inc('errors_total', {code: error.code})
+        this.metrics.inc('connections_total', {status: "error"})
+        this.metrics.inc('connection_errors_total', {code: error.code})
     }
 
     onConnectionEnd(client) {
@@ -111,20 +119,19 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionResponse(client, response) {
-        if (!response.success) {
-            this.metrics.inc('responses_total', {direction: 'received', type: 'error'})
-            return
-        }
+        this.metrics.inc(
+            'responses_total',
+            {direction: 'received', type: response.type, errorReason: response.errorReason}
+        )
+    }
 
-        this.metrics.inc('responses_total', {direction: 'received', type: response.message.name})
+    onConnectionPing(client, ping) {
+        console.log(peerToString(client.peer), `ping, peers count: ${ping.peers.length}`)
     }
 
     onConnectionPong(client, pong) {
-        // console.log(peerToString(client.peer), `pong, peers count: ${pong.peers.length}`)
-        this.metrics.inc('peers_total', {}, pong.peers.length)
+        console.log(peerToString(client.peer), `pong, peers count: ${pong.peers.length}`)
 
-        // this.network.updatePeers(peer, pong.peers)
-        // peer.addPeers(pong.peers)
         this.network.updatePeers(client.peer, pong.peers)
         this.network.difficulty = (this.network.difficulty < pong.difficulty) ? pong.difficulty : this.network.difficulty
         // client.disconnect()

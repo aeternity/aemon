@@ -17,8 +17,20 @@ export default class P2PResponseMessage {
         this.message = message
     }
 
+    get name() {
+        return 'response'
+    }
+
     get tag() {
         return Constants.MSG_P2P_RESPONSE
+    }
+
+    get type() {
+        if (!this.success) {
+            return 'error'
+        }
+
+        return this.message.name
     }
 
     encode(encoder, apiEncoder) {

@@ -14,10 +14,6 @@ export default class P2PConnection extends EventEmitter {
         this.socket = socket
         this.stream = this.socket
 
-        this.socket.on('data', (data) => {
-            // console.log('DATA:', data)
-        })
-
         this.socket.on('error', this.onError.bind(this))
         this.socket.on('close', this.onClose.bind(this))   
         this.socket.on('end', this.onEnd.bind(this))
@@ -64,11 +60,6 @@ export default class P2PConnection extends EventEmitter {
         socket.destroy(error)
     }
 
-    onSocketError(error) {
-        this.peer.connected = false
-        this.emit('error', error)
-    }
-
     onError(error) {
         this.peer.connected = false
         this.emit('error', error)
@@ -87,17 +78,17 @@ export default class P2PConnection extends EventEmitter {
     onHandshake(remotePublicKey) {
         // console.log('handshake with:', remotePublicKey)
         this.peer.connected = true
-        this.emit('handshake')
+        this.emit('connect')
     }
 
     onData(message) {
         // console.log('RECV:')
         // console.dir(message, {depth: null})
+        this.emit('received', message)
+
         if (message instanceof P2PResponseMessage) {
             return this.handleResponse(message)
         }
-
-        this.emit('received', message)
 
         if (message instanceof CloseMessage) {
             clearInterval(this.pingTimer)
