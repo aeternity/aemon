@@ -6,51 +6,52 @@ export default class PrometheusMetrics {
             connections_total: new Counter({
               name: prefix + '_connections_total',
               help: 'Noise connections by state',
-              labelNames: ['status'],
+              labelNames: ['networkId', 'status'],
             }),
             connections: new Gauge({
               name: prefix + '_connections',
               help: 'Currently open noise connections',
-              labelNames: ['status'],
+              labelNames: ['networkId', 'status'],
             }),
             connection_errors_total: new Counter({
               name: prefix + '_connection_errors_total',
               help: 'Connection errors by type',
-              labelNames: ['code'],
+              labelNames: ['networkId', 'code'],
             }),
             messages_total: new Counter({
               name: prefix + '_messages_total',
               help: 'P2P messages by type',
-              labelNames: ['direction', 'type'],
+              labelNames: ['networkId', 'direction', 'type'],
             }),
             responses_total: new Counter({
               name: prefix + '_responses_total',
               help: 'P2P message responses by message type',
-              labelNames: ['direction', 'type', 'errorReason'],
+              labelNames: ['networkId', 'direction', 'type', 'errorReason'],
             }),
             peer_status: new Gauge({
               name: prefix + '_peer_status',
               help: 'Network peer status up/down',
-              labelNames: ['host', 'port', 'publicKey', 'lat', 'lon']
+              labelNames: ['networkId', 'host', 'port', 'publicKey', 'lat', 'lon']
             }),
             peers: new Gauge({
               name: prefix + '_peers',
               help: 'Network peers',
+              labelNames: ['networkId']
             }),
             peer_info: new Gauge({
                 name: prefix + '_peer_info',
                 help: 'Number of reported peers and additional info',
-                labelNames: ['host', 'port', 'publicKey', 'version', 'revision', 'vendor', 'os', 'networkId']
+                labelNames: ['networkId', 'host', 'port', 'publicKey', 'version', 'revision', 'vendor', 'os']
             }),
             peer_verified: new Gauge({
                 name: prefix + '_peer_verified',
                 help: 'Number of reported verified peers for a given peer',
-                labelNames: ['publicKey']
+                labelNames: ['networkId', 'publicKey']
             }),
             peer_unverified: new Gauge({
                 name: prefix + '_peer_unverified',
                 help: 'Number of reported unverified peers for a given peer',
-                labelNames: ['publicKey']
+                labelNames: ['networkId', 'publicKey']
             }),
         }
 

@@ -28,7 +28,7 @@ export default class P2PServer extends EventEmitter {
     }
 
     listen(port, host) {        
-        console.log('Local peer:', this.localPeer)
+        // console.log('Local peer:', this.localPeer)
 
         this.server.listen(port, host)
     }
@@ -41,7 +41,7 @@ export default class P2PServer extends EventEmitter {
         // console.log('NEW SERVER SOCKET:', socket)
         const peer = new Peer(socket.remoteAddress, 3015)
 
-        console.log('NEW CONNECTION: ', peer)
+        // console.log('NEW CONNECTION: ', peer)
 
         const connection = new P2PConnection(this.network, this.transportFactory, peer, socket)
         connection.encrypt()

@@ -2,6 +2,7 @@ import http from 'http'
 import Peer from './Peer.js'
 import P2PNetwork from './P2PNetwork.js'
 import P2PScanner from './P2PScanner.js'
+import NetworkMetrics from './Metrics/NetworkMetrics.js'
 import PrometheusMetrics from './Metrics/PrometheusMetrics.js'
 
 export default class Application {
@@ -9,8 +10,8 @@ export default class Application {
         const keypair = {pub: argv.publicKey, prv: argv.privateKey}
         const peer = new Peer(argv.sourceAddress, argv.externalPort, keypair)
 
-        this.metrics = new PrometheusMetrics()
         this.network = new P2PNetwork(argv.networkId, argv.genesisHash, argv.peers)
+        this.metrics = new NetworkMetrics(new PrometheusMetrics(), this.network)
         this.scanner = new P2PScanner(this.network, peer, this.metrics)
         this.sourceAddress = argv.sourceAddress
         this.sourcePort = argv.sourcePort

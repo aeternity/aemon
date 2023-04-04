@@ -6,6 +6,7 @@ import CloseMessage from './Messages/CloseMessage.js'
 import PingMessage from './Messages/PingMessage.js'
 import FragmentMessage from './Messages/FragmentMessage.js'
 import P2PResponseMessage from './Messages/P2PResponseMessage.js'
+import GetNodeInfoMessage from './Messages/GetNodeInfoMessage.js'
 import NodeInfoMessage from './Messages/NodeInfoMessage.js'
 import Peer from './Peer.js'
 
@@ -105,6 +106,10 @@ export default class MessageSerializer {
             }
 
             return new PingMessage(fields)
+        }
+
+        if (tag === Constants.MSG_GET_NODE_INFO) {
+            return new GetNodeInfoMessage()
         }
 
         if (tag === Constants.MSG_NODE_INFO) {

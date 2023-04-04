@@ -124,7 +124,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "aemon_peers",
+          "expr": "aemon_peers{networkId=\"$networkId\"}",
           "legendFormat": "total",
           "range": true,
           "refId": "A"
@@ -218,7 +218,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "avg(aemon_peer_verified)",
+          "expr": "avg(aemon_peer_verified{networkId=\"$networkId\"})",
           "legendFormat": "peers",
           "range": true,
           "refId": "A"
@@ -312,7 +312,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "avg(aemon_peer_unverified)",
+          "expr": "avg(aemon_peer_unverified{networkId=\"$networkId\"})",
           "legendFormat": "peers",
           "range": true,
           "refId": "A"
@@ -375,7 +375,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "count(aemon_peer_info) by (version)",
+          "expr": "count(aemon_peer_info{networkId=\"$networkId\"}) by (version)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -438,7 +438,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "count(aemon_peer_info) by (revision)",
+          "expr": "count(aemon_peer_info{networkId=\"$networkId\"}) by (revision)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -501,7 +501,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "count(aemon_peer_info) by (vendor)",
+          "expr": "count(aemon_peer_info{networkId=\"$networkId\"}) by (vendor)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -564,7 +564,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "count(aemon_peer_info) by (os)",
+          "expr": "count(aemon_peer_info{networkId=\"$networkId\"}) by (os)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -713,7 +713,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aemon_peer_status{lat != \"0\"}",
+          "expr": "aemon_peer_status{networkId=\"$networkId\", lat != \"0\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -896,7 +896,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aemon_peer_info",
+          "expr": "aemon_peer_info{networkId=\"$networkId\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -1059,7 +1059,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_messages_total{direction=\"sent\"}[$__interval])) by (type)",
+          "expr": "sum(increase(aemon_messages_total{networkId=\"$networkId\", direction=\"sent\"}[$__interval])) by (type)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1150,7 +1150,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_messages_total{direction=\"received\"}[$__interval])) by (type)",
+          "expr": "sum(increase(aemon_messages_total{networkId=\"$networkId\", direction=\"received\"}[$__interval])) by (type)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1242,7 +1242,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_responses_total{direction=\"received\"}[$__interval])) by (type)",
+          "expr": "sum(increase(aemon_responses_total{networkId=\"$networkId\", direction=\"received\"}[$__interval])) by (type)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1334,7 +1334,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_responses_total{direction=\"sent\"}[$__interval])) by (type)",
+          "expr": "sum(increase(aemon_responses_total{networkId=\"$networkId\", direction=\"sent\"}[$__interval])) by (type)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1440,7 +1440,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_connections_total[$__interval])) by (status)",
+          "expr": "sum(increase(aemon_connections_total{networkId=\"$networkId\"}[$__interval])) by (status)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1532,7 +1532,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aemon_connections",
+          "expr": "aemon_connections{networkId=\"$networkId\"}",
           "instant": false,
           "legendFormat": "total",
           "range": true,
@@ -1625,7 +1625,7 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_connection_errors_total[20s])) by (code)",
+          "expr": "sum(increase(aemon_connection_errors_total{networkId=\"$networkId\"}[20s])) by (code)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1641,7 +1641,31 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "ae_uat",
+          "value": "ae_uat"
+        },
+        "definition": "label_values(networkId)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Network",
+        "multi": false,
+        "name": "networkId",
+        "options": [],
+        "query": {
+          "query": "label_values(networkId)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-15m",
@@ -1651,6 +1675,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor",
   "uid": "b3OvP3fVz",
-  "version": 16,
+  "version": 18,
   "weekStart": ""
 }

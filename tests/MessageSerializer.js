@@ -175,8 +175,8 @@ test('Deserialize Info message', t => {
         vendor: 'aeternity',
         os: 'linux',
         networkId: 'ae_test',
-        verifiedPeers: 5n,
-        unverifiedPeers: 27n,
+        verifiedPeers: 5,
+        unverifiedPeers: 27,
     })
 
     t.deepEqual(
