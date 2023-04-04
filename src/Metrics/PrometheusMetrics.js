@@ -32,6 +32,21 @@ export default class PrometheusMetrics {
               name: prefix + '_peers',
               help: 'Network peers',
             }),
+            peer_info: new Gauge({
+                name: prefix + '_peer_info',
+                help: 'Number of reported peers and additional info',
+                labelNames: ['host', 'port', 'publicKey', 'version', 'revision', 'vendor', 'os', 'networkId']
+            }),
+            peer_verified: new Gauge({
+                name: prefix + '_peer_verified',
+                help: 'Number of reported verified peers for a given peer',
+                labelNames: ['publicKey']
+            }),
+            peer_unverified: new Gauge({
+                name: prefix + '_peer_unverified',
+                help: 'Number of reported unverified peers for a given peer',
+                labelNames: ['publicKey']
+            }),
         }
 
         // collectDefaultMetrics({ prefix })

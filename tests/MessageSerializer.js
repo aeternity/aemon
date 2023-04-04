@@ -4,6 +4,7 @@ import CloseMessage from '../src/Messages/CloseMessage.js'
 import PingMessage from '../src/Messages/PingMessage.js'
 import P2PResponseMessage from '../src/Messages/P2PResponseMessage.js'
 import FragmentMessage from '../src/Messages/FragmentMessage.js'
+import NodeInfoMessage from '../src/Messages/NodeInfoMessage.js'
 import Peer from '../src/Peer.js'
 
 const serializer = new MessageSerializer()
@@ -141,6 +142,52 @@ test('Deserialize Response message', t => {
            55,239,203,194,165,95,97,56
         ])),
         response
+    )
+})
+
+test('Serialize Info message', t => {
+    const info = new NodeInfoMessage({
+        version: '6.5.2',
+        revision: 'deadbeef',
+        vendor: 'aeternity',
+        os: 'linux',
+        networkId: 'ae_test',
+        verifiedPeers: 5,
+        unverifiedPeers: 27,
+    })
+
+    t.deepEqual(
+        serializer.serialize(info),
+        [
+            0, 126, 234,   1, 133,  54,  46,  53,  46,
+           50, 136, 100, 101,  97, 100,  98, 101, 101,
+          102, 137,  97, 101, 116, 101, 114, 110, 105,
+          116, 121, 133, 108, 105, 110, 117, 120, 135,
+           97, 101,  95, 116, 101, 115, 116,   5,  27
+        ]
+    )
+})
+
+test('Deserialize Info message', t => {
+    const info = new NodeInfoMessage({
+        version: '6.5.2',
+        revision: 'deadbeef',
+        vendor: 'aeternity',
+        os: 'linux',
+        networkId: 'ae_test',
+        verifiedPeers: 5n,
+        unverifiedPeers: 27n,
+    })
+
+    t.deepEqual(
+        serializer.deserialize(new Uint8Array([
+            0, 126, 234,   1, 133,  54,  46,  53,  46,
+           50, 136, 100, 101,  97, 100,  98, 101, 101,
+          102, 137,  97, 101, 116, 101, 114, 110, 105,
+          116, 121, 133, 108, 105, 110, 117, 120, 135,
+           97, 101,  95, 116, 101, 115, 116,   5,  27
+        ])),
+        info
     )
 })
 

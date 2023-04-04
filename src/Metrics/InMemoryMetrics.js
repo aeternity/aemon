@@ -63,4 +63,18 @@ export default class InMemoryMetrics {
             this.data[metric][key][val] -= i
         }
     }
+
+    set(metric, labels = {}, i = 1) {
+        this.#initializeMetric(metric, labels)
+
+        const keys = Object.keys(labels)
+        if (keys.length === 0) {
+            return this.data[metric] = i
+        }
+
+        for (let key of keys) {
+            const val = labels[key]
+            this.data[metric][key][val] = i
+        }
+    }
 }

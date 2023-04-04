@@ -24,7 +24,7 @@ export default class P2PScanner extends EventEmitter {
         this.metrics.inc('connections', {}, 0)
         this.metrics.set('peers', {}, this.network.peers.length)
 
-        this.network.on('peer', this.onNetworkPeer.bind(this))
+        this.network.on('peer.new', this.onNetworkPeer.bind(this))
         this.network.peers.map(this.connectToPeer.bind(this))
 
         const listenPort = serverPort || this.localPeer.port
@@ -64,6 +64,7 @@ export default class P2PScanner extends EventEmitter {
         client.connection.on('response', connectionHandler(this.onConnectionResponse))
         client.connection.on('ping', connectionHandler(this.onConnectionPing))
         client.connection.on('pong', connectionHandler(this.onConnectionPong))
+        client.connection.on('node_info', connectionHandler(this.onConnectionNodeInfo))
 
         this.emit('connection', client.connection)
 
@@ -134,6 +135,33 @@ export default class P2PScanner extends EventEmitter {
 
         this.network.updatePeers(client.peer, pong.peers)
         this.network.difficulty = (this.network.difficulty < pong.difficulty) ? pong.difficulty : this.network.difficulty
+
+        client.getInfo()
+
         // client.disconnect()
+    }
+
+    onConnectionNodeInfo(client, info) {
+        // console.log(peerToString(client.peer), 'NODE INFO:', info)
+        const peer = client.peer
+
+        this.metrics.set('peer_info', {
+            host: peer.host,
+            port: peer.port,
+            publicKey: peer.publicKey,
+            version: info.version,
+            revision: info.revision,
+            vendor: info.vendor,
+            os: info.os,
+            networkId: info.networkId,
+        }, peer.peers.length)
+
+        this.metrics.set('peer_verified', {
+            publicKey: peer.publicKey,
+        }, info.verifiedPeers)
+
+        this.metrics.set('peer_unverified', {
+            publicKey: peer.publicKey,
+        }, info.unverifiedPeers)
     }
 }

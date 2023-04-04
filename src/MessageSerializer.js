@@ -6,6 +6,7 @@ import CloseMessage from './Messages/CloseMessage.js'
 import PingMessage from './Messages/PingMessage.js'
 import FragmentMessage from './Messages/FragmentMessage.js'
 import P2PResponseMessage from './Messages/P2PResponseMessage.js'
+import NodeInfoMessage from './Messages/NodeInfoMessage.js'
 import Peer from './Peer.js'
 
 export default class MessageSerializer {
@@ -104,6 +105,34 @@ export default class MessageSerializer {
             }
 
             return new PingMessage(fields)
+        }
+
+        if (tag === Constants.MSG_NODE_INFO) {
+            const fieldsData = RLP.decode(data)
+            // console.log('INFO fields data', fieldsData)
+            const [
+                vsn,
+                version,
+                revision,
+                vendor,
+                os,
+                networkId,
+                verifiedPeers,
+                unverifiedPeers
+            ] = fieldsData
+
+            const fields = {
+                version: this.encoder.decodeString(version),
+                revision: this.encoder.decodeString(revision),
+                vendor: this.encoder.decodeString(vendor),
+                os: this.encoder.decodeString(os),
+                networkId: this.encoder.decodeString(networkId),
+                verifiedPeers: Number(this.encoder.decodeInt(verifiedPeers)),
+                unverifiedPeers: Number(this.encoder.decodeInt(unverifiedPeers)),
+
+            }
+
+            return new NodeInfoMessage(fields)
         }
 
         throw new Error('Unsupported tag: ' + tag)

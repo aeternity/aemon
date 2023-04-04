@@ -3,6 +3,7 @@ import EventEmitter from 'events'
 import PingMessage from './Messages/PingMessage.js'
 import P2PResponseMessage from './Messages/P2PResponseMessage.js'
 import CloseMessage from './Messages/CloseMessage.js'
+import NodeInfoMessage from './Messages/NodeInfoMessage.js'
 
 export default class P2PConnection extends EventEmitter {
     constructor(network, transportFactory, peer, socket) {
@@ -112,6 +113,10 @@ export default class P2PConnection extends EventEmitter {
             // console.log('RESPONSE')
             // console.dir(response, {depth: true})
             this.emit('pong', response.message)
-        }        
+        }
+
+        if (response.message instanceof NodeInfoMessage) {
+            this.emit('node_info', response.message)
+        }
     }
 }
