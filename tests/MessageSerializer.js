@@ -2,7 +2,7 @@ import test from 'ava'
 import MessageSerializer from '../src/MessageSerializer.js'
 import CloseMessage from '../src/Messages/CloseMessage.js'
 import PingMessage from '../src/Messages/PingMessage.js'
-import P2PResponseMessage from '../src/Messages/P2PResponseMessage.js'
+import ResponseMessage from '../src/Messages/ResponseMessage.js'
 import FragmentMessage from '../src/Messages/FragmentMessage.js'
 import NodeInfoMessage from '../src/Messages/NodeInfoMessage.js'
 import Peer from '../src/Peer.js'
@@ -93,7 +93,7 @@ test('Serialize Response message', t => {
             new Peer('127.1.2.3', 3015, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
         ]
     })
-    const response = new P2PResponseMessage(true, ping.tag, '', ping)
+    const response = new ResponseMessage(true, ping.tag, '', ping)
 
     t.deepEqual(
         serializer.serialize(response),
@@ -124,7 +124,7 @@ test('Deserialize Response message', t => {
             new Peer('127.1.2.3', 3015, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
         ]
     })
-    const response = new P2PResponseMessage(true, ping.tag, '', ping)
+    const response = new ResponseMessage(true, ping.tag, '', ping)
 
     t.deepEqual(
         serializer.deserialize(new Uint8Array([

@@ -9,17 +9,7 @@ export default class CloseMessage {
         return Constants.MSG_CLOSE
     }
 
-    static get TAG() {
-        return Constants.MSG_CLOSE
-    }
-
-    static get VERSION() {
+    get vsn() {
         return Constants.CLOSE_VSN
-    }
-
-    encode(encoder) {
-        return [
-            ...encoder.encodeInt(CloseMessage.VERSION)
-        ]
     }
 }

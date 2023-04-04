@@ -65,7 +65,7 @@ test('Listens for peer connections', t => {
     const scanner = new P2PScanner(network, serverPeer, new InMemoryMetrics())
     
     return new Promise((resolve, reject) => {
-        client.connection.on('handshake', () => {
+        client.connection.on('connect', () => {
             client.ping()
         })
 

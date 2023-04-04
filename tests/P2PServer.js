@@ -24,7 +24,7 @@ test('P2P client/server', t => {
     const server = new P2PServer(network, serverPeer)
     
     return new Promise((resolve, reject) => {
-        client.connection.on('handshake', () => {
+        client.connection.on('connect', () => {
             client.ping()
         })
 

@@ -38,9 +38,9 @@ export default class Application {
 
     installTicker() {
         const callback = async () => {
-            // if (this.scanner.connections.size === 0) {
-            //     this.stop()
-            // }
+            if (this.scanner.connections.size === 0) {
+                this.stop()
+            }
         }
 
         this.ticker = setInterval(callback.bind(this), 500)

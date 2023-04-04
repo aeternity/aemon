@@ -2,21 +2,17 @@ import RLP from 'rlp'
 import Constants from './Constants.js'
 
 export default class PingMessage {
+    constructor(fields) {
+        //@TODO validation ?
+        this.fields = fields
+    }
+
     get name() {
         return 'ping'
     }
 
-    static get TAG() {
-        return Constants.MSG_PING
-    }
-
-    static get VERSION() {
+    get vsn() {
         return Constants.PING_VSN
-    }
-
-    constructor(fields) {
-        //@TODO validation ?
-        this.fields = fields
     }
 
     get tag() {
@@ -27,6 +23,10 @@ export default class PingMessage {
         return this.fields.port
     }
 
+    get share() {
+        return this.fields.share
+    }
+
     get peers() {
         return this.fields.peers
     }
@@ -35,26 +35,15 @@ export default class PingMessage {
         return this.fields.difficulty
     }
 
-    encode(encoder, apiEncoder) {
-        return [
-            encoder.encodeInt(PingMessage.VERSION),
-            encoder.encodeInt(this.fields.port),
-            encoder.encodeInt(this.fields.share),
-            encoder.encodeBinary(apiEncoder.decode(this.fields.genesisHash)),
-            encoder.encodeInt(this.fields.difficulty),
-            encoder.encodeBinary(apiEncoder.decode(this.fields.bestHash)),
-            encoder.encodeBool(this.fields.syncAllowed),
-            this.encodePeers(encoder, apiEncoder)
-        ]
+    get genesisHash() {
+        return this.fields.genesisHash
     }
 
-    encodePeers(encoder, apiEncoder) {
-        return this.fields.peers.map((peer) => {
-            return RLP.encode([
-                encoder.encodeString(peer.host),
-                encoder.encodeInt(peer.port),
-                encoder.encodeBinary(apiEncoder.decode(peer.publicKey)),
-            ])
-        })
+    get bestHash() {
+        return this.fields.bestHash
+    }
+
+    get syncAllowed() {
+        return this.fields.syncAllowed
     }
 }

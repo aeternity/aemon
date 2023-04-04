@@ -1,7 +1,7 @@
 import net from 'net'
 import EventEmitter from 'events'
 import PingMessage from './Messages/PingMessage.js'
-import P2PResponseMessage from './Messages/P2PResponseMessage.js'
+import ResponseMessage from './Messages/ResponseMessage.js'
 import CloseMessage from './Messages/CloseMessage.js'
 import NodeInfoMessage from './Messages/NodeInfoMessage.js'
 
@@ -87,7 +87,7 @@ export default class P2PConnection extends EventEmitter {
         // console.dir(message, {depth: null})
         this.emit('received', message)
 
-        if (message instanceof P2PResponseMessage) {
+        if (message instanceof ResponseMessage) {
             return this.handleResponse(message)
         }
 

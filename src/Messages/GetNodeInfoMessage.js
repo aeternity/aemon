@@ -9,17 +9,7 @@ export default class GetNodeInfoMessage {
         return Constants.MSG_GET_NODE_INFO
     }
 
-    static get TAG() {
-        return Constants.MSG_GET_NODE_INFO
-    }
-
-    static get VERSION() {
+    get vsn() {
         return Constants.GET_NODE_INFO_VSN
-    }
-
-    encode(encoder) {
-        return [
-            encoder.encodeInt(GetNodeInfoMessage.VERSION)
-        ]
     }
 }

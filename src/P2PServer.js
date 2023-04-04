@@ -4,7 +4,7 @@ import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
 import P2PConnection from './P2PConnection.js'
 import Peer from './Peer.js'
 import Constants from './Messages/Constants.js'
-import P2PResponseMessage from './Messages/P2PResponseMessage.js'
+import ResponseMessage from './Messages/ResponseMessage.js'
 import PingMessage from './Messages/PingMessage.js'
 
 export default class P2PServer extends EventEmitter {
@@ -54,7 +54,8 @@ export default class P2PServer extends EventEmitter {
         connection.on('close', () => console.log('on close'))
 
         connection.on('ping', (ping) => {
-            const response = new P2PResponseMessage(true, Constants.MSG_PING, '', this.createPing())
+            const pong = this.createPing()
+            const response = new ResponseMessage(true, pong.tag, '', pong)
             connection.send(response)
         })
 

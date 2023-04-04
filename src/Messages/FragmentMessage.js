@@ -2,10 +2,6 @@ import RLP from 'rlp'
 import Constants from './Constants.js'
 
 export default class FragmentMessage {
-    static get TAG() {
-        return Constants.MSG_FRAGMENT
-    }
-
     constructor(index, total, data) {
         if (data.length > (65536 - 6)) {
             throw new Error('Data size must be maximum of 65530 bytes')
@@ -22,6 +18,10 @@ export default class FragmentMessage {
         this.index = index
         this.total = total
         this.data = data
+    }
+
+    get name() {
+        return 'fragment'
     }
 
     get tag() {
