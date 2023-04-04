@@ -4,6 +4,8 @@ export default class Peer {
         this.host = host
         this.port = port
         this.keypair = keypair
+        this.lat = 0
+        this.lon = 0
     }
 
     static withUrl(address) {

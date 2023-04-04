@@ -578,6 +578,204 @@
         "type": "prometheus",
         "uid": "f1TL-3BVz"
       },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "index": 0,
+                  "text": "offline"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "online"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 30,
+      "options": {
+        "basemap": {
+          "config": {
+            "showLabels": true,
+            "theme": "auto"
+          },
+          "name": "Layer 0",
+          "type": "carto"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": true,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "field": "Value (last)",
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 10,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "lat (last)",
+              "longitude": "lon (last)",
+              "mode": "coords"
+            },
+            "name": "Peers",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "coords",
+          "lat": 36.375951,
+          "lon": -1.737731,
+          "zoom": 2.28
+        }
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "aemon_peer_status{lat != \"0\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Peer Geo Locations",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": {
+                "aggregations": [
+                  "last"
+                ],
+                "operation": "aggregate"
+              },
+              "lat": {
+                "aggregations": [
+                  "last"
+                ],
+                "operation": "aggregate"
+              },
+              "lon": {
+                "aggregations": [
+                  "last"
+                ],
+                "operation": "aggregate"
+              },
+              "publicKey": {
+                "aggregations": [],
+                "operation": "groupby"
+              }
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "number",
+                "targetField": "lat (last)"
+              },
+              {
+                "destinationType": "number",
+                "targetField": "lon (last)"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -673,7 +871,7 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 30
       },
       "id": 21,
       "options": {
@@ -772,7 +970,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 44
       },
       "id": 10,
       "panels": [],
@@ -830,7 +1028,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 31
+        "y": 45
       },
       "id": 13,
       "options": {
@@ -921,7 +1119,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 31
+        "y": 45
       },
       "id": 12,
       "options": {
@@ -1013,7 +1211,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 39
+        "y": 53
       },
       "id": 15,
       "options": {
@@ -1114,7 +1312,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 39
+        "y": 53
       },
       "id": 14,
       "options": {
@@ -1151,7 +1349,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 47
+        "y": 61
       },
       "id": 8,
       "panels": [],
@@ -1220,7 +1418,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 48
+        "y": 62
       },
       "id": 4,
       "options": {
@@ -1302,7 +1500,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 48
+        "y": 62
       },
       "id": 2,
       "options": {
@@ -1405,7 +1603,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 70
       },
       "id": 6,
       "options": {
@@ -1453,6 +1651,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor",
   "uid": "b3OvP3fVz",
-  "version": 14,
+  "version": 16,
   "weekStart": ""
 }

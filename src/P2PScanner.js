@@ -1,4 +1,5 @@
 import EventEmitter from 'events'
+import geoip from 'geoip-lite'
 import P2PClient from './P2PClient.js'
 import P2PServer from './P2PServer.js'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
@@ -36,6 +37,16 @@ export default class P2PScanner extends EventEmitter {
     stop() {
         this.server.close()
         this.emit('stop')
+    }
+
+    logPeer(peer, status) {
+        this.metrics.set('peer_status', {
+            host: peer.host,
+            port: peer.port,
+            publicKey: peer.publicKey,
+            lat: peer.lat,
+            lon: peer.lon,
+        }, status)
     }
 
     connectToPeer(peer) {
@@ -78,12 +89,20 @@ export default class P2PScanner extends EventEmitter {
             return
         }
 
+        const geo = geoip.lookup(peer.host)
+        if (geo !== null) {
+            peer.lat = Number(geo.ll[0])
+            peer.lon = Number(geo.ll[1])
+        }
+
         this.metrics.inc('peers')
+        this.logPeer(peer, 1)
         this.connectToPeer(peer)
     }
 
     onConnectionConnect(client) {
         this.metrics.inc('connections_total', {status: "connect"})
+        this.logPeer(client.peer, 1)
         client.startPinging()
     }
 
@@ -97,6 +116,7 @@ export default class P2PScanner extends EventEmitter {
 
         this.metrics.inc('connections_total', {status: "error"})
         this.metrics.inc('connection_errors_total', {code: error.code})
+        this.logPeer(client.peer, 0)
     }
 
     onConnectionEnd(client) {
