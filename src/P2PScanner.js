@@ -156,6 +156,13 @@ export default class P2PScanner extends EventEmitter {
         this.network.updatePeers(client.peer, pong.peers)
         this.network.difficulty = (this.network.difficulty < pong.difficulty) ? pong.difficulty : this.network.difficulty
 
+        this.metrics.set('peer_difficulty', {
+            publicKey: client.peer.publicKey,
+            genesisHash: pong.genesisHash,
+            // bestHash: pong.bestHash,
+            syncAllowed: Number(pong.syncAllowed)
+        }, Number(pong.difficulty))
+
         client.getInfo()
 
         // client.disconnect()

@@ -36,6 +36,272 @@
         "x": 0,
         "y": 0
       },
+      "id": 34,
+      "panels": [],
+      "title": "Blockchain",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 37,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "count by (genesisHash) (aemon_peer_difficulty{networkId=\"$networkId\"})",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Genesis Hash",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 36,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "count_values(\"diff\", aemon_peer_difficulty{networkId=\"$networkId\"})",
+          "format": "time_series",
+          "instant": true,
+          "legendFormat": "{{diff}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Difficulty Distribution",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "Value": {
+                "aggregations": [
+                  "max"
+                ],
+                "operation": "groupby"
+              },
+              "__name__": {
+                "aggregations": []
+              },
+              "bestHash": {
+                "aggregations": [
+                  "last"
+                ]
+              },
+              "publicKey": {
+                "aggregations": [],
+                "operation": "aggregate"
+              }
+            }
+          }
+        }
+      ],
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 40,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "expr": "avg(avg_over_time(aemon_peer_difficulty[$__interval]))/100000",
+          "legendFormat": "difficulty",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Average Difficulty",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
       "id": 19,
       "panels": [],
       "title": "Peers",
@@ -93,7 +359,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 1
+        "y": 10
       },
       "id": 17,
       "options": {
@@ -187,7 +453,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 1
+        "y": 10
       },
       "id": 27,
       "options": {
@@ -281,7 +547,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 1
+        "y": 10
       },
       "id": 28,
       "options": {
@@ -346,7 +612,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 9
+        "y": 18
       },
       "id": 23,
       "options": {
@@ -409,7 +675,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 9
+        "y": 18
       },
       "id": 24,
       "options": {
@@ -472,7 +738,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 9
+        "y": 18
       },
       "id": 25,
       "options": {
@@ -535,7 +801,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 9
+        "y": 18
       },
       "id": 26,
       "options": {
@@ -629,7 +895,7 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 25
       },
       "id": 30,
       "options": {
@@ -794,8 +1060,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -871,7 +1136,7 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 39
       },
       "id": 21,
       "options": {
@@ -970,7 +1235,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 53
       },
       "id": 10,
       "panels": [],
@@ -1012,8 +1277,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1028,7 +1292,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 45
+        "y": 54
       },
       "id": 13,
       "options": {
@@ -1043,7 +1307,7 @@
           "showLegend": true
         },
         "orientation": "auto",
-        "showValue": "auto",
+        "showValue": "never",
         "stacking": "normal",
         "tooltip": {
           "mode": "single",
@@ -1103,8 +1367,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1119,7 +1382,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 45
+        "y": 54
       },
       "id": 12,
       "options": {
@@ -1195,8 +1458,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1211,7 +1473,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 53
+        "y": 62
       },
       "id": 15,
       "options": {
@@ -1296,8 +1558,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1312,7 +1573,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 53
+        "y": 62
       },
       "id": 14,
       "options": {
@@ -1349,7 +1610,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 61
+        "y": 70
       },
       "id": 8,
       "panels": [],
@@ -1402,8 +1663,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1418,7 +1678,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 62
+        "y": 71
       },
       "id": 4,
       "options": {
@@ -1484,8 +1744,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1500,7 +1759,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 62
+        "y": 71
       },
       "id": 2,
       "options": {
@@ -1587,8 +1846,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1603,7 +1861,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 79
       },
       "id": 6,
       "options": {
@@ -1644,9 +1902,13 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "ae_uat",
           "value": "ae_uat"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "f1TL-3BVz"
         },
         "definition": "label_values(networkId)",
         "hide": 0,
@@ -1668,13 +1930,13 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Aeternity P2P Monitor",
   "uid": "b3OvP3fVz",
-  "version": 18,
+  "version": 21,
   "weekStart": ""
 }

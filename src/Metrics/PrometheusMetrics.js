@@ -28,15 +28,20 @@ export default class PrometheusMetrics {
               help: 'P2P message responses by message type',
               labelNames: ['networkId', 'direction', 'type', 'errorReason'],
             }),
+            peers: new Gauge({
+              name: prefix + '_peers',
+              help: 'Network peers',
+              labelNames: ['networkId']
+            }),
             peer_status: new Gauge({
               name: prefix + '_peer_status',
               help: 'Network peer status up/down',
               labelNames: ['networkId', 'host', 'port', 'publicKey', 'lat', 'lon']
             }),
-            peers: new Gauge({
-              name: prefix + '_peers',
-              help: 'Network peers',
-              labelNames: ['networkId']
+            peer_difficulty: new Gauge({
+              name: prefix + '_peer_difficulty',
+              help: 'Peer difficulty',
+              labelNames: ['networkId', 'publicKey', 'genesisHash', 'syncAllowed']
             }),
             peer_info: new Gauge({
                 name: prefix + '_peer_info',
