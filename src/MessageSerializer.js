@@ -2,6 +2,7 @@ import RLP from 'rlp'
 import {FateApiEncoder} from '@aeternity/aepp-calldata'
 import Encoder from './Encoder.js'
 import Constants from './Messages/Constants.js'
+import Message from './Messages/Message.js'
 import FragmentMessage from './Messages/FragmentMessage.js'
 import CloseMessageSerializer from './Serializers/CloseMessageSerializer.js'
 import PingMessageSerializer from './Serializers/PingMessageSerializer.js'
@@ -27,8 +28,8 @@ export default class MessageSerializer {
         }
     }
 
-    #supports(name) {
-        return this.#serializers.hasOwnProperty(name)
+    #supports(tag) {
+        return this.#serializers.hasOwnProperty(tag)
     }
 
     #getSerializer(tag) {
@@ -63,6 +64,18 @@ export default class MessageSerializer {
         const tag = data[1]
         const rest = data.slice(2)
 
-        return this.decode(tag, rest)
+        if (this.#supports(tag)) {
+            return this.decode(tag, rest)
+        }
+
+        // Build a base message for statistic purposes
+        const key = Object.keys(Constants).find(key => Constants[key] === tag)
+        if (key === undefined) {
+            throw new Error('Unsupported message serializer tag: ' + tag)
+        }
+
+        const name = key.replace('MSG_', '').toLowerCase()
+
+        return new Message(name)
     }
 }
