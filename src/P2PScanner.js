@@ -151,10 +151,16 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionPong(client, pong) {
-        console.log(peerToString(client.peer), `pong, peers count: ${pong.peers.length}`)
+        const cntSharedPeers = pong.peers.length
+        console.log(peerToString(client.peer), `pong, peers count: ${cntSharedPeers}, share: ${pong.share}`)
 
         this.network.updatePeers(client.peer, pong.peers)
         this.network.difficulty = (this.network.difficulty < pong.difficulty) ? pong.difficulty : this.network.difficulty
+
+        this.metrics.set('node_peers', {
+            publicKey: client.peer.publicKey,
+            kind: 'shared',
+        }, cntSharedPeers)
 
         this.metrics.set('peer_difficulty', {
             publicKey: client.peer.publicKey,
@@ -183,12 +189,14 @@ export default class P2PScanner extends EventEmitter {
             networkId: info.networkId,
         }, peer.peers.length)
 
-        this.metrics.set('peer_verified', {
+        this.metrics.set('node_peers', {
             publicKey: peer.publicKey,
+            kind: 'verified',
         }, info.verifiedPeers)
 
-        this.metrics.set('peer_unverified', {
+        this.metrics.set('node_peers', {
             publicKey: peer.publicKey,
+            kind: 'unverified',
         }, info.unverifiedPeers)
     }
 }
