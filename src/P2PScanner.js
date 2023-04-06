@@ -23,7 +23,7 @@ export default class P2PScanner extends EventEmitter {
 
     scan(serverPort, serverHost) {
         this.metrics.inc('connections', {}, 0)
-        this.metrics.set('peers', {}, this.network.peers.length)
+        this.metrics.set('network_peers', {}, this.network.peers.length)
 
         this.network.on('peer.new', this.onNetworkPeer.bind(this))
         this.network.peers.map(this.connectToPeer.bind(this))
@@ -95,7 +95,7 @@ export default class P2PScanner extends EventEmitter {
             peer.lon = Number(geo.ll[1])
         }
 
-        this.metrics.inc('peers')
+        this.metrics.inc('network_peers')
         this.logPeer(peer, 1)
         this.connectToPeer(peer)
     }
@@ -155,7 +155,14 @@ export default class P2PScanner extends EventEmitter {
         console.log(peerToString(client.peer), `pong, peers count: ${cntSharedPeers}, share: ${pong.share}`)
 
         this.network.updatePeers(client.peer, pong.peers)
-        this.network.difficulty = (this.network.difficulty < pong.difficulty) ? pong.difficulty : this.network.difficulty
+
+        if (pong.difficulty > this.network.difficulty) {
+            this.network.difficulty = pong.difficulty
+            this.network.bestHash = pong.bestHash
+            this.metrics.set('network_difficulty', {
+                genesisHash: this.network.genesisHash,
+            }, Number(this.network.difficulty))
+        }
 
         this.metrics.set('node_peers', {
             publicKey: client.peer.publicKey,
