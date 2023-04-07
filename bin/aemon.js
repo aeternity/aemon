@@ -6,7 +6,7 @@ import ScanCommand from '../src/Commands/ScanCommand.js'
 const argv = yargs(process.argv.slice(2))
     .env('AEMON')
     .config('config')
-    .default('config', './config/default.json')
+    .default('config', './etc/aemon/default.json')
     .option('network-id', {
         alias: 'n',
         type: 'string',
