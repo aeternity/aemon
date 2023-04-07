@@ -1052,6 +1052,13 @@
             "filterable": true,
             "inspect": false
           },
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "",
+              "url": "./d/nAjf9tLVk/aeternity-p2p-monitor-peer?var-publicKey=${__data.fields.publicKey}&${__url_time_range}"
+            }
+          ],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1699,8 +1706,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1791,8 +1797,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1885,8 +1890,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1977,6 +1981,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Overview",
   "uid": "b3OvP3fVz",
-  "version": 31,
+  "version": 32,
   "weekStart": ""
 }
