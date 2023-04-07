@@ -48,11 +48,6 @@ export default class PrometheusMetrics {
                 help: 'Number of reported peers for a given peer',
                 labelNames: ['networkId', 'publicKey', 'kind']
             }),
-            peer_unverified: new Gauge({
-                name: prefix + '_peer_unverified',
-                help: 'Number of reported unverified peers for a given peer',
-                labelNames: ['networkId', 'publicKey']
-            }),
             network_difficulty: new Gauge({
               name: prefix + '_network_difficulty',
               help: 'Network difficulty',
