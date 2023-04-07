@@ -195,10 +195,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -240,7 +236,7 @@
           "refId": "A"
         }
       ],
-      "title": "Network Peers",
+      "title": "Gossip Peers",
       "type": "stat"
     },
     {
@@ -701,7 +697,7 @@
           "refId": "A"
         }
       ],
-      "title": "Operating System",
+      "title": "Operating Systems",
       "type": "piechart"
     },
     {
@@ -921,7 +917,32 @@
           },
           "mappings": []
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Value"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
@@ -1031,7 +1052,7 @@
           "refId": "A"
         }
       ],
-      "title": "Vendor",
+      "title": "Vendors",
       "type": "piechart"
     },
     {
@@ -1083,7 +1104,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 497
+                "value": 515
               }
             ]
           },
@@ -1146,6 +1167,30 @@
                 "value": 123
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "vendor (last)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 199
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "revision (last)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 145
+              }
+            ]
           }
         ]
       },
@@ -1178,8 +1223,9 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aemon_peer_info{networkId=\"$networkId\"}",
+          "expr": "aemon_peer_status{networkId=\"$networkId\"} * on (publicKey) group_left(version, revision, vendor, os) aemon_peer_info{networkId=\"$networkId\"} or on (publicKey) aemon_peer_status{networkId=\"$networkId\"}",
           "format": "table",
+          "hide": false,
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
@@ -1252,12 +1298,12 @@
             "indexByName": {
               "Time (last)": 1,
               "host (last)": 2,
-              "os (last)": 4,
+              "os (last)": 7,
               "port (last)": 3,
               "publicKey": 0,
-              "revision (last)": 6,
-              "vendor (last)": 7,
-              "version (last)": 5
+              "revision (last)": 5,
+              "vendor (last)": 6,
+              "version (last)": 4
             },
             "renameByName": {}
           }
@@ -1706,7 +1752,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1797,7 +1844,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1890,7 +1938,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1974,13 +2023,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Aeternity P2P Monitor - Overview",
   "uid": "b3OvP3fVz",
-  "version": 32,
+  "version": 36,
   "weekStart": ""
 }

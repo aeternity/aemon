@@ -39,7 +39,7 @@ export default class P2PScanner extends EventEmitter {
         this.emit('stop')
     }
 
-    logPeer(peer, status) {
+    setPeerStatus(peer, status) {
         this.metrics.set('peer_status', {
             host: peer.host,
             port: peer.port,
@@ -96,13 +96,12 @@ export default class P2PScanner extends EventEmitter {
         }
 
         this.metrics.inc('network_peers')
-        this.logPeer(peer, 1)
         this.connectToPeer(peer)
     }
 
     onConnectionConnect(client) {
         this.metrics.inc('connections_total', {status: "connect"})
-        this.logPeer(client.peer, 1)
+        this.setPeerStatus(client.peer, 1)
         client.startPinging()
     }
 
@@ -116,7 +115,7 @@ export default class P2PScanner extends EventEmitter {
 
         this.metrics.inc('connections_total', {status: "error"})
         this.metrics.inc('connection_errors_total', {code: error.code})
-        this.logPeer(client.peer, 0)
+        this.setPeerStatus(client.peer, 0)
     }
 
     onConnectionEnd(client) {
@@ -127,6 +126,7 @@ export default class P2PScanner extends EventEmitter {
     onConnectionClose(client, hadError) {
         this.metrics.dec('connections')
         this.metrics.inc('connections_total', {status: "close"})
+        this.setPeerStatus(client.peer, 0)
         console.log(peerToString(client.peer), "Connection closed. Error: ", Boolean(hadError))
         this.connections.delete(client.peer.publicKey)        
     }
@@ -190,11 +190,11 @@ export default class P2PScanner extends EventEmitter {
             port: peer.port,
             publicKey: peer.publicKey,
             version: info.version,
-            revision: info.revision,
+            revision: info.revision.slice(0, 9),
             vendor: info.vendor,
             os: info.os,
             networkId: info.networkId,
-        }, peer.peers.length)
+        }, 1)
 
         this.metrics.set('node_peers', {
             publicKey: peer.publicKey,
