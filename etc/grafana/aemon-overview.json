@@ -1099,96 +1099,35 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "publicKey"
+              "options": "status"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 515
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Time (last)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 210
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "host (last)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 141
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "port (last)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 101
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "os (last)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 94
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "version (last)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 123
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "vendor (last)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 199
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "revision (last)"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 145
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "color": "red",
+                        "index": 0,
+                        "text": "offline"
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "from": 1,
+                      "result": {
+                        "color": "green",
+                        "index": 1,
+                        "text": "online"
+                      },
+                      "to": 2
+                    },
+                    "type": "range"
+                  }
+                ]
               }
             ]
           }
@@ -1239,6 +1178,12 @@
           "options": {
             "fields": {
               "Time": {
+                "aggregations": [
+                  "last"
+                ],
+                "operation": "aggregate"
+              },
+              "Value": {
                 "aggregations": [
                   "last"
                 ],
@@ -1305,7 +1250,9 @@
               "vendor (last)": 6,
               "version (last)": 4
             },
-            "renameByName": {}
+            "renameByName": {
+              "Value (last)": "status"
+            }
           }
         }
       ],
@@ -1752,8 +1699,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1844,8 +1790,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1938,8 +1883,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2023,13 +1967,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Aeternity P2P Monitor - Overview",
   "uid": "b3OvP3fVz",
-  "version": 36,
+  "version": 37,
   "weekStart": ""
 }
