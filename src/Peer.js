@@ -6,6 +6,8 @@ export default class Peer {
         this.keypair = keypair
         this.lat = 0
         this.lon = 0
+        this.owner = 'unknown'
+        this.kind = 'peer'
     }
 
     static withUrl(address) {

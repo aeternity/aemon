@@ -132,19 +132,14 @@
             {
               "options": {
                 "0": {
-                  "color": "red",
+                  "color": "orange",
                   "index": 0,
-                  "text": "offline"
+                  "text": "disconnected"
                 },
                 "1": {
-                  "color": "blue",
-                  "index": 1,
-                  "text": "outbound"
-                },
-                "2": {
                   "color": "green",
-                  "index": 2,
-                  "text": "inbound"
+                  "index": 1,
+                  "text": "connected"
                 }
               },
               "type": "value"
@@ -155,7 +150,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
+                "color": "green",
                 "value": null
               }
             ]
@@ -1021,7 +1016,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "fixed"
           },
           "custom": {
             "hideFrom": {
@@ -1034,14 +1029,14 @@
             {
               "options": {
                 "0": {
-                  "color": "red",
+                  "color": "orange",
                   "index": 0,
-                  "text": "offline"
+                  "text": "disconnected"
                 },
                 "1": {
                   "color": "green",
                   "index": 1,
-                  "text": "online"
+                  "text": "connected"
                 }
               },
               "type": "value"
@@ -1215,8 +1210,8 @@
       {
         "current": {
           "selected": false,
-          "text": "pp_fCBqobeSwhdnrzC8DoSsmWbf2GzDK61CJujmsCEd3RUkmh9Ny",
-          "value": "pp_fCBqobeSwhdnrzC8DoSsmWbf2GzDK61CJujmsCEd3RUkmh9Ny"
+          "text": "pp_dSEaRZUuMYo7WVkxtiUXPkZbULtx5yZhdMSj5NJ5EDG4izk6F",
+          "value": "pp_dSEaRZUuMYo7WVkxtiUXPkZbULtx5yZhdMSj5NJ5EDG4izk6F"
         },
         "datasource": {
           "type": "prometheus",
@@ -1249,6 +1244,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Peer",
   "uid": "nAjf9tLVk",
-  "version": 19,
+  "version": 22,
   "weekStart": ""
 }

@@ -1,3 +1,4 @@
+import geoip from 'geoip-lite'
 import EventEmitter from 'events'
 import Peer from './Peer.js'
 
@@ -13,6 +14,11 @@ export default class P2PNetwork extends EventEmitter {
         this.difficulty = 0
 
         peers.map(peer => this.addPeer(Peer.withUrl(peer)))
+
+        this.#peers.forEach(peer => {
+            peer.owner = 'aeternity'
+            peer.kind = 'seed'
+        })
     }
 
     get peers() {
@@ -22,12 +28,12 @@ export default class P2PNetwork extends EventEmitter {
     addPeer(peer) {
         if (!this.#peers.has(peer.publicKey)) {
             peer.ref = 'NETWORK'
+            this.updatePeerLocation(peer)
             this.#peers.set(peer.publicKey, peer)
             this.emit('peer.new', peer)
 
             return peer
         }
-
 
         return this.#peers.get(peer.publicKey)
     }
@@ -40,6 +46,14 @@ export default class P2PNetwork extends EventEmitter {
         networkSource.addPeers(networkPeers)
 
         this.emit('peer.update', source)
+    }
+
+    updatePeerLocation(peer) {
+        const geo = geoip.lookup(peer.host)
+        if (geo !== null) {
+            peer.lat = Number(geo.ll[0])
+            peer.lon = Number(geo.ll[1])
+        }
     }
 
     updatePeerInfo(peer, info) {

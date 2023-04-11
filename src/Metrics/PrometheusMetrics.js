@@ -31,7 +31,7 @@ export default class PrometheusMetrics {
             peer_status: new Gauge({
               name: prefix + '_peer_status',
               help: 'Network peer status up/down',
-              labelNames: ['networkId', 'host', 'port', 'publicKey', 'lat', 'lon']
+              labelNames: ['networkId', 'host', 'port', 'publicKey', 'lat', 'lon', 'owner', 'kind']
             }),
             peer_difficulty: new Gauge({
               name: prefix + '_peer_difficulty',

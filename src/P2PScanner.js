@@ -1,5 +1,4 @@
 import EventEmitter from 'events'
-import geoip from 'geoip-lite'
 import P2PClient from './P2PClient.js'
 import P2PServer from './P2PServer.js'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
@@ -46,6 +45,8 @@ export default class P2PScanner extends EventEmitter {
             publicKey: peer.publicKey,
             lat: peer.lat,
             lon: peer.lon,
+            owner: peer.owner,
+            kind: peer.kind
         }, status)
     }
 
@@ -87,12 +88,6 @@ export default class P2PScanner extends EventEmitter {
         if (peer.publicKey === this.localPeer.publicKey) {
             console.log("THAT's ME, SKIP CONNECT")
             return
-        }
-
-        const geo = geoip.lookup(peer.host)
-        if (geo !== null) {
-            peer.lat = Number(geo.ll[0])
-            peer.lon = Number(geo.ll[1])
         }
 
         this.metrics.inc('network_peers')
