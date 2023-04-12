@@ -60,7 +60,10 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
         },
         "pieType": "pie",
         "reduceOptions": {
@@ -83,7 +86,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(aemon_peer_info{networkId=\"$networkId\"}) by (version)",
+          "expr": "topk(7, count(aemon_peer_info{networkId=\"$networkId\"}) by (version))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -91,7 +94,7 @@
           "refId": "A"
         }
       ],
-      "title": "Versions",
+      "title": "Top Versions",
       "type": "piechart"
     },
     {
@@ -151,7 +154,10 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
         },
         "pieType": "pie",
         "reduceOptions": {
@@ -174,7 +180,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(aemon_peer_info{networkId=\"$networkId\"}) by (revision)",
+          "expr": "topk(7, count(aemon_peer_info{networkId=\"$networkId\"}) by (revision))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -182,7 +188,7 @@
           "refId": "A"
         }
       ],
-      "title": "Revisions",
+      "title": "Top Revisions",
       "type": "piechart"
     },
     {
@@ -245,7 +251,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(aemon_peer_status{networkId=\"$networkId\"}) by (country)",
+          "expr": "topk(7, count(aemon_peer_status{networkId=\"$networkId\"}) by (country))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -253,7 +259,7 @@
           "refId": "A"
         }
       ],
-      "title": "Countries",
+      "title": "Top Countries",
       "transformations": [
         {
           "id": "organize",
@@ -460,7 +466,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(aemon_peer_status{networkId=\"$networkId\"}) by (provider)",
+          "expr": "topk(7, count(aemon_peer_status{networkId=\"$networkId\"}) by (provider))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -468,7 +474,7 @@
           "refId": "A"
         }
       ],
-      "title": "Providers",
+      "title": "Top  Providers",
       "transformations": [
         {
           "id": "organize",
@@ -1083,7 +1089,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "ae_uat",
           "value": "ae_uat"
         },
@@ -1111,13 +1117,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Aeternity P2P Monitor - Peers",
   "uid": "I1jhkCL4k",
-  "version": 9,
+  "version": 11,
   "weekStart": ""
 }
