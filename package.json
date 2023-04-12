@@ -12,6 +12,7 @@
   "dependencies": {
     "@aeternity/aepp-calldata": "github:aeternity/aepp-calldata-js#master",
     "geoip-lite": "^1.4.7",
+    "ip-to-asn": "^1.0.0",
     "noise-c.wasm": "^0.4.0",
     "prom-client": "^14.2.0",
     "rlp": "^3.0.0",

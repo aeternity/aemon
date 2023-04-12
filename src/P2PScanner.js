@@ -25,7 +25,6 @@ export default class P2PScanner extends EventEmitter {
         this.metrics.set('network_peers', {}, this.network.peers.length)
 
         this.network.on('peer.new', this.onNetworkPeer.bind(this))
-        this.network.peers.map(this.connectToPeer.bind(this))
 
         const listenPort = serverPort || this.localPeer.port
         const listenHost = serverHost || this.localPeer.host
@@ -45,6 +44,8 @@ export default class P2PScanner extends EventEmitter {
             publicKey: peer.publicKey,
             lat: peer.lat,
             lon: peer.lon,
+            country: peer.country,
+            provider: peer.provider,
             owner: peer.owner,
             kind: peer.kind
         }, status)

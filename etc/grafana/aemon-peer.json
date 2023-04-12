@@ -1210,8 +1210,8 @@
       {
         "current": {
           "selected": false,
-          "text": "pp_dSEaRZUuMYo7WVkxtiUXPkZbULtx5yZhdMSj5NJ5EDG4izk6F",
-          "value": "pp_dSEaRZUuMYo7WVkxtiUXPkZbULtx5yZhdMSj5NJ5EDG4izk6F"
+          "text": "pp_2i8N6XsjCGe1wkdMhDRs7t7xzijrjJDN4xA22RoNGCgt6ay9QB",
+          "value": "pp_2i8N6XsjCGe1wkdMhDRs7t7xzijrjJDN4xA22RoNGCgt6ay9QB"
         },
         "datasource": {
           "type": "prometheus",
@@ -1237,7 +1237,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},

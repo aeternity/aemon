@@ -6,6 +6,7 @@ export default class Peer {
         this.keypair = keypair
         this.lat = 0
         this.lon = 0
+        this.country = ''
         this.owner = 'unknown'
         this.kind = 'peer'
     }
