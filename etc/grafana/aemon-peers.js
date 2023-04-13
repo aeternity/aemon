@@ -574,7 +574,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 152
+                "value": 124
               }
             ]
           },
@@ -586,7 +586,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 120
+                "value": 104
               }
             ]
           },
@@ -598,7 +598,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 522
+                "value": 502
               }
             ]
           },
@@ -610,7 +610,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 146
+                "value": 128
               }
             ]
           },
@@ -622,7 +622,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 127
+                "value": 99
               }
             ]
           },
@@ -634,7 +634,115 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 228
+                "value": 195
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "owner (last)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 122
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "country (last)"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 86
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "host"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 127
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "port"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 67
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "provider"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 317
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "country"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 88
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "revision"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 103
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "owner"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 88
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "kind"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 62
               }
             ]
           }
@@ -696,6 +804,12 @@
                 ],
                 "operation": "aggregate"
               },
+              "country": {
+                "aggregations": [
+                  "last"
+                ],
+                "operation": "aggregate"
+              },
               "host": {
                 "aggregations": [
                   "last"
@@ -721,6 +835,12 @@
                 "operation": "aggregate"
               },
               "port": {
+                "aggregations": [
+                  "last"
+                ],
+                "operation": "aggregate"
+              },
+              "provider": {
                 "aggregations": [
                   "last"
                 ],
@@ -761,19 +881,33 @@
             },
             "indexByName": {
               "Time (last)": 2,
-              "Value (last)": 10,
+              "Value (last)": 12,
+              "country (last)": 10,
               "host (last)": 3,
               "kind (last)": 0,
               "os (last)": 8,
               "owner (last)": 9,
               "port (last)": 4,
+              "provider (last)": 11,
               "publicKey": 1,
               "revision (last)": 6,
               "vendor (last)": 7,
               "version (last)": 5
             },
             "renameByName": {
-              "Value (last)": "status"
+              "Time (last)": "",
+              "Value (last)": "status",
+              "country (last)": "country",
+              "host (last)": "host",
+              "kind (last)": "kind",
+              "os (last)": "os",
+              "owner (last)": "owner",
+              "port (last)": "port",
+              "provider (last)": "provider",
+              "publicKey": "",
+              "revision (last)": "revision",
+              "vendor (last)": "vendor",
+              "version (last)": "version"
             }
           }
         }
@@ -975,7 +1109,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum without(__name__, Time, instance, job, networkId) (aemon_peer_status{networkId=\"$networkId\", lat != \"0\", kind=\"seed\"})",
+          "expr": "sum without(__name__, Time, instance, job, country, networkId) (aemon_peer_status{networkId=\"$networkId\", lat != \"0\", kind=\"seed\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -990,7 +1124,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum without(__name__, Time, instance, job, networkId) (aemon_peer_status{networkId=\"$networkId\", lat!=\"0\", kind!=\"seed\"})",
+          "expr": "sum without(__name__, Time, instance, job, country, networkId) (aemon_peer_status{networkId=\"$networkId\", lat!=\"0\", kind!=\"seed\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1124,6 +1258,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Peers",
   "uid": "I1jhkCL4k",
-  "version": 11,
+  "version": 12,
   "weekStart": ""
 }
