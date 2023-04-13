@@ -420,6 +420,7 @@
         "type": "prometheus",
         "uid": "f1TL-3BVz"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -443,11 +444,21 @@
         "y": 9
       },
       "id": 23,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Peers Dashboard",
+          "url": "./d/I1jhkCL4k/aeternity-p2p-monitor-peers?${networkId:queryparam}&${__url_time_range}"
+        }
+      ],
       "options": {
         "legend": {
           "displayMode": "table",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
         },
         "pieType": "pie",
         "reduceOptions": {
@@ -470,7 +481,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(aemon_peer_info{networkId=\"$networkId\"}) by (version)",
+          "expr": "topk(7, count(aemon_peer_info{networkId=\"$networkId\"}) by (version))",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -513,7 +524,10 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
         },
         "pieType": "pie",
         "reduceOptions": {
@@ -786,6 +800,13 @@
         "y": 18
       },
       "id": 12,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Messages Dashboard",
+          "url": "./d/bwcGWCYVz/aeternity-p2p-monitor-messages?${networkId:queryparam}&${__url_time_range}"
+        }
+      ],
       "options": {
         "legend": {
           "calcs": [],
@@ -806,12 +827,12 @@
           },
           "editorMode": "code",
           "expr": "sum(rate(aemon_messages_total{networkId=\"$networkId\", direction=\"received\", type!=\"response\"}[$__interval]))",
-          "legendFormat": "MPS",
+          "legendFormat": "m/sec",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Gossip Messages (per second)",
+      "title": "Gossip Messages",
       "type": "timeseries"
     },
     {
@@ -1190,8 +1211,8 @@
       {
         "current": {
           "selected": false,
-          "text": "ae_uat",
-          "value": "ae_uat"
+          "text": "ae_mainnet",
+          "value": "ae_mainnet"
         },
         "datasource": {
           "type": "prometheus",
@@ -1217,13 +1238,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Aeternity P2P Monitor - Overview",
   "uid": "b3OvP3fVz",
-  "version": 55,
+  "version": 59,
   "weekStart": ""
 }

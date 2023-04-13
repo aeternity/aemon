@@ -112,13 +112,13 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_messages_total{networkId=\"$networkId\", direction=\"sent\"}[$__interval])) by (type)",
+          "expr": "sum(rate(aemon_messages_total{networkId=\"$networkId\", direction=\"sent\"}[$__interval])) by (type)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Sent Messages by Type",
+      "title": "Sent Messages (m/sec)",
       "type": "timeseries"
     },
     {
@@ -206,13 +206,13 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_responses_total{networkId=\"$networkId\", direction=\"received\"}[$__interval])) by (type)",
+          "expr": "sum(rate(aemon_responses_total{networkId=\"$networkId\", direction=\"received\"}[$__interval])) by (type)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Received Responses by Type",
+      "title": "Received Responses (r/sec)",
       "type": "timeseries"
     },
     {
@@ -299,13 +299,13 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_messages_total{networkId=\"$networkId\", direction=\"received\"}[$__interval])) by (type)",
+          "expr": "sum(rate(aemon_messages_total{networkId=\"$networkId\", direction=\"received\", type!=\"response\"}[$__interval])) by (type)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Received Messages by Type",
+      "title": "Gossip Messages (m/sec)",
       "type": "timeseries"
     },
     {
@@ -313,6 +313,7 @@
         "type": "prometheus",
         "uid": "f1TL-3BVz"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -392,13 +393,13 @@
             "uid": "f1TL-3BVz"
           },
           "editorMode": "code",
-          "expr": "sum(increase(aemon_responses_total{networkId=\"$networkId\", direction=\"sent\"}[$__interval])) by (type)",
+          "expr": "sum(rate(aemon_responses_total{networkId=\"$networkId\", direction=\"sent\"}[$__interval])) by (type)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Sent Responses by Type",
+      "title": "Sent Responses (r/sec)",
       "type": "timeseries"
     }
   ],
@@ -411,9 +412,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "ae_uat",
-          "value": "ae_uat"
+          "selected": true,
+          "text": "ae_mainnet",
+          "value": "ae_mainnet"
         },
         "datasource": {
           "type": "prometheus",
@@ -446,6 +447,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Messages",
   "uid": "bwcGWCYVz",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }

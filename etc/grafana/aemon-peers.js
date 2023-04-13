@@ -1090,8 +1090,8 @@
       {
         "current": {
           "selected": true,
-          "text": "ae_uat",
-          "value": "ae_uat"
+          "text": "ae_mainnet",
+          "value": "ae_mainnet"
         },
         "datasource": {
           "type": "prometheus",
@@ -1117,7 +1117,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
