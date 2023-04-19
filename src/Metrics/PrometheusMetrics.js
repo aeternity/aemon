@@ -1,4 +1,4 @@
-import {Counter, Gauge, collectDefaultMetrics, register} from 'prom-client'
+import {Counter, Gauge, Histogram, collectDefaultMetrics, register} from 'prom-client'
 
 export default class PrometheusMetrics {
     constructor(prefix = 'aemon') {
@@ -58,6 +58,12 @@ export default class PrometheusMetrics {
               help: 'Unique network peers seen',
               labelNames: ['networkId']
             }),
+            peer_latency_seconds: new Histogram({
+                name: prefix + '_peer_latency_seconds',
+                help: 'Ping round-trip latency in seconds.',
+                buckets: [0.1, 0.3, 0.5, 1, 2],
+                labelNames: ['networkId', 'publicKey']
+            }),
         }
 
         // collectDefaultMetrics({ prefix })
@@ -77,5 +83,9 @@ export default class PrometheusMetrics {
 
     set(metric, labels = {}, i = 1) {
         this.metrics[metric].set(labels, i)
+    }
+
+    observe(metric, labels = {}, val) {
+        this.metrics[metric].observe(labels, val)
     }
 }

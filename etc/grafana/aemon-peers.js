@@ -214,92 +214,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 12,
+        "w": 6,
         "x": 12,
         "y": 0
-      },
-      "id": 13,
-      "options": {
-        "displayLabels": [],
-        "legend": {
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "values": [
-            "percent"
-          ]
-        },
-        "pieType": "pie",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "9.4.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f1TL-3BVz"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "topk(7, count(aemon_peer_status{networkId=\"$networkId\"}) by (country))",
-          "format": "table",
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "Top Countries",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true
-            },
-            "indexByName": {},
-            "renameByName": {}
-          }
-        }
-      ],
-      "type": "piechart"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f1TL-3BVz"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": []
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 0,
-        "y": 7
       },
       "id": 12,
       "options": {
@@ -364,8 +281,8 @@
       "gridPos": {
         "h": 7,
         "w": 6,
-        "x": 6,
-        "y": 7
+        "x": 18,
+        "y": 0
       },
       "id": 8,
       "options": {
@@ -404,6 +321,89 @@
         }
       ],
       "title": "Operating Systems",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "id": 13,
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "topk(7, count(aemon_peer_status{networkId=\"$networkId\"}) by (country))",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Top Countries",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
       "type": "piechart"
     },
     {
@@ -1223,9 +1223,9 @@
     "list": [
       {
         "current": {
-          "selected": true,
-          "text": "ae_mainnet",
-          "value": "ae_mainnet"
+          "selected": false,
+          "text": "ae_uat",
+          "value": "ae_uat"
         },
         "datasource": {
           "type": "prometheus",
@@ -1258,6 +1258,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Peers",
   "uid": "I1jhkCL4k",
-  "version": 12,
+  "version": 13,
   "weekStart": ""
 }

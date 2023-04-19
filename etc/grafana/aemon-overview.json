@@ -203,12 +203,19 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 3,
         "w": 4,
         "x": 8,
         "y": 1
       },
       "id": 17,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Peers Dashboard",
+          "url": "./d/I1jhkCL4k/aeternity-p2p-monitor-peers?${networkId:queryparam}&${__url_time_range}"
+        }
+      ],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -400,6 +407,77 @@
         }
       ],
       "title": "Max Difficulty",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
+      "description": "Ping latency 95th percentile",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 4
+      },
+      "id": 50,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Messages Dashboard",
+          "url": "./d/bwcGWCYVz/aeternity-p2p-monitor-messages?${networkId:queryparam}&${__url_time_range}"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(aemon_peer_latency_seconds_bucket{networkId=\"$networkId\"}[$__interval])) by (le))",
+          "legendFormat": "unique",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Ping Latency (95th)",
       "type": "stat"
     },
     {
@@ -1153,8 +1231,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1211,8 +1288,8 @@
       {
         "current": {
           "selected": false,
-          "text": "ae_mainnet",
-          "value": "ae_mainnet"
+          "text": "ae_uat",
+          "value": "ae_uat"
         },
         "datasource": {
           "type": "prometheus",
@@ -1238,13 +1315,13 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Aeternity P2P Monitor - Overview",
   "uid": "b3OvP3fVz",
-  "version": 59,
+  "version": 62,
   "weekStart": ""
 }

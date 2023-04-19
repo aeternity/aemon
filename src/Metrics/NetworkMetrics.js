@@ -24,5 +24,11 @@ export default class NetworkMetrics {
         labels.networkId = this.network.networkId
 
         return this.metrics.set(metric, labels, i)
-    }    
+    }
+
+    observe(metric, labels = {}, val) {
+        labels.networkId = this.network.networkId
+
+        return this.metrics.observe(metric, labels, val)
+    }
 }

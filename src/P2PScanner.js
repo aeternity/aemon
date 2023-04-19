@@ -147,6 +147,7 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionPong(client, pong) {
+        const latency = (Date.now() - client.peer.lastPingTime) / 1000
         const cntSharedPeers = pong.peers.length
         console.log(peerToString(client.peer), `pong, peers count: ${cntSharedPeers}, share: ${pong.share}`)
 
@@ -168,9 +169,10 @@ export default class P2PScanner extends EventEmitter {
         this.metrics.set('peer_difficulty', {
             publicKey: client.peer.publicKey,
             genesisHash: pong.genesisHash,
-            // bestHash: pong.bestHash,
             syncAllowed: Number(pong.syncAllowed)
         }, Number(pong.difficulty))
+
+        this.metrics.observe('peer_latency_seconds', {publicKey: client.peer.publicKey}, latency)
 
         client.getInfo()
 

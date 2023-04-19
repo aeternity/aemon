@@ -9,6 +9,7 @@ export default class Peer {
         this.country = ''
         this.owner = 'unknown'
         this.kind = 'peer'
+        this.lastPingTime = 0
     }
 
     static withUrl(address) {

@@ -30,7 +30,8 @@ export default class P2PClient extends EventEmitter {
     }
 
     ping() {
-        this.connection.send(this.createPing())        
+        this.peer.lastPingTime = Date.now()
+        this.connection.send(this.createPing())
     }
 
     getInfo() {

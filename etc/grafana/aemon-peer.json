@@ -211,8 +211,12 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           }
@@ -225,7 +229,7 @@
         "x": 12,
         "y": 1
       },
-      "id": 9,
+      "id": 2,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -235,7 +239,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "/^version$/",
+          "fields": "/^networkId$/",
           "values": false
         },
         "textMode": "auto"
@@ -249,7 +253,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aemon_peer_info{publicKey=\"$publicKey\"}",
+          "expr": "aemon_peer_status{publicKey=\"$publicKey\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -257,7 +261,7 @@
           "refId": "A"
         }
       ],
-      "title": "Version",
+      "title": "Network ID",
       "type": "stat"
     },
     {
@@ -275,8 +279,12 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           }
@@ -289,21 +297,21 @@
         "x": 16,
         "y": 1
       },
-      "id": 10,
+      "id": 3,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "center",
-        "orientation": "horizontal",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "/^revision$/",
+          "fields": "/^genesisHash$/",
           "values": false
         },
         "text": {
-          "valueSize": 22
+          "valueSize": 18
         },
         "textMode": "auto"
       },
@@ -316,7 +324,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aemon_peer_info{publicKey=\"$publicKey\"}",
+          "expr": "aemon_peer_difficulty{publicKey=\"$publicKey\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -324,7 +332,7 @@
           "refId": "A"
         }
       ],
-      "title": "Revision",
+      "title": "Genesis Hash",
       "type": "stat"
     },
     {
@@ -468,6 +476,201 @@
         "type": "prometheus",
         "uid": "f1TL-3BVz"
       },
+      "description": "Ping latency 95th percentile",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 5,
+        "y": 5
+      },
+      "id": 33,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(aemon_peer_latency_seconds_bucket{publicKey=\"$publicKey\"}[$__interval])) by (le))",
+          "legendFormat": "unique",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Ping Latency (95th)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 5
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^version$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "aemon_peer_info{publicKey=\"$publicKey\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Version",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 16,
+        "y": 5
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^revision$/",
+          "values": false
+        },
+        "text": {
+          "valueSize": 22
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "aemon_peer_info{publicKey=\"$publicKey\"}",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Revision",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -492,8 +695,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 2,
-        "x": 12,
+        "w": 3,
+        "x": 19,
         "y": 5
       },
       "id": 12,
@@ -561,7 +764,7 @@
       "gridPos": {
         "h": 4,
         "w": 2,
-        "x": 14,
+        "x": 22,
         "y": 5
       },
       "id": 11,
@@ -611,209 +814,6 @@
       "panels": [],
       "title": "Details",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f1TL-3BVz"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 12,
-        "x": 0,
-        "y": 10
-      },
-      "id": 6,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "value"
-      },
-      "pluginVersion": "9.4.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f1TL-3BVz"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "aemon_peer_difficulty{publicKey=\"$publicKey\"}",
-          "format": "time_series",
-          "instant": false,
-          "legendFormat": "difficulty",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Current Difficulty",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f1TL-3BVz"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "fixed"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 10
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^networkId$/",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.4.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f1TL-3BVz"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "aemon_peer_status{publicKey=\"$publicKey\"}",
-          "format": "table",
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "Network ID",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "f1TL-3BVz"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "fixed"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 16,
-        "y": 10
-      },
-      "id": 3,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^genesisHash$/",
-          "values": false
-        },
-        "text": {
-          "valueSize": 18
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.4.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "f1TL-3BVz"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "aemon_peer_difficulty{publicKey=\"$publicKey\"}",
-          "format": "table",
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "Genesis Hash",
-      "type": "stat"
     },
     {
       "datasource": {
@@ -873,13 +873,15 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 10
       },
       "id": 17,
       "interval": "3m",
       "options": {
         "legend": {
-          "calcs": [],
+          "calcs": [
+            "last"
+          ],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
@@ -976,7 +978,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 10
       },
       "id": 23,
       "interval": "5m",
@@ -1007,6 +1009,93 @@
       ],
       "title": "Node Peers",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "f1TL-3BVz"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 18
+      },
+      "id": 31,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "cellValues": {
+          "unit": "pps"
+        },
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "min": 0,
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Spectral",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "show": true,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": false,
+          "unit": "s"
+        }
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "f1TL-3BVz"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(rate(aemon_peer_latency_seconds_bucket{publicKey=\"$publicKey\"}[$__rate_interval])) by (le)",
+          "format": "heatmap",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Ping Latency",
+      "type": "heatmap"
     },
     {
       "datasource": {
@@ -1058,7 +1147,7 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 26
       },
       "id": 19,
       "options": {
@@ -1244,6 +1333,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Peer",
   "uid": "nAjf9tLVk",
-  "version": 22,
+  "version": 25,
   "weekStart": ""
 }
