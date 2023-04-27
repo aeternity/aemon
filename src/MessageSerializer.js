@@ -10,8 +10,9 @@ import ResponseMessageSerializer from './Serializers/ResponseMessageSerializer.j
 import GetNodeInfoMessageSerializer from './Serializers/GetNodeInfoMessageSerializer.js'
 import NodeInfoMessageSerializer from './Serializers/NodeInfoMessageSerializer.js'
 import FragmentMessageSerializer from './Serializers/FragmentMessageSerializer.js'
-import MicroBlockMessageSerializer from './Serializers/MicroBlockMessageSerializer.js'
 import KeyBlockMessageSerializer from './Serializers/KeyBlockMessageSerializer.js'
+import MicroBlockMessageSerializer from './Serializers/MicroBlockMessageSerializer.js'
+import TransactionsMessageSerializer from './Serializers/TransactionsMessageSerializer.js'
 
 export default class MessageSerializer {
     #serializers = {}
@@ -27,8 +28,9 @@ export default class MessageSerializer {
             [GetNodeInfoMessageSerializer.TAG]: new GetNodeInfoMessageSerializer(encoder),
             [NodeInfoMessageSerializer.TAG]: new NodeInfoMessageSerializer(encoder),
             [FragmentMessageSerializer.TAG]: new FragmentMessageSerializer(),
-            [KeyBlockMessageSerializer.TAG]: new KeyBlockMessageSerializer(encoder, apiEncoder),
-            [MicroBlockMessageSerializer.TAG]: new MicroBlockMessageSerializer(encoder, apiEncoder),
+            [KeyBlockMessageSerializer.TAG]: new KeyBlockMessageSerializer(encoder),
+            [MicroBlockMessageSerializer.TAG]: new MicroBlockMessageSerializer(encoder),
+            [TransactionsMessageSerializer.TAG]: new TransactionsMessageSerializer(encoder),
         }
     }
 

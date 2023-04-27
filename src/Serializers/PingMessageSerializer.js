@@ -15,13 +15,13 @@ export default class PingMessageSerializer {
 
     serialize(message) {
         return [
-            this.encoder.encodeInt(message.vsn),
-            this.encoder.encodeInt(message.port),
-            this.encoder.encodeInt(message.share),
-            this.encoder.encodeBinary(this.apiEncoder.decode(message.genesisHash)),
-            this.encoder.encodeInt(message.difficulty),
-            this.encoder.encodeBinary(this.apiEncoder.decode(message.bestHash)),
-            this.encoder.encodeBool(message.syncAllowed),
+            this.encoder.encodeField('int', message.vsn),
+            this.encoder.encodeField('int', message.port),
+            this.encoder.encodeField('int', message.share),
+            this.encoder.encodeField('binary', this.apiEncoder.decode(message.genesisHash)),
+            this.encoder.encodeField('int', message.difficulty),
+            this.encoder.encodeField('binary', this.apiEncoder.decode(message.bestHash)),
+            this.encoder.encodeField('bool', message.syncAllowed),
             this.serializePeers(message)
         ]
     }
@@ -32,9 +32,9 @@ export default class PingMessageSerializer {
 
         return message.peers.map((peer) => {
             return RLP.encode([
-                encoder.encodeString(peer.host),
-                encoder.encodeInt(peer.port),
-                encoder.encodeBinary(apiEncoder.decode(peer.publicKey)),
+                encoder.encodeField('string', peer.host),
+                encoder.encodeField('int', peer.port),
+                encoder.encodeField('binary', apiEncoder.decode(peer.publicKey)),
             ])
         })
     }
@@ -54,12 +54,12 @@ export default class PingMessageSerializer {
         ] = fieldsData
 
         const fields = {
-            port: Number(this.encoder.decodeInt(port)),
-            share: this.encoder.decodeInt(share),
-            genesisHash: this.apiEncoder.encode('key_block_hash', this.encoder.decodeBinary(genesisHash)),
-            difficulty: this.encoder.decodeInt(difficulty),
-            bestHash: this.apiEncoder.encode('key_block_hash', this.encoder.decodeBinary(bestHash)),
-            syncAllowed: this.encoder.decodeBool(syncAllowed),
+            port: Number(this.encoder.decodeField('int', port)),
+            share: this.encoder.decodeField('int', share),
+            genesisHash: this.apiEncoder.encode('key_block_hash', this.encoder.decodeField('binary', genesisHash)),
+            difficulty: this.encoder.decodeField('int', difficulty),
+            bestHash: this.apiEncoder.encode('key_block_hash', this.encoder.decodeField('binary', bestHash)),
+            syncAllowed: this.encoder.decodeField('bool', syncAllowed),
             peers: peers.map((peer) => {
                 return this.deserializePeer(peer)
             }),
@@ -74,9 +74,9 @@ export default class PingMessageSerializer {
         const [host, port, publicKey] = RLP.decode(buffer)
 
         return new Peer(
-            encoder.decodeString(host),
-            Number(encoder.decodeInt(port)),
-            {pub: apiEncoder.encode('peer_pubkey', encoder.decodeBinary(publicKey))},
+            encoder.decodeField('string', host),
+            Number(encoder.decodeField('int', port)),
+            {pub: apiEncoder.encode('peer_pubkey', encoder.decodeField('binary', publicKey))},
         )
     }
 }

@@ -13,15 +13,15 @@ export default class ResponseMessageSerializer {
     }
 
     serialize(message) {
-        const encodeMessage = this.serializer.encode(message.message)
-        // console.log('SUBMESSAGE', encodeMessage)
+        const encodedMessage = this.serializer.encode(message.message)
+        // console.log('SUBMESSAGE', encodedMessage)
 
         return [
-            this.encoder.encodeInt(message.vsn),
-            this.encoder.encodeBool(message.success),
-            this.encoder.encodeInt(message.messageType),
-            this.encoder.encodeBinary(message.errorReason),
-            RLP.encode(encodeMessage)
+            this.encoder.encodeField('int', message.vsn),
+            this.encoder.encodeField('bool', message.success),
+            this.encoder.encodeField('int', message.messageType),
+            this.encoder.encodeField('binary', message.errorReason),
+            RLP.encode(encodedMessage)
         ]
     }
 
@@ -30,14 +30,14 @@ export default class ResponseMessageSerializer {
         // console.log('FIELDS', fields)
         const [vsn, success, messageType, errorReason, message] = RLP.decode(data)
         // console.log('decoded response:', vsn, success, messageType, errorReason, message)
-        const isSuccessful = this.encoder.decodeBool(success)
-        const messageTag = Number(this.encoder.decodeInt(messageType))
+        const isSuccessful = this.encoder.decodeField('bool', success)
+        const messageTag = Number(this.encoder.decodeField('int', messageType))
 
         // console.log('messageTag:', messageTag)
         return new ResponseMessage(
             isSuccessful,
             messageTag,
-            this.encoder.decodeString(errorReason),
+            this.encoder.decodeField('string', errorReason),
             isSuccessful ? this.serializer.decode(messageTag, message) : null
         )
     }

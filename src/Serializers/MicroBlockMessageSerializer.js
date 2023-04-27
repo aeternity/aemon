@@ -17,8 +17,7 @@ export default class MicroBlockMessageSerializer {
 
     deserialize(data) {
         const [_vsn, blockData, light] = RLP.decode(data)
-        const [_objectTag, _version, headerData, txHashes, pof] = RLP.decode(blockData)
-        const isLight = this.encoder.decodeBool(light)
+        const isLight = this.encoder.decodeField('bool', light)
 
         if (!isLight) {
             throw new Error('Serializer supports only light blocks')
@@ -37,7 +36,8 @@ export default class MicroBlockMessageSerializer {
             signature: ['signature', 64],
         }
 
-        const fields = this.encoder.decode(headerData, struct)
+        const block = this.encoder.decodeObject(blockData)
+        const fields = this.encoder.decode(block.header, struct)
 
         return new MicroBlockMessage(fields)
     }

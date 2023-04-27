@@ -13,14 +13,14 @@ export default class NodeInfoMessageSerializer {
 
     serialize(message) {
         return [
-            this.encoder.encodeInt(message.vsn),
-            this.encoder.encodeString(message.version),
-            this.encoder.encodeString(message.revision),
-            this.encoder.encodeString(message.vendor),
-            this.encoder.encodeString(message.os),
-            this.encoder.encodeString(message.networkId),
-            this.encoder.encodeInt(message.verifiedPeers),
-            this.encoder.encodeInt(message.unverifiedPeers),
+            this.encoder.encodeField('int', message.vsn),
+            this.encoder.encodeField('string', message.version),
+            this.encoder.encodeField('string', message.revision),
+            this.encoder.encodeField('string', message.vendor),
+            this.encoder.encodeField('string', message.os),
+            this.encoder.encodeField('string', message.networkId),
+            this.encoder.encodeField('int', message.verifiedPeers),
+            this.encoder.encodeField('int', message.unverifiedPeers),
         ]
     }
 
@@ -39,14 +39,13 @@ export default class NodeInfoMessageSerializer {
         ] = fieldsData
 
         const fields = {
-            version: this.encoder.decodeString(version),
-            revision: this.encoder.decodeString(revision),
-            vendor: this.encoder.decodeString(vendor),
-            os: this.encoder.decodeString(os),
-            networkId: this.encoder.decodeString(networkId),
-            verifiedPeers: Number(this.encoder.decodeInt(verifiedPeers)),
-            unverifiedPeers: Number(this.encoder.decodeInt(unverifiedPeers)),
-
+            version: this.encoder.decodeField('string', version),
+            revision: this.encoder.decodeField('string', revision),
+            vendor: this.encoder.decodeField('string', vendor),
+            os: this.encoder.decodeField('string', os),
+            networkId: this.encoder.decodeField('string', networkId),
+            verifiedPeers: Number(this.encoder.decodeField('int', verifiedPeers)),
+            unverifiedPeers: Number(this.encoder.decodeField('int', unverifiedPeers)),
         }
 
         return new NodeInfoMessage(fields)

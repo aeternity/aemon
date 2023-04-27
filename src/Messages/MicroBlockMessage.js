@@ -1,4 +1,3 @@
-import RLP from 'rlp'
 import Constants from './Constants.js'
 
 export default class MicroBlockMessage {
