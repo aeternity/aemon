@@ -6,6 +6,10 @@ import P2PServer from '../src/P2PServer.js'
 import P2PClient from '../src/P2PClient.js'
 import Peer from '../src/Peer.js'
 
+const stub = new class {
+    updatePeerLocation(peer, cb) { cb() }
+}
+
 test('P2P client/server', t => {
     const clientKeypair = {
         pub: 'pp_2Kwvz5XJujZDPtE5WtuwSy8Ue8W6STq9qHhmrXABevLBgCcswY',
@@ -22,7 +26,7 @@ test('P2P client/server', t => {
     const serverPeer = new Peer('localhost', 30015, serverKeypair)
     const client = new P2PClient(network, clientPeer, serverPeer)
     const server = new P2PServer(network, serverPeer)
-    
+
     return new Promise((resolve, reject) => {
         client.connection.on('connect', () => {
             client.ping()

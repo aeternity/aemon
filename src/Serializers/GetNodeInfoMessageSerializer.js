@@ -16,7 +16,7 @@ export default class GetNodeInfoMessageSerializer {
 
     serialize(message) {
         return [
-            ...this.encoder.encodeInt(message.vsn)
+            ...this.encoder.encodeField('int', message.vsn)
         ]
     }
 }

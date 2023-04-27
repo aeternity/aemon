@@ -4,13 +4,14 @@ import P2PServer from './P2PServer.js'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
 import InMemoryMetrics from './Metrics/InMemoryMetrics.js'
 import PrometheusMetrics from './Metrics/PrometheusMetrics.js'
+import PeerLocationProvider from './Providers/PeerLocationProvider.js'
 
 const peerToString = (peer) => {
     return `${peer.publicKey}@${peer.host}:${peer.port}`
 }
 
 export default class P2PScanner extends EventEmitter {
-    constructor(network, localPeer, metrics) {
+    constructor(network, localPeer, metrics, locationProvider = null) {
         super()
 
         this.network = network
@@ -18,6 +19,11 @@ export default class P2PScanner extends EventEmitter {
         this.metrics = metrics
         this.connections = new Map()
         this.server = new P2PServer(network, localPeer)
+
+        this.locationProvider = locationProvider
+        if (locationProvider === null) {
+            this.locationProvider = new PeerLocationProvider()
+        }
     }
 
     scan(serverPort, serverHost) {
@@ -25,6 +31,7 @@ export default class P2PScanner extends EventEmitter {
         this.metrics.set('network_peers', {}, this.network.peers.length)
 
         this.network.on('peer.new', this.onNetworkPeer.bind(this))
+        this.network.peers.map(this.onNetworkPeer.bind(this)) // connect to seeds
 
         const listenPort = serverPort || this.localPeer.port
         const listenHost = serverHost || this.localPeer.host
@@ -92,7 +99,9 @@ export default class P2PScanner extends EventEmitter {
         }
 
         this.metrics.inc('network_peers')
-        this.connectToPeer(peer)
+        this.locationProvider.updatePeerLocation(peer, () => {
+            this.connectToPeer(peer)
+        })
     }
 
     onConnectionConnect(client) {

@@ -77,4 +77,8 @@ export default class InMemoryMetrics {
             this.data[metric][key][val] = i
         }
     }
+
+    observe(metric, labels = {}, val) {
+        this.set(metric, labels, val)
+    }
 }

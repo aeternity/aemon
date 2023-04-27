@@ -1,7 +1,6 @@
-import geoip from 'geoip-lite'
-import IPToASN from 'ip-to-asn'
 import EventEmitter from 'events'
 import Peer from './Peer.js'
+import PeerLocationProvider from './Providers/PeerLocationProvider.js'
 
 export default class P2PNetwork extends EventEmitter {
     #peers = new Map()
@@ -13,7 +12,6 @@ export default class P2PNetwork extends EventEmitter {
         this.genesisHash = genesisHash
         this.bestHash = genesisHash
         this.difficulty = 0
-        this.asnClient = new IPToASN()
 
         peers.map(peer => this.addPeer(Peer.withUrl(peer)))
 
@@ -21,7 +19,6 @@ export default class P2PNetwork extends EventEmitter {
             peer.owner = 'aeternity'
             peer.kind = 'seed'
         })
-
     }
 
     get peers() {
@@ -29,17 +26,15 @@ export default class P2PNetwork extends EventEmitter {
     }
 
     addPeer(peer) {
-        if (!this.#peers.has(peer.publicKey)) {
-            peer.ref = 'NETWORK'
-            this.#peers.set(peer.publicKey, peer)
-            this.updatePeerLocation(peer, () => {
-                this.emit('peer.new', peer)
-            })
-
-            return peer
+        if (this.#peers.has(peer.publicKey)) {
+            return this.#peers.get(peer.publicKey)
         }
 
-        return this.#peers.get(peer.publicKey)
+        peer.ref = 'NETWORK'
+        this.#peers.set(peer.publicKey, peer)
+        this.emit('peer.new', peer)
+
+        return peer
     }
 
     updatePeers(source, peers = []) {
@@ -50,32 +45,6 @@ export default class P2PNetwork extends EventEmitter {
         networkSource.addPeers(networkPeers)
 
         this.emit('peer.update', source)
-    }
-
-    updatePeerLocation(peer, cb) {
-        const geo = geoip.lookup(peer.host)
-        // console.log('GEO', geo)
-        if (geo !== null) {
-            peer.lat = Number(geo.ll[0])
-            peer.lon = Number(geo.ll[1])
-            peer.country = geo.country
-        }
-
-        this.asnClient.query([peer.host], function (err, results) {
-            if (err) {
-                console.error(err)
-                return cb()
-            }
-
-
-            const info = results[peer.host]
-            peer.provider = `${info.description} (AS${info.ASN})`
-            if (info.ASN === 'NA') {
-                peer.provider = 'N/A'
-            }
-
-            cb()
-        })
     }
 
     updatePeerInfo(peer, info) {
