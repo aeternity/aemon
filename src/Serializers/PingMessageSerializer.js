@@ -3,80 +3,53 @@ import Constants from '../Messages/Constants.js'
 import PingMessage from '../Messages/PingMessage.js'
 import Peer from '../Peer.js'
 
+const STRUCT = {
+    vsn: 'int',
+    port: 'int',
+    share: 'int',
+    genesisHash: 'key_block_hash',
+    difficulty: 'int',
+    bestHash: 'key_block_hash',
+    syncAllowed: 'bool',
+}
+
+const PEER_STRUCT = {
+    host: 'string',
+    port: 'int',
+    publicKey: 'peer_pubkey',
+}
+
 export default class PingMessageSerializer {
     static get TAG() {
         return Constants.MSG_PING
     }
 
-    constructor(encoder, apiEncoder) {
+    constructor(encoder) {
         this.encoder = encoder
-        this.apiEncoder = apiEncoder
     }
 
     serialize(message) {
+        const peers = message.peers.map(peer => RLP.encode(this.encoder.encodeFields(peer, PEER_STRUCT)))
+
         return [
-            this.encoder.encodeField('int', message.vsn),
-            this.encoder.encodeField('int', message.port),
-            this.encoder.encodeField('int', message.share),
-            this.encoder.encodeField('binary', this.apiEncoder.decode(message.genesisHash)),
-            this.encoder.encodeField('int', message.difficulty),
-            this.encoder.encodeField('binary', this.apiEncoder.decode(message.bestHash)),
-            this.encoder.encodeField('bool', message.syncAllowed),
-            this.serializePeers(message)
+            ...this.encoder.encodeFields(message, STRUCT),
+            peers
         ]
     }
 
-    serializePeers(message) {
-        const encoder = this.encoder
-        const apiEncoder = this.apiEncoder
-
-        return message.peers.map((peer) => {
-            return RLP.encode([
-                encoder.encodeField('string', peer.host),
-                encoder.encodeField('int', peer.port),
-                encoder.encodeField('binary', apiEncoder.decode(peer.publicKey)),
-            ])
-        })
-    }
-
     deserialize(data) {
-        const fieldsData = RLP.decode(data)
-        // console.log('PING fields data', fieldsData)
-        const [
-            vsn,
-            port,
-            share,
-            genesisHash,
-            difficulty,
-            bestHash,
-            syncAllowed,
-            peers
-        ] = fieldsData
-
-        const fields = {
-            port: Number(this.encoder.decodeField('int', port)),
-            share: this.encoder.decodeField('int', share),
-            genesisHash: this.apiEncoder.encode('key_block_hash', this.encoder.decodeField('binary', genesisHash)),
-            difficulty: this.encoder.decodeField('int', difficulty),
-            bestHash: this.apiEncoder.encode('key_block_hash', this.encoder.decodeField('binary', bestHash)),
-            syncAllowed: this.encoder.decodeField('bool', syncAllowed),
-            peers: peers.map((peer) => {
-                return this.deserializePeer(peer)
-            }),
-        }
+        const objData = RLP.decode(data)
+        // // struct based on version
+        // const vsn = this.encoder.decodeField('int', objData[0])
+        const fields = this.encoder.decodeFields(objData, STRUCT)
+        fields.peers = objData[7].map(peer => this.deserializePeer(peer))
 
         return new PingMessage(fields)
     }
 
-    deserializePeer(buffer) {
-        const encoder = this.encoder
-        const apiEncoder = this.apiEncoder
-        const [host, port, publicKey] = RLP.decode(buffer)
+    deserializePeer(data) {
+        const {host, port, publicKey: pub} = this.encoder.decodeFields(RLP.decode(data), PEER_STRUCT)
 
-        return new Peer(
-            encoder.decodeField('string', host),
-            Number(encoder.decodeField('int', port)),
-            {pub: apiEncoder.encode('peer_pubkey', encoder.decodeField('binary', publicKey))},
-        )
+        return new Peer(host, port, {pub})
     }
 }

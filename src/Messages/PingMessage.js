@@ -20,7 +20,7 @@ export default class PingMessage {
     }
 
     get port() {
-        return this.fields.port
+        return Number(this.fields.port)
     }
 
     get share() {

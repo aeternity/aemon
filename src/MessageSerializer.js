@@ -23,7 +23,7 @@ export default class MessageSerializer {
 
         this.#serializers = {
             [CloseMessageSerializer.TAG]: new CloseMessageSerializer(encoder),
-            [PingMessageSerializer.TAG]: new PingMessageSerializer(encoder, apiEncoder),
+            [PingMessageSerializer.TAG]: new PingMessageSerializer(encoder),
             [ResponseMessageSerializer.TAG]: new ResponseMessageSerializer(encoder, this),
             [GetNodeInfoMessageSerializer.TAG]: new GetNodeInfoMessageSerializer(encoder),
             [NodeInfoMessageSerializer.TAG]: new NodeInfoMessageSerializer(encoder),

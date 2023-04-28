@@ -40,10 +40,10 @@ export default class NodeInfoMessage {
     }
 
     get verifiedPeers() {
-        return this.fields.verifiedPeers
+        return Number(this.fields.verifiedPeers)
     }
 
     get unverifiedPeers() {
-        return this.fields.unverifiedPeers
+        return Number(this.fields.unverifiedPeers)
     }
 }

@@ -27,7 +27,7 @@ test('Deserialize Close message', t => {
 
 test('Serialize Ping message', t => {
     const ping = new PingMessage({
-        port: 3015,
+        port: 3015n,
         share: GOSSIPED_PEERS_COUNT,
         genesisHash: 'kh_pbtwgLrNu23k9PA6XCZnUbtsvEFeQGgavY4FS2do3QP8kcp2z',
         difficulty: 4871850411250n,
@@ -54,14 +54,15 @@ test('Serialize Ping message', t => {
 
 test('Deserialize Ping message', t => {
     const ping = new PingMessage({
-        port: 3015,
+        vsn: 1n,
+        port: 3015n,
         share: GOSSIPED_PEERS_COUNT,
         genesisHash: 'kh_pbtwgLrNu23k9PA6XCZnUbtsvEFeQGgavY4FS2do3QP8kcp2z',
         difficulty: 4871850411250n,
         bestHash: 'kh_2NBbbtk1fqAxrSQcqHRZbEef32fGaR3p7z2DgcSfk1h9sAKUz',
         syncAllowed: false,
         peers: [
-            new Peer('127.1.2.3', 3015, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
+            new Peer('127.1.2.3', 3015n, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
         ]
     })
 
@@ -83,14 +84,14 @@ test('Deserialize Ping message', t => {
 
 test('Serialize Response message', t => {
     const ping = new PingMessage({
-        port: 3015,
+        port: 3015n,
         share: GOSSIPED_PEERS_COUNT,
         genesisHash: 'kh_pbtwgLrNu23k9PA6XCZnUbtsvEFeQGgavY4FS2do3QP8kcp2z',
         difficulty: 4871850411250n,
         bestHash: 'kh_2NBbbtk1fqAxrSQcqHRZbEef32fGaR3p7z2DgcSfk1h9sAKUz',
         syncAllowed: false,
         peers: [
-            new Peer('127.1.2.3', 3015, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
+            new Peer('127.1.2.3', 3015n, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
         ]
     })
     const response = new ResponseMessage(true, ping.tag, '', ping)
@@ -114,14 +115,15 @@ test('Serialize Response message', t => {
 
 test('Deserialize Response message', t => {
     const ping = new PingMessage({
-        port: 3015,
+        vsn: 1n,
+        port: 3015n,
         share: GOSSIPED_PEERS_COUNT,
         genesisHash: 'kh_pbtwgLrNu23k9PA6XCZnUbtsvEFeQGgavY4FS2do3QP8kcp2z',
         difficulty: 4871850411250n,
         bestHash: 'kh_2NBbbtk1fqAxrSQcqHRZbEef32fGaR3p7z2DgcSfk1h9sAKUz',
         syncAllowed: false,
         peers: [
-            new Peer('127.1.2.3', 3015, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
+            new Peer('127.1.2.3', 3015n, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
         ]
     })
     const response = new ResponseMessage(true, ping.tag, '', ping)
@@ -170,13 +172,14 @@ test('Serialize Info message', t => {
 
 test('Deserialize Info message', t => {
     const info = new NodeInfoMessage({
+        vsn: 1n,
         version: '6.5.2',
         revision: 'deadbeef',
         vendor: 'aeternity',
         os: 'linux',
         networkId: 'ae_test',
-        verifiedPeers: 5,
-        unverifiedPeers: 27,
+        verifiedPeers: 5n,
+        unverifiedPeers: 27n,
     })
 
     t.deepEqual(

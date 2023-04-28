@@ -19,6 +19,7 @@ export default class Encoder {
             block_tx_hash: (value) => this.apiEncoder.encode('block_tx_hash', value),
             block_state_hash: (value) => this.apiEncoder.encode('block_state_hash', value),
             signature: (value) => this.apiEncoder.encode('signature', value),
+            peer_pubkey: (value) => this.apiEncoder.encode('peer_pubkey', value),
             account_pubkey: (value) => this.apiEncoder.encode('account_pubkey', value),
             bytearray: (value) => this.apiEncoder.encode('bytearray', value),
             object: (value) => this.decodeObject(value),
@@ -31,6 +32,7 @@ export default class Encoder {
             block_tx_hash: (value) => this.apiEncoder.decode(value),
             block_state_hash: (value) => this.apiEncoder.decode(value),
             signature: (value) => this.apiEncoder.decode(value),
+            peer_pubkey: (value) => this.apiEncoder.decode(value),
             account_pubkey: (value) => this.apiEncoder.decode(value),
             bytearray: (value) => this.apiEncoder.decode(value),
         }
@@ -81,6 +83,20 @@ export default class Encoder {
         }
 
         return this.primEncoder.decode(type, value)
+    }
+
+    encodeFields(data, fields) {
+        const chunks = []
+
+        for (const field in fields) {
+            const type = fields[field]
+            const encoded = this.encodeField(type, data[field])
+            // console.log('ENCODE FIELD:', type, data[field], encoded)
+
+            chunks.push(encoded)
+        }
+
+        return chunks
     }
 
     decodeFields(data, fields) {
