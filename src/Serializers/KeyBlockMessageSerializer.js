@@ -16,6 +16,8 @@ export default class KeyBlockMessageSerializer {
     }
 
     deserialize(data) {
+        const [_vsn, headerData] = RLP.decode(data)
+
         const struct = {
             version: ['uint_32', 4],
             flags: ['uint_32', 4],
@@ -33,7 +35,7 @@ export default class KeyBlockMessageSerializer {
             info: ['uint_32', 4]
         }
 
-        const fields = this.encoder.decode(data, struct)
+        const fields = this.encoder.decode(headerData, struct)
 
         return new KeyBlockMessage(fields)
     }

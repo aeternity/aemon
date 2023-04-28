@@ -85,6 +85,8 @@ export default class P2PScanner extends EventEmitter {
         client.connection.on('ping', connectionHandler(this.onConnectionPing))
         client.connection.on('pong', connectionHandler(this.onConnectionPong))
         client.connection.on('node_info', connectionHandler(this.onConnectionNodeInfo))
+        client.connection.on('key_block', connectionHandler(this.onConnectionKeyBlock))
+        client.connection.on('micro_block', connectionHandler(this.onConnectionMicroBlock))
 
         this.emit('connection', client.connection)
 
@@ -212,5 +214,27 @@ export default class P2PScanner extends EventEmitter {
             publicKey: peer.publicKey,
             kind: 'unverified',
         }, info.unverifiedPeers)
+    }
+
+    onConnectionKeyBlock(client, keyBlock) {
+        const latency = (Date.now() - Number(keyBlock.time)) / 1000
+
+        if (keyBlock.height > this.network.height) {
+            this.network.height = keyBlock.height
+        }
+
+        this.metrics.observe('block_latency_seconds', {'type': 'key'}, latency)
+
+        this.metrics.set('miner_version', {
+            beneficiary: keyBlock.beneficiary,
+        }, Number(keyBlock.info))
+
+        this.metrics.set('network_height', {}, Number(this.network.height))
+    }
+
+    onConnectionMicroBlock(client, microBlock) {
+        const latency = (Date.now() - Number(microBlock.time)) / 1000
+
+        this.metrics.observe('block_latency_seconds', {'type': 'micro'}, latency)
     }
 }

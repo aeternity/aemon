@@ -25,4 +25,16 @@ export default class KeyBlockMessage {
     get height() {
         return this.fields.height
     }
+
+    get beneficiary() {
+        return this.fields.beneficiary
+    }
+
+    get info() {
+        return this.fields.info
+    }
+
+    get time() {
+        return this.fields.time
+    }
 }

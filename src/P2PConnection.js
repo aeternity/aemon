@@ -83,8 +83,6 @@ export default class P2PConnection extends EventEmitter {
     }
 
     onData(message) {
-        // console.log('RECV:')
-        // console.dir(message, {depth: null})
         this.emit('received', message)
 
         if (message instanceof ResponseMessage) {
@@ -96,9 +94,10 @@ export default class P2PConnection extends EventEmitter {
             this.stream.end()
         }
 
-        if (message instanceof PingMessage) {
-            this.emit('ping', message)
-        }
+        // console.log('RECV:')
+        // console.dir(message, {depth: null})
+
+        this.emit(message.name, message)
     }
 
     handleResponse(response) {

@@ -48,6 +48,11 @@ export default class PrometheusMetrics {
                 help: 'Number of reported peers for a given peer',
                 labelNames: ['networkId', 'publicKey', 'kind']
             }),
+            network_height: new Gauge({
+              name: prefix + '_network_height',
+              help: 'Current (max) network height gossiped in the network.',
+              labelNames: ['networkId']
+            }),
             network_difficulty: new Gauge({
               name: prefix + '_network_difficulty',
               help: 'Network difficulty',
@@ -63,6 +68,17 @@ export default class PrometheusMetrics {
                 help: 'Ping round-trip latency in seconds.',
                 buckets: [0.1, 0.3, 0.5, 1, 2],
                 labelNames: ['networkId', 'publicKey']
+            }),
+            block_latency_seconds: new Histogram({
+                name: prefix + '_block_latency_seconds',
+                help: 'Blocks network propagation latency.',
+                buckets: [0.1, 0.3, 0.5, 1, 2],
+                labelNames: ['networkId', 'type']
+            }),
+            miner_version: new Gauge({
+                name: prefix + '_miner_version',
+                help: 'Miner node version gossiped in key blocks info field.',
+                labelNames: ['networkId', 'beneficiary']
             }),
         }
 

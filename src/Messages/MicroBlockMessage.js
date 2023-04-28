@@ -25,4 +25,8 @@ export default class MicroBlockMessage {
     get height() {
         return this.fields.height
     }
+
+    get time() {
+        return this.fields.time
+    }
 }

@@ -2,7 +2,7 @@ export default class Peer {
     #peers = new Set()
     constructor(host, port, keypair = {}) {
         this.host = host
-        this.port = port
+        this.port = Number(port)
         this.keypair = keypair
         this.lat = 0
         this.lon = 0
