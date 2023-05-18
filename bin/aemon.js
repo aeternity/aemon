@@ -52,6 +52,11 @@ const argv = yargs(process.argv.slice(2))
         description: 'Noise protocol private key',
         require: true,
     })
+    .option('metrics-port', {
+        type: 'int',
+        description: 'Prometheus exporter port',
+        default: 3000,
+    })
     .command(ScanCommand)
     .help()
     .parse()

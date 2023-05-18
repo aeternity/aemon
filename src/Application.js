@@ -15,6 +15,7 @@ export default class Application {
         this.scanner = new P2PScanner(this.network, peer, this.metrics)
         this.sourceAddress = argv.sourceAddress
         this.sourcePort = argv.sourcePort
+        this.metricsPort = argv.metricsPort
     }
 
     start() {
@@ -24,7 +25,7 @@ export default class Application {
         this.metricsServer = http.createServer(async (req, res) => {
             res.write(await this.metrics.dump())
             res.end()
-        }).listen((3000), () => {
+        }).listen((this.metricsPort), () => {
             console.log("Metrics Server is Running on port 3000")
         })
     }
