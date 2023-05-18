@@ -12,6 +12,7 @@ export default class P2PNetwork extends EventEmitter {
         this.genesisHash = genesisHash
         this.bestHash = genesisHash
         this.difficulty = 0
+        this.height = 0
 
         peers.map(peer => this.addPeer(Peer.withUrl(peer)))
 

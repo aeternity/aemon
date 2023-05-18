@@ -221,6 +221,7 @@ export default class P2PScanner extends EventEmitter {
 
         if (keyBlock.height > this.network.height) {
             this.network.height = keyBlock.height
+            this.metrics.set('network_height', {}, Number(this.network.height))
         }
 
         this.metrics.observe('block_latency_seconds', {'type': 'key'}, latency)
@@ -228,8 +229,6 @@ export default class P2PScanner extends EventEmitter {
         this.metrics.set('miner_version', {
             beneficiary: keyBlock.beneficiary,
         }, Number(keyBlock.info))
-
-        this.metrics.set('network_height', {}, Number(this.network.height))
     }
 
     onConnectionMicroBlock(client, microBlock) {
