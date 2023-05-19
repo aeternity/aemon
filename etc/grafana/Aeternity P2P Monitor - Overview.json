@@ -1,4 +1,47 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.4.7"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -24,7 +67,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -44,7 +87,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -94,7 +137,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -112,7 +155,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -162,7 +205,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -180,7 +223,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Total unique peers seen in the network in MSG_PING messages.",
       "fieldConfig": {
@@ -235,7 +278,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "aemon_network_peers{networkId=\"$networkId\"}",
@@ -250,7 +293,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Average node peers as reported by MSG_NODE_INFO message.",
       "fieldConfig": {
@@ -334,7 +377,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg(aemon_node_peers{networkId=\"$networkId\"}) by (kind)",
@@ -349,7 +392,71 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "Observed in gossip network in keyblocks",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 3
+      },
+      "id": 51,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "aemon_network_height{networkId=\"$networkId\"}",
+          "legendFormat": "{{networkId}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Max Height",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -373,8 +480,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
-        "x": 0,
+        "w": 4,
+        "x": 4,
         "y": 3
       },
       "id": 42,
@@ -397,7 +504,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "aemon_network_difficulty{networkId=\"$networkId\"}",
@@ -412,7 +519,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Ping latency 95th percentile",
       "fieldConfig": {
@@ -468,7 +575,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "histogram_quantile(0.95, sum(rate(aemon_peer_latency_seconds_bucket{networkId=\"$networkId\"}[$__interval])) by (le))",
@@ -496,7 +603,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -555,7 +662,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -573,7 +680,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -625,7 +732,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -670,7 +777,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -718,7 +825,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "avg(avg_over_time(aemon_peer_difficulty{networkId=\"$networkId\"}[$__interval]))",
@@ -733,7 +840,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -787,7 +894,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "max(stddev_over_time(aemon_peer_difficulty{networkId=\"$networkId\"}[$__interval]))",
@@ -816,7 +923,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -901,7 +1008,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(rate(aemon_messages_total{networkId=\"$networkId\", direction=\"received\", type!=\"response\"}[$__interval]))",
@@ -916,7 +1023,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -968,7 +1075,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -999,7 +1106,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "",
       "fieldConfig": {
@@ -1078,7 +1185,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(increase(aemon_connections_total{networkId=\"$networkId\"}[$__interval])) by (status)",
@@ -1093,7 +1200,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1171,7 +1278,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -1188,7 +1295,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "f1TL-3BVz"
+        "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1265,7 +1372,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "f1TL-3BVz"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
           "expr": "sum(increase(aemon_connection_errors_total{networkId=\"$networkId\"}[20s])) by (code)",
@@ -1286,14 +1393,10 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "ae_uat",
-          "value": "ae_uat"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
-          "uid": "f1TL-3BVz"
+          "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(networkId)",
         "hide": 0,
@@ -1315,13 +1418,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Aeternity P2P Monitor - Overview",
   "uid": "b3OvP3fVz",
-  "version": 62,
+  "version": 65,
   "weekStart": ""
 }
