@@ -32,6 +32,10 @@ export default class P2PConnection extends EventEmitter {
         this.stream = this.transportFactory.create(this.socket, remoteKey)
         this.stream.on('data', this.onData.bind(this))
         this.stream.on('handshake', this.onHandshake.bind(this))
+        this.stream.on('error', (error) => {
+            this.stream.end()
+            this.emit('error', error)
+        })
     }
 
     connect(port, host) {

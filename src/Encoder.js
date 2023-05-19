@@ -124,7 +124,8 @@ export default class Encoder {
         }
 
         if (!Structures.hasOwnProperty(type)) {
-            throw new Error('Unsupported type: ' + type)
+            return new ChainObject(type.toLowerCase(), {})
+            // throw new Error('Unsupported type: ' + type)
         }
 
         const fields = this.decodeFields(rest, Structures[type])

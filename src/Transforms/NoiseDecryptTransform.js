@@ -12,16 +12,20 @@ export default class NoiseDecryptTransform extends stream.Transform {
     }
 
     _transform(chunk, encoding, callback) {
-        if (this.#session.isHandshaking()) {
-            this.handshake(chunk)
-        } else {
-            this.push(this.#session.decrypt(chunk))
-        }
+        try {
+            if (this.#session.isHandshaking()) {
+                this.handshake(chunk)
+            } else {
+                this.push(this.#session.decrypt(chunk))
+            }
 
-        callback()
+            callback()
+        } catch (e) {
+            callback(new Error('Handshake failed', {cause: e}))
+        }
     }
 
-    handshake(data) {
+    handshake(data, callback) {
         const handshakeData = this.#session.handshake(data)
         if (handshakeData !== null) {
             this.emit('handshakeData', handshakeData)

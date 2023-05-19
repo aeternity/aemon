@@ -54,6 +54,9 @@ export default class P2PNoiseTransportFactory {
             readable: messageDeserializer
         })
 
+        // don't exit on decryption error but post it up
+        noiseDecrypt.on('error', data => duplex.emit('error', data))
+
         // manually handle handshake writes
         noiseDecrypt.on('handshakeData', data => frameEncoder.write(data))
         //relay to the duplex stream
