@@ -3,7 +3,9 @@
 import yargs from 'yargs'
 import ScanCommand from '../src/Commands/ScanCommand.js'
 
-const argv = yargs(process.argv.slice(2))
+process.on('SIGINT', () => process.exit())
+
+yargs(process.argv.slice(2))
     .env('AEMON')
     .config('config')
     .default('config', './etc/aemon/default.json')
@@ -60,5 +62,3 @@ const argv = yargs(process.argv.slice(2))
     .command(ScanCommand)
     .help()
     .parse()
-
-export default argv
