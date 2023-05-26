@@ -1,6 +1,6 @@
 import stream from 'stream'
 import {FateApiEncoder} from '@aeternity/aepp-calldata'
-import NoiseSession from './NoiseSession.js'
+import NoiseWasmSession from './NoiseWasmSession.js'
 import EncodeFrameTransform from './Transforms/EncodeFrameTransform.js'
 import DecodeFrameTransform from './Transforms/DecodeFrameTransform.js'
 import NoiseEncryptTransform from './Transforms/NoiseEncryptTransform.js'
@@ -10,8 +10,8 @@ import MessageDeserializeTransform from './Transforms/MessageDeserializeTransfor
 
 const P2P_PROTOCOL_VSN = 1n
 const ROLES = {
-    'initiator': NoiseSession.ROLE_INITIATOR,
-    'responder': NoiseSession.ROLE_RESPONDER,
+    'initiator': NoiseWasmSession.ROLE_INITIATOR,
+    'responder': NoiseWasmSession.ROLE_RESPONDER,
 }
 
 export default class P2PNoiseTransportFactory {
@@ -33,7 +33,7 @@ export default class P2PNoiseTransportFactory {
             remoteKey = this.apiEncoder.decode(remotePeerKey)
         }
 
-        const noiseSession = new NoiseSession(noiseRole, prologue, localKey, remoteKey)
+        const noiseSession = new NoiseWasmSession(noiseRole, prologue, localKey, remoteKey)
         const transport = this.#createStream(socket, noiseSession)
 
         return transport

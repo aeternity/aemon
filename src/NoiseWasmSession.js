@@ -11,7 +11,7 @@ const createNoisePromise = () => {
 
 const noise = await createNoisePromise()
 
-export default class NoiseSession {
+export default class NoiseWasmSession {
 
     static ROLE_INITIATOR = Symbol('INITIATOR')
     static ROLE_RESPONDER = Symbol('RESPONDER')
@@ -38,7 +38,7 @@ export default class NoiseSession {
         //     console.log('Noise session:', role, prologue, localKey.buffer)
         // }
 
-        this.isInitiator = (role === NoiseSession.ROLE_INITIATOR)
+        this.isInitiator = (role === NoiseWasmSession.ROLE_INITIATOR)
         this.#handshake = noise.HandshakeState(PROTOCOL_NAME, this.#noiseRole(role))
         this.#handshake.Initialize(prologue, localKey, remoteKey)
     }
@@ -131,11 +131,11 @@ export default class NoiseSession {
     }
 
     #noiseRole(role) {
-        if (role === NoiseSession.ROLE_INITIATOR) {
+        if (role === NoiseWasmSession.ROLE_INITIATOR) {
             return noise.constants.NOISE_ROLE_INITIATOR
         }
 
-        if (role === NoiseSession.ROLE_RESPONDER) {
+        if (role === NoiseWasmSession.ROLE_RESPONDER) {
             return noise.constants.NOISE_ROLE_RESPONDER
         }
 

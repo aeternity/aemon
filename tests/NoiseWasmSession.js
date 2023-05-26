@@ -1,12 +1,12 @@
 import test from 'ava'
-import NoiseSession from '../src/NoiseSession.js'
+import NoiseWasmSession from '../src/NoiseWasmSession.js'
 
 
 test('Basic Handshake', t => {
-    const [iPrv, iPub] = NoiseSession.createKeyPair()
-    const [rPrv, rPub] = NoiseSession.createKeyPair()
-    const initiator = new NoiseSession(NoiseSession.ROLE_INITIATOR, null, iPrv, rPub)
-    const responder = new NoiseSession(NoiseSession.ROLE_RESPONDER, null, rPrv)
+    const [iPrv, iPub] = NoiseWasmSession.createKeyPair()
+    const [rPrv, rPub] = NoiseWasmSession.createKeyPair()
+    const initiator = new NoiseWasmSession(NoiseWasmSession.ROLE_INITIATOR, null, iPrv, rPub)
+    const responder = new NoiseWasmSession(NoiseWasmSession.ROLE_RESPONDER, null, rPrv)
 
     let data = null
 
