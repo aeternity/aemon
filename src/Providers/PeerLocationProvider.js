@@ -23,11 +23,12 @@ export default class PeerLocationProvider {
                 return cb()
             }
 
-
             const info = results[peer.host]
-            peer.provider = `${info.description} (AS${info.ASN})`
-            if (info.ASN === 'NA') {
-                peer.provider = 'N/A'
+            if (info !== undefined) {
+                peer.provider = `${info.description} (AS${info.ASN})`
+                if (info.ASN === 'NA') {
+                    peer.provider = 'N/A'
+                }
             }
 
             cb()

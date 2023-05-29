@@ -59,6 +59,21 @@ yargs(process.argv.slice(2))
         description: 'Prometheus exporter port',
         default: 3000,
     })
+    .option('enable-metrics', {
+        type: 'boolean',
+        description: 'Enable metrics server',
+        default: false,
+    })
+    .option('enable-server', {
+        type: 'boolean',
+        description: 'Enable server listener',
+        default: false,
+    })
+    .option('enable-client', {
+        type: 'boolean',
+        description: 'Enable client crawler',
+        default: true,
+    })
     .command(ScanCommand)
     .help()
     .parse()

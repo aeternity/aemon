@@ -16,24 +16,40 @@ export default class Application {
         this.sourceAddress = argv.sourceAddress
         this.sourcePort = argv.sourcePort
         this.metricsPort = argv.metricsPort
+        this.enableClient = argv.enableClient
+        this.enableServer = argv.enableServer
+        this.enableMetrics = argv.enableMetrics
     }
 
     start() {
-        this.scanner.scan(this.sourcePort, this.sourceAddress)
-        this.installTicker()
+        if (!this.enableServer) {
+            this.installTicker()
+        }
 
-        this.metricsServer = http.createServer(async (req, res) => {
-            res.write(await this.metrics.dump())
-            res.end()
-        }).listen((this.metricsPort), () => {
-            console.log("Metrics Server is Running on port 3000")
-        })
+        this.scanner.enableClient(this.enableClient)
+        this.scanner.enableServer(this.enableServer)
+        this.scanner.scan(this.sourcePort, this.sourceAddress)
+
+        if (this.enableMetrics) {
+            this.metricsServer = http.createServer(async (req, res) => {
+                res.write(await this.metrics.dump())
+                res.end()
+            }).listen((this.metricsPort), () => {
+                console.log("Metrics Server is Running on port 3000")
+            })
+        }
     }
 
     stop() {
-        this.metricsServer.stop()
+        if (this.enableMetrics) {
+            this.metricsServer.stop()
+        }
+
+        if (!this.enableServer) {
+            clearInterval(this.ticker)
+        }
+
         this.scanner.stop()
-        clearInterval(this.ticker)
         console.log(this.network.toString())
     }
 

@@ -26,17 +26,30 @@ export default class P2PScanner extends EventEmitter {
         }
     }
 
+    enableClient(enable) {
+        this.enableClient = enable
+    }
+
+    enableServer(enable) {
+        this.enableServer = enable
+    }
+
     scan(serverPort, serverHost) {
         this.metrics.inc('connections', {}, 0)
         this.metrics.set('network_peers', {}, this.network.peers.length)
 
         this.network.on('peer.new', this.onNetworkPeer.bind(this))
-        this.network.peers.map(this.onNetworkPeer.bind(this)) // connect to seeds
 
-        const listenPort = serverPort || this.localPeer.port
-        const listenHost = serverHost || this.localPeer.host
+        if (this.enableClient) {
+            this.network.peers.map(this.onNetworkPeer.bind(this)) // connect to seeds
+        }
 
-        this.server.listen(listenPort, listenHost)
+        if (this.enableServer) {
+            const listenPort = serverPort || this.localPeer.port
+            const listenHost = serverHost || this.localPeer.host
+
+            this.server.listen(listenPort, listenHost)
+        }
     }
 
     stop() {
