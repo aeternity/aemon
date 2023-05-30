@@ -29,7 +29,7 @@ test('P2P client/server', t => {
 
     return new Promise((resolve, reject) => {
         client.connection.on('connect', () => {
-            client.ping()
+            client.connection.ping(clientPeer)
         })
 
         client.connection.on('pong', (ping) => {

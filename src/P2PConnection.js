@@ -3,6 +3,7 @@ import EventEmitter from 'events'
 import PingMessage from './Messages/PingMessage.js'
 import ResponseMessage from './Messages/ResponseMessage.js'
 import CloseMessage from './Messages/CloseMessage.js'
+import GetNodeInfoMessage from './Messages/GetNodeInfoMessage.js'
 import NodeInfoMessage from './Messages/NodeInfoMessage.js'
 
 export default class P2PConnection extends EventEmitter {
@@ -121,5 +122,47 @@ export default class P2PConnection extends EventEmitter {
         if (response.message instanceof NodeInfoMessage) {
             this.emit('node_info', response.message)
         }
+    }
+
+    // peer/protocol implementation
+    ping(localPeer) {
+        this.peer.lastPingTime = Date.now()
+        this.send(this.createPing(localPeer))
+    }
+
+    pong(localPeer) {
+        const pong = this.createPing(localPeer)
+        const response = new ResponseMessage(true, pong.tag, '', pong)
+        this.send(response)
+    }
+
+    startPinging(localPeer) {
+        this.ping(localPeer)
+        this.pingTimer = setInterval(() => {
+            this.ping(localPeer)
+        }, 10e3)
+    }
+
+    handlePings(localPeer) {
+        this.on('ping', (ping) => {
+            this.pong(localPeer)
+        })
+    }
+
+    getInfo() {
+        this.send(new GetNodeInfoMessage())
+    }
+
+    // factory methods
+    createPing(localPeer) {
+        return new PingMessage({
+            port: localPeer.port,
+            share: 32n,
+            genesisHash: this.network.genesisHash,
+            difficulty: this.network.difficulty,
+            bestHash: this.network.bestHash,
+            syncAllowed: false,
+            peers: this.network.peers.slice(0, 32) //32 random sample ?
+        })
     }
 }

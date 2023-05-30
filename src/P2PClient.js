@@ -2,8 +2,6 @@ import net from 'net'
 import EventEmitter from 'events'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
 import P2PConnection from './P2PConnection.js'
-import PingMessage from './Messages/PingMessage.js'
-import GetNodeInfoMessage from './Messages/GetNodeInfoMessage.js'
 import Peer from './Peer.js'
 
 export default class P2PClient extends EventEmitter {
@@ -23,37 +21,13 @@ export default class P2PClient extends EventEmitter {
         this.connection.setTimeout(5e3)
         this.connection.encrypt(this.peer.publicKey)
         this.connection.connect(this.peer.port, this.peer.host)
+
+        this.connection.on('connect', () => {
+            this.connection.startPinging(this.localPeer)
+        })
     }
 
     disconnect() {
         this.connection.disconnect()
-    }
-
-    ping() {
-        this.peer.lastPingTime = Date.now()
-        this.connection.send(this.createPing())
-    }
-
-    getInfo() {
-        this.connection.send(new GetNodeInfoMessage())
-    }
-
-    startPinging() {
-        this.ping()
-        this.pingTimer = setInterval(() => {
-            this.ping()
-        }, 10e3)
-    }
-
-    createPing() {
-        return new PingMessage({
-            port: this.localPeer.port,
-            share: 32n,
-            genesisHash: this.network.genesisHash,
-            difficulty: this.network.difficulty,
-            bestHash: this.network.bestHash,
-            syncAllowed: false,
-            peers: this.network.peers.slice(0, 32) //32 random sample ?
-        })
     }
 }

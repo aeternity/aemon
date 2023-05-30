@@ -67,12 +67,8 @@ test('Listens for peer connections', t => {
 
     const client = new P2PClient(network, clientPeer, serverPeer)
     const scanner = new P2PScanner(network, serverPeer, new InMemoryMetrics(), stub)
-    
-    return new Promise((resolve, reject) => {
-        client.connection.on('connect', () => {
-            client.ping()
-        })
 
+    return new Promise((resolve, reject) => {
         client.connection.on('pong', (ping) => {
             t.is(serverPeer.port, ping.port)
             client.disconnect()

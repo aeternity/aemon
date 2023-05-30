@@ -73,7 +73,7 @@ export default class P2PScanner extends EventEmitter {
 
     connectToPeer(peer) {
         const client = new P2PClient(this.network, this.localPeer, peer)
-        // const connection = client.connection
+        const connection = client.connection
 
         this.connections.set(peer.publicKey, client.connection)
 
@@ -81,27 +81,27 @@ export default class P2PScanner extends EventEmitter {
 
         const connectionHandler = (handler) => {
             return (...args) => {
-                return handler.bind(this)(client, ...args)
+                return handler.bind(this)(connection, ...args)
             }
         }
 
-        client.connection.on('connect', connectionHandler(this.onConnectionConnect))
-        client.connection.on('disconnect', connectionHandler(this.onConnectionDisconnect))
-        client.connection.on('error', connectionHandler(this.onConnectionError))
-        client.connection.on('end', connectionHandler(this.onConnectionEnd))
-        client.connection.on('close', connectionHandler(this.onConnectionClose))
+        connection.on('connect', connectionHandler(this.onConnectionConnect))
+        connection.on('disconnect', connectionHandler(this.onConnectionDisconnect))
+        connection.on('error', connectionHandler(this.onConnectionError))
+        connection.on('end', connectionHandler(this.onConnectionEnd))
+        connection.on('close', connectionHandler(this.onConnectionClose))
 
-        client.connection.on('sent', connectionHandler(this.onConnectionSent))
-        client.connection.on('received', connectionHandler(this.onConnectionReceived))
+        connection.on('sent', connectionHandler(this.onConnectionSent))
+        connection.on('received', connectionHandler(this.onConnectionReceived))
 
-        client.connection.on('response', connectionHandler(this.onConnectionResponse))
-        client.connection.on('ping', connectionHandler(this.onConnectionPing))
-        client.connection.on('pong', connectionHandler(this.onConnectionPong))
-        client.connection.on('node_info', connectionHandler(this.onConnectionNodeInfo))
-        client.connection.on('key_block', connectionHandler(this.onConnectionKeyBlock))
-        client.connection.on('micro_block', connectionHandler(this.onConnectionMicroBlock))
+        connection.on('response', connectionHandler(this.onConnectionResponse))
+        connection.on('ping', connectionHandler(this.onConnectionPing))
+        connection.on('pong', connectionHandler(this.onConnectionPong))
+        connection.on('node_info', connectionHandler(this.onConnectionNodeInfo))
+        connection.on('key_block', connectionHandler(this.onConnectionKeyBlock))
+        connection.on('micro_block', connectionHandler(this.onConnectionMicroBlock))
 
-        this.emit('connection', client.connection)
+        this.emit('connection', connection)
 
         client.connect()
     }
@@ -119,63 +119,63 @@ export default class P2PScanner extends EventEmitter {
         })
     }
 
-    onConnectionConnect(client) {
+    onConnectionConnect(connection) {
         this.metrics.inc('connections_total', {status: "connect"})
-        this.setPeerStatus(client.peer, 1)
-        client.startPinging()
+        this.setPeerStatus(connection.peer, 1)
     }
 
-    onConnectionDisconnect(client) {
+    onConnectionDisconnect(connection) {
         this.metrics.inc('connections_total', {status: "disconnect"})
         // clients.delete(peer.publicKey)
     }
 
-    onConnectionError(client, error) {
-        console.log(peerToString(client.peer), `Error: ${error.message}`)
+    onConnectionError(connection, error) {
+        console.log(peerToString(connection.peer), `Error: ${error.message}`)
 
         this.metrics.inc('connections_total', {status: "error"})
         this.metrics.inc('connection_errors_total', {code: error.code})
-        this.setPeerStatus(client.peer, 0)
+        this.setPeerStatus(connection.peer, 0)
     }
 
-    onConnectionEnd(client) {
+    onConnectionEnd(connection) {
         this.metrics.inc('connections_total', {status: "end"})
         // console.log(peerToString(peer), "Connection end.")
     }
 
-    onConnectionClose(client, hadError) {
+    onConnectionClose(connection, hadError) {
         this.metrics.dec('connections')
         this.metrics.inc('connections_total', {status: "close"})
-        this.setPeerStatus(client.peer, 0)
-        console.log(peerToString(client.peer), "Connection closed. Error: ", Boolean(hadError))
-        this.connections.delete(client.peer.publicKey)        
+        this.setPeerStatus(connection.peer, 0)
+        console.log(peerToString(connection.peer), "Connection closed. Error: ", Boolean(hadError))
+        this.connections.delete(connection.peer.publicKey)
     }
 
-    onConnectionSent(client, message) {
+    onConnectionSent(connection, message) {
         this.metrics.inc('messages_total', {direction: 'sent', type: message.name})
     }
 
-    onConnectionReceived(client, message) {
+    onConnectionReceived(connection, message) {
         this.metrics.inc('messages_total', {direction: 'received', type: message.name})
     }
 
-    onConnectionResponse(client, response) {
+    onConnectionResponse(connection, response) {
         this.metrics.inc(
             'responses_total',
             {direction: 'received', type: response.type, errorReason: response.errorReason}
         )
     }
 
-    onConnectionPing(client, ping) {
-        console.log(peerToString(client.peer), `ping, peers count: ${ping.peers.length}`)
+    onConnectionPing(connection, ping) {
+        console.log(peerToString(connection.peer), `ping, peers count: ${ping.peers.length}`)
     }
 
-    onConnectionPong(client, pong) {
-        const latency = (Date.now() - client.peer.lastPingTime) / 1000
+    onConnectionPong(connection, pong) {
+        const peer = connection.peer
+        const latency = (Date.now() - peer.lastPingTime) / 1000
         const cntSharedPeers = pong.peers.length
-        console.log(peerToString(client.peer), `pong, peers count: ${cntSharedPeers}, share: ${pong.share}`)
+        console.log(peerToString(peer), `pong, peers count: ${cntSharedPeers}, share: ${pong.share}`)
 
-        this.network.updatePeers(client.peer, pong.peers)
+        this.network.updatePeers(peer, pong.peers)
 
         if (pong.difficulty > this.network.difficulty) {
             this.network.difficulty = pong.difficulty
@@ -186,26 +186,26 @@ export default class P2PScanner extends EventEmitter {
         }
 
         this.metrics.set('node_peers', {
-            publicKey: client.peer.publicKey,
+            publicKey: peer.publicKey,
             kind: 'shared',
         }, cntSharedPeers)
 
         this.metrics.set('peer_difficulty', {
-            publicKey: client.peer.publicKey,
+            publicKey: peer.publicKey,
             genesisHash: pong.genesisHash,
             syncAllowed: Number(pong.syncAllowed)
         }, Number(pong.difficulty))
 
-        this.metrics.observe('peer_latency_seconds', {publicKey: client.peer.publicKey}, latency)
+        this.metrics.observe('peer_latency_seconds', {publicKey: peer.publicKey}, latency)
 
-        client.getInfo()
+        connection.getInfo()
 
         // client.disconnect()
     }
 
-    onConnectionNodeInfo(client, info) {
-        // console.log(peerToString(client.peer), 'NODE INFO:', info)
-        const peer = client.peer
+    onConnectionNodeInfo(connection, info) {
+        // console.log(peerToString(connection.peer), 'NODE INFO:', info)
+        const peer = connection.peer
 
         this.metrics.set('peer_info', {
             host: peer.host,
@@ -229,7 +229,7 @@ export default class P2PScanner extends EventEmitter {
         }, info.unverifiedPeers)
     }
 
-    onConnectionKeyBlock(client, keyBlock) {
+    onConnectionKeyBlock(connection, keyBlock) {
         const latency = (Date.now() - Number(keyBlock.time)) / 1000
 
         if (keyBlock.height > this.network.height) {
@@ -244,7 +244,7 @@ export default class P2PScanner extends EventEmitter {
         }, Number(keyBlock.info))
     }
 
-    onConnectionMicroBlock(client, microBlock) {
+    onConnectionMicroBlock(connection, microBlock) {
         const latency = (Date.now() - Number(microBlock.time)) / 1000
 
         this.metrics.observe('block_latency_seconds', {'type': 'micro'}, latency)
