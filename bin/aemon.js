@@ -47,12 +47,12 @@ yargs(process.argv.slice(2))
     .option('public-key', {
         type: 'string',
         description: 'Noise protocol public key',
-        require: true,
+        require: false,
     })
     .option('private-key', {
         type: 'string',
         description: 'Noise protocol private key',
-        require: true,
+        require: false,
     })
     .option('metrics-port', {
         type: 'int',
@@ -69,9 +69,14 @@ yargs(process.argv.slice(2))
         description: 'Enable server listener',
         default: false,
     })
-    .option('enable-client', {
+    .option('connect-on-start', {
         type: 'boolean',
-        description: 'Enable client crawler',
+        description: 'Try to connect on start to configured peers (bootstrap/seed)',
+        default: true,
+    })
+    .option('connect-on-discovery', {
+        type: 'boolean',
+        description: 'Try to connect on newly discovered peers via gossip',
         default: true,
     })
     .command(ScanCommand)

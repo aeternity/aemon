@@ -48,6 +48,8 @@ test('Connects to initial network peers', t => {
 
     const server = new P2PServer(network, serverPeer)
     const scanner = new P2PScanner(network, clientPeer, new InMemoryMetrics(), stub)
+    scanner.setOption('enableServer', false)
+    scanner.setOption('connectOnStart', true)
 
     return new Promise((resolve, reject) => {
         scanner.on('connection', (connection) => {
@@ -58,7 +60,7 @@ test('Connects to initial network peers', t => {
 
 
         server.listen(serverPeer.port, 'localhost')
-        scanner.scan()
+        scanner.start()
     })
 })
 
@@ -67,6 +69,7 @@ test('Listens for peer connections', t => {
 
     const client = new P2PClient(network, clientPeer, serverPeer)
     const scanner = new P2PScanner(network, serverPeer, new InMemoryMetrics(), stub)
+    scanner.setOption('enableServer', true)
 
     return new Promise((resolve, reject) => {
         client.connection.on('pong', (ping) => {
@@ -76,7 +79,7 @@ test('Listens for peer connections', t => {
             resolve()
         })
 
-        scanner.scan(serverPeer.port, 'localhost')
+        scanner.start(serverPeer.port, 'localhost')
         client.connect()
     })
 })

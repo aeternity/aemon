@@ -87,7 +87,7 @@ export default class P2PScanner extends EventEmitter {
             return
         }
 
-        if (this.connections.has(peer.publicKey)) {
+        if (this.connections['outbound'].has(peer.publicKey)) {
             console.log(peerToString(peer), 'Already connected to peer, skipping.')
             return
         }
@@ -197,7 +197,7 @@ export default class P2PScanner extends EventEmitter {
 
         this.metrics.inc('connections_total', {direction: connection.direction, status: "close"})
         this.setPeerStatus(connection.peer, 0)
-        this.removeConnection(removeConnection)
+        this.removeConnection(connection)
     }
 
     onConnectionSent(connection, message) {
