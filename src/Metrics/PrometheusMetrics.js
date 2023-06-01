@@ -6,17 +6,17 @@ export default class PrometheusMetrics {
             connections_total: new Counter({
               name: prefix + '_connections_total',
               help: 'Noise connections by state',
-              labelNames: ['networkId', 'status'],
+              labelNames: ['direction', 'networkId', 'status'],
             }),
             connections: new Gauge({
               name: prefix + '_connections',
               help: 'Currently open noise connections',
-              labelNames: ['networkId', 'status'],
+              labelNames: ['direction', 'networkId', 'status'],
             }),
             connection_errors_total: new Counter({
               name: prefix + '_connection_errors_total',
               help: 'Connection errors by type',
-              labelNames: ['networkId', 'code'],
+              labelNames: ['direction', 'networkId', 'code'],
             }),
             messages_total: new Counter({
               name: prefix + '_messages_total',

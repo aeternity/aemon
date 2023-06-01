@@ -1,4 +1,5 @@
 import stream from 'stream'
+import HandshakeError from '../HandshakeError.js'
 
 export default class NoiseDecryptTransform extends stream.Transform {
     #session = null
@@ -21,7 +22,7 @@ export default class NoiseDecryptTransform extends stream.Transform {
 
             callback()
         } catch (e) {
-            callback(new Error('Handshake failed', {cause: e}))
+            callback(new HandshakeError('Handshake failed'))
         }
     }
 

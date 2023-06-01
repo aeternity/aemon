@@ -17,44 +17,54 @@ export default class P2PScanner extends EventEmitter {
         this.network = network
         this.localPeer = localPeer
         this.metrics = metrics
-        this.connections = new Map()
+        this.connections = {inbound: new Map(), outbound: new Map()}
         this.server = new P2PServer(network, localPeer)
 
         this.locationProvider = locationProvider
         if (locationProvider === null) {
             this.locationProvider = new PeerLocationProvider()
         }
-    }
 
-    enableClient(enable) {
-        this.enableClient = enable
-    }
-
-    enableServer(enable) {
-        this.enableServer = enable
-    }
-
-    scan(serverPort, serverHost) {
-        this.metrics.inc('connections', {}, 0)
-        this.metrics.set('network_peers', {}, this.network.peers.length)
-
-        this.network.on('peer.new', this.onNetworkPeer.bind(this))
-
-        if (this.enableClient) {
-            this.network.peers.map(this.onNetworkPeer.bind(this)) // connect to seeds
+        this.options = {
+            enableServer: false,
+            connectOnDiscovery: true,
+            connectOnStart: true,
         }
+    }
 
-        if (this.enableServer) {
-            const listenPort = serverPort || this.localPeer.port
-            const listenHost = serverHost || this.localPeer.host
+    setOption(option, value) {
+        this.options[option] = value
+    }
 
-            this.server.listen(listenPort, listenHost)
+    start(serverPort, serverHost) {
+        console.log('Scanner start with options:', this.options)
+        this.resetMetrics()
+
+        this.network.on('peer.new', this.addDiscoveryPeer.bind(this))
+        this.network.peers.map(this.addSeedPeer.bind(this))
+
+        if (this.options.enableServer) {
+            this.startServer()
         }
     }
 
     stop() {
         this.server.close()
         this.emit('stop')
+    }
+
+    resetMetrics() {
+        this.metrics.inc('connections', {direction: 'inbound'}, 0)
+        this.metrics.inc('connections', {direction: 'outbound'}, 0)
+        this.metrics.set('network_peers', {}, 0)
+    }
+
+    startServer(serverPort, serverHost) {
+        const listenPort = serverPort || this.localPeer.port
+        const listenHost = serverHost || this.localPeer.host
+
+        this.server.on('connection', this.onServerConnection.bind(this))
+        this.server.listen(listenPort, listenHost)
     }
 
     setPeerStatus(peer, status) {
@@ -72,12 +82,49 @@ export default class P2PScanner extends EventEmitter {
     }
 
     connectToPeer(peer) {
+        if (peer.publicKey === this.localPeer.publicKey) {
+            console.log("THAT's ME, SKIP CONNECT")
+            return
+        }
+
+        if (this.connections.has(peer.publicKey)) {
+            console.log(peerToString(peer), 'Already connected to peer, skipping.')
+            return
+        }
+
         const client = new P2PClient(this.network, this.localPeer, peer)
-        const connection = client.connection
 
-        this.connections.set(peer.publicKey, client.connection)
+        this.addConnection(client.connection)
 
-        this.metrics.inc('connections')
+        client.connect()
+    }
+
+    addSeedPeer(peer) {
+        if (this.options.connectOnStart) {
+            return this.addPeer(peer, this.connectToPeer.bind(this))
+        }
+
+        this.addPeer(peer)
+    }
+
+    addDiscoveryPeer(peer) {
+        if (this.options.connectOnDiscovery) {
+            return this.addPeer(peer, this.connectToPeer.bind(this))
+        }
+
+        this.addPeer(peer)
+    }
+
+    addPeer(peer, cb = () => {}) {
+        console.log('ADD PEER: ', peerToString(peer))
+
+        this.metrics.inc('network_peers')
+        this.locationProvider.updatePeerLocation(peer, () => cb(peer))
+    }
+
+    addConnection(connection) {
+        this.connections[connection.direction].set(connection.peer.publicKey, connection)
+        this.metrics.inc('connections', {direction: connection.direction})
 
         const connectionHandler = (handler) => {
             return (...args) => {
@@ -102,52 +149,55 @@ export default class P2PScanner extends EventEmitter {
         connection.on('micro_block', connectionHandler(this.onConnectionMicroBlock))
 
         this.emit('connection', connection)
-
-        client.connect()
     }
 
-    onNetworkPeer(peer) {
-        // console.log('NEW PEER: ', peerToString(peer))
-        if (peer.publicKey === this.localPeer.publicKey) {
-            console.log("THAT's ME, SKIP CONNECT")
-            return
-        }
-
-        this.metrics.inc('network_peers')
-        this.locationProvider.updatePeerLocation(peer, () => {
-            this.connectToPeer(peer)
-        })
+    removeConnection(connection) {
+        this.metrics.dec('connections', {direction: connection.direction})
+        this.connections[connection.direction].delete(connection.peer.publicKey)
     }
 
-    onConnectionConnect(connection) {
-        this.metrics.inc('connections_total', {status: "connect"})
+    markConnected(connection) {
+        this.metrics.inc('connections_total', {direction: connection.direction, status: "connect"})
         this.setPeerStatus(connection.peer, 1)
     }
 
+    // event handlers
+    onServerConnection(connection) {
+        console.log(peerToString(connection.peer), '- new server connection')
+
+        this.addConnection(connection)
+        this.markConnected(connection)
+    }
+
+    onConnectionConnect(connection) {
+        console.log(peerToString(connection.peer), ' - connected')
+
+        this.markConnected(connection)
+    }
+
     onConnectionDisconnect(connection) {
-        this.metrics.inc('connections_total', {status: "disconnect"})
-        // clients.delete(peer.publicKey)
+        this.metrics.inc('connections_total', {direction: connection.direction, status: "disconnect"})
     }
 
     onConnectionError(connection, error) {
         console.log(peerToString(connection.peer), `Error: ${error.message}`)
 
-        this.metrics.inc('connections_total', {status: "error"})
-        this.metrics.inc('connection_errors_total', {code: error.code})
+        this.metrics.inc('connections_total', {direction: connection.direction, status: "error"})
+        this.metrics.inc('connection_errors_total', {direction: connection.direction, code: error.code})
         this.setPeerStatus(connection.peer, 0)
     }
 
     onConnectionEnd(connection) {
-        this.metrics.inc('connections_total', {status: "end"})
-        // console.log(peerToString(peer), "Connection end.")
+        // console.log(peerToString(connection.peer), "Connection end.")
+        this.metrics.inc('connections_total', {direction: connection.direction, status: "end"})
     }
 
     onConnectionClose(connection, hadError) {
-        this.metrics.dec('connections')
-        this.metrics.inc('connections_total', {status: "close"})
-        this.setPeerStatus(connection.peer, 0)
         console.log(peerToString(connection.peer), "Connection closed. Error: ", Boolean(hadError))
-        this.connections.delete(connection.peer.publicKey)
+
+        this.metrics.inc('connections_total', {direction: connection.direction, status: "close"})
+        this.setPeerStatus(connection.peer, 0)
+        this.removeConnection(removeConnection)
     }
 
     onConnectionSent(connection, message) {
@@ -173,7 +223,7 @@ export default class P2PScanner extends EventEmitter {
         const peer = connection.peer
         const latency = (Date.now() - peer.lastPingTime) / 1000
         const cntSharedPeers = pong.peers.length
-        console.log(peerToString(peer), `pong, peers count: ${cntSharedPeers}, share: ${pong.share}`)
+        // console.log(peerToString(peer), `pong, peers count: ${cntSharedPeers}, share: ${pong.share}`)
 
         this.network.updatePeers(peer, pong.peers)
 

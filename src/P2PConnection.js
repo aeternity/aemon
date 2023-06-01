@@ -7,9 +7,10 @@ import GetNodeInfoMessage from './Messages/GetNodeInfoMessage.js'
 import NodeInfoMessage from './Messages/NodeInfoMessage.js'
 
 export default class P2PConnection extends EventEmitter {
-    constructor(network, transportFactory, peer, socket) {
+    constructor(direction, network, transportFactory, peer, socket) {
         super()
 
+        this.direction = direction
         this.network = network
         this.transportFactory = transportFactory
         this.peer = peer
@@ -161,7 +162,7 @@ export default class P2PConnection extends EventEmitter {
             genesisHash: this.network.genesisHash,
             difficulty: this.network.difficulty,
             bestHash: this.network.bestHash,
-            syncAllowed: false,
+            syncAllowed: true,
             peers: this.network.peers.slice(0, 32) //32 random sample ?
         })
     }

@@ -4,21 +4,46 @@ import P2PNetwork from './P2PNetwork.js'
 import P2PScanner from './P2PScanner.js'
 import NetworkMetrics from './Metrics/NetworkMetrics.js'
 import PrometheusMetrics from './Metrics/PrometheusMetrics.js'
+import NoiseWasmSession from './NoiseWasmSession.js'
+import {FateApiEncoder} from '@aeternity/aepp-calldata'
+
+const createKeyPair = (argv) => {
+    let keypair = {pub: argv.publicKey, prv: argv.privateKey}
+
+    if (keypair.pub !== undefined) {
+        console.log('Keypair provided', keypair)
+        return keypair
+    }
+
+    const apiEncoder = new FateApiEncoder()
+    const [prv, pub] = NoiseWasmSession.createKeyPair()
+    keypair = {
+        pub: apiEncoder.encode('peer_pubkey', pub),
+        prv: apiEncoder.encode('peer_pubkey', prv),
+    }
+
+    console.log('Keypair not provided, generating', keypair)
+    return keypair
+}
 
 export default class Application {
     constructor(argv) {
-        const keypair = {pub: argv.publicKey, prv: argv.privateKey}
+        const keypair = createKeyPair(argv)
         const peer = new Peer(argv.sourceAddress, argv.externalPort, keypair)
 
         this.network = new P2PNetwork(argv.networkId, argv.genesisHash, argv.peers)
         this.metrics = new NetworkMetrics(new PrometheusMetrics(), this.network)
+
         this.scanner = new P2PScanner(this.network, peer, this.metrics)
+        this.scanner.setOption('enableServer', argv.enableServer)
+        this.scanner.setOption('connectOnStart', argv.connectOnStart)
+        this.scanner.setOption('connectOnDiscovery', argv.connectOnDiscovery)
+
         this.sourceAddress = argv.sourceAddress
         this.sourcePort = argv.sourcePort
         this.metricsPort = argv.metricsPort
-        this.enableClient = argv.enableClient
-        this.enableServer = argv.enableServer
         this.enableMetrics = argv.enableMetrics
+        this.enableServer = argv.enableServer
     }
 
     start() {
@@ -26,9 +51,7 @@ export default class Application {
             this.installTicker()
         }
 
-        this.scanner.enableClient(this.enableClient)
-        this.scanner.enableServer(this.enableServer)
-        this.scanner.scan(this.sourcePort, this.sourceAddress)
+        this.scanner.start(this.sourcePort, this.sourceAddress)
 
         if (this.enableMetrics) {
             this.metricsServer = http.createServer(async (req, res) => {

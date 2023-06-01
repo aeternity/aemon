@@ -1,4 +1,5 @@
 import net from 'net'
+import crypto from 'crypto'
 import EventEmitter from 'events'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
 import P2PConnection from './P2PConnection.js'
@@ -38,11 +39,15 @@ export default class P2PServer extends EventEmitter {
 
     onConnection(socket) {
         // console.log('NEW SERVER SOCKET:', socket)
-        const peer = new Peer(socket.remoteAddress, 3015)
+        let peer = this.network.peers.find((peer) => peer.host === socket.remoteAddress)
+        if (peer === undefined) {
+            const pub = 'rnd_' + crypto.randomBytes(16).toString('hex')
+            peer = new Peer(socket.remoteAddress, 3015, {pub})
+        }
 
         // console.log('NEW CONNECTION: ', peer)
 
-        const connection = new P2PConnection(this.network, this.transportFactory, peer, socket)
+        const connection = new P2PConnection('inbound', this.network, this.transportFactory, peer, socket)
         connection.handlePings(this.localPeer)
         connection.encrypt()
 

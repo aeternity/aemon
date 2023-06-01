@@ -7,6 +7,7 @@ import NoiseEncryptTransform from './Transforms/NoiseEncryptTransform.js'
 import NoiseDecryptTransform from './Transforms/NoiseDecryptTransform.js'
 import MessageSerializeTransform from './Transforms/MessageSerializeTransform.js'
 import MessageDeserializeTransform from './Transforms/MessageDeserializeTransform.js'
+import HandshakeError from './HandshakeError.js'
 
 const P2P_PROTOCOL_VSN = 1n
 const ROLES = {
@@ -63,6 +64,12 @@ export default class P2PNoiseTransportFactory {
         noiseDecrypt.on('handshake', () => {
             // console.log('handshake with session remote key:', noiseSession.remotePublicKey)
             duplex.emit('handshake', noiseSession.remotePublicKey)
+        })
+
+        socket.on('end', (hadError) => {
+            if (noiseSession.isHandshaking()) {
+                duplex.emit('error', new HandshakeError('Connection closed before handshake completion.'))
+            }
         })
 
         messageSerializer

@@ -14,7 +14,7 @@ export default class P2PClient extends EventEmitter {
 
         const transportFactory = new P2PNoiseTransportFactory(network, 'initiator', this.localPeer.privateKey)
         const socket = new net.Socket()
-        this.connection = new P2PConnection(this.network, transportFactory, this.peer, socket)
+        this.connection = new P2PConnection('outbound', this.network, transportFactory, this.peer, socket)
     }
 
     connect() {
