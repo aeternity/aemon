@@ -72,6 +72,10 @@ export default class P2PNoiseTransportFactory {
             }
         })
 
+        duplex.on('close', () => {
+            noiseSession.free()
+        })
+
         messageSerializer
             .pipe(noiseEncrypt)
             .pipe(frameEncoder)

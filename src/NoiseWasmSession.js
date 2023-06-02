@@ -141,4 +141,15 @@ export default class NoiseWasmSession {
 
         throw new Error('Unknown role: ' + role)
     }
+
+    free() {
+        if (this.isHandshaking()) {
+            // console.log('NOISE SESSION - FREE HANDSHAKE', this.#send, this.#receive)
+            return this.#handshake.free()
+        }
+
+        // console.log('NOISE SESSION - FREE CHIPHER')
+        this.#send.free()
+        this.#receive.free()
+    }
 }
