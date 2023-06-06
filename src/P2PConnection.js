@@ -52,9 +52,6 @@ export default class P2PConnection extends EventEmitter {
     }
 
     send(message) {
-        // console.log('SEND:')
-        // console.dir(message, {depth: null})
-
         this.stream.write(message)
         this.emit('sent', message)
     }
@@ -83,7 +80,6 @@ export default class P2PConnection extends EventEmitter {
     }
 
     onHandshake(remotePublicKey) {
-        // console.log('handshake with:', remotePublicKey)
         this.peer.connected = true
         this.emit('connect')
     }
@@ -100,9 +96,6 @@ export default class P2PConnection extends EventEmitter {
             this.stream.end()
         }
 
-        // console.log('RECV:')
-        // console.dir(message, {depth: null})
-
         this.emit(message.name, message)
     }
 
@@ -110,13 +103,11 @@ export default class P2PConnection extends EventEmitter {
         this.emit('response', response)
 
         if (!response.success) {
-            console.log('Invalid response, closing connection')
+            this.logger.log('warn', 'Invalid response, closing connection', {response})
             this.disconnect()
         }
 
         if (response.message instanceof PingMessage) {
-            // console.log('RESPONSE')
-            // console.dir(response, {depth: true})
             this.emit('pong', response.message)
         }
 

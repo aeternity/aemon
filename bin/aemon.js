@@ -79,6 +79,20 @@ yargs(process.argv.slice(2))
         description: 'Try to connect on newly discovered peers via gossip',
         default: true,
     })
+    .option('log-level', {
+        type: 'choices',
+        choises: ['error', 'warn', 'info', 'verbose', 'debug'],
+        description: 'Logger minimum log level to output',
+        default: 'info',
+        require: true,
+    })
+    .option('log-format', {
+        type: 'choices',
+        choises: ['syslog', 'simple', 'cli', 'json'],
+        description: 'Log format',
+        default: 'syslog',
+        require: true,
+    })
     .command(ScanCommand)
     .help()
     .parse()

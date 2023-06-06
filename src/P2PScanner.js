@@ -6,17 +6,14 @@ import InMemoryMetrics from './Metrics/InMemoryMetrics.js'
 import PrometheusMetrics from './Metrics/PrometheusMetrics.js'
 import PeerLocationProvider from './Providers/PeerLocationProvider.js'
 
-const peerToString = (peer) => {
-    return `${peer.publicKey}@${peer.host}:${peer.port}`
-}
-
 export default class P2PScanner extends EventEmitter {
-    constructor(network, localPeer, metrics, locationProvider = null) {
+    constructor(network, localPeer, metrics, logger, locationProvider = null) {
         super()
 
         this.network = network
         this.localPeer = localPeer
         this.metrics = metrics
+        this.logger = logger
         this.connections = {inbound: new Map(), outbound: new Map()}
         this.server = new P2PServer(network, localPeer)
 
@@ -37,7 +34,7 @@ export default class P2PScanner extends EventEmitter {
     }
 
     start(serverPort, serverHost) {
-        console.log('Scanner start with options:', this.options)
+        this.logger.log('info', 'Scanner start', this.options)
         this.resetMetrics()
 
         this.network.on('peer.new', this.addDiscoveryPeer.bind(this))
@@ -64,6 +61,15 @@ export default class P2PScanner extends EventEmitter {
         const listenHost = serverHost || this.localPeer.host
 
         this.server.on('connection', this.onServerConnection.bind(this))
+
+        this.server.on('error', (error) => {
+            this.logger.log('error', `Server error: ${error.message}`)
+        })
+
+        this.server.on('listening', (port) => {
+            this.logger.log('warn', `TCP socket server is listening on port ${port}`)
+        })
+
         this.server.listen(listenPort, listenHost)
     }
 
@@ -83,12 +89,12 @@ export default class P2PScanner extends EventEmitter {
 
     connectToPeer(peer) {
         if (peer.publicKey === this.localPeer.publicKey) {
-            console.log("THAT's ME, SKIP CONNECT")
+            this.logger.log('verbose', 'Won\'t connect to myself', {peer: peer.url})
             return
         }
 
         if (this.connections['outbound'].has(peer.publicKey)) {
-            console.log(peerToString(peer), 'Already connected to peer, skipping.')
+            this.logger.log('verbose', 'Already connected to peer, skipping.', {peer: peer.url})
             return
         }
 
@@ -116,7 +122,7 @@ export default class P2PScanner extends EventEmitter {
     }
 
     addPeer(peer, cb = () => {}) {
-        console.log('ADD PEER: ', peerToString(peer))
+        this.logger.log('verbose', 'Added peer', {peer: peer.url})
 
         this.metrics.inc('network_peers')
         this.locationProvider.updatePeerLocation(peer, () => cb(peer))
@@ -163,14 +169,14 @@ export default class P2PScanner extends EventEmitter {
 
     // event handlers
     onServerConnection(connection) {
-        console.log(peerToString(connection.peer), '- new server connection')
+        this.logger.log('verbose', 'Inbound peer connected', {peer: connection.peer.url})
 
         this.addConnection(connection)
         this.markConnected(connection)
     }
 
     onConnectionConnect(connection) {
-        console.log(peerToString(connection.peer), ' - connected')
+        this.logger.log('verbose', 'Outbound peer connected', {peer: connection.peer.url})
 
         this.markConnected(connection)
     }
@@ -180,7 +186,7 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionError(connection, error) {
-        console.log(peerToString(connection.peer), `Error: ${error.message}`)
+        this.logger.log('verbose', `Peer connection error: ${error.message}`, {peer: connection.peer.url})
 
         this.metrics.inc('connections_total', {direction: connection.direction, status: "error"})
         this.metrics.inc('connection_errors_total', {direction: connection.direction, code: error.code})
@@ -188,12 +194,12 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionEnd(connection) {
-        // console.log(peerToString(connection.peer), "Connection end.")
+        // this.logger.log('debug', "Connection end.", {peer: connection.peer.url})
         this.metrics.inc('connections_total', {direction: connection.direction, status: "end"})
     }
 
     onConnectionClose(connection, hadError) {
-        console.log(peerToString(connection.peer), "Connection closed. Error: ", Boolean(hadError))
+        this.logger.log('verbose', "Peer connection closed. Error: " + Boolean(hadError), {peer: connection.peer.url})
 
         this.metrics.inc('connections_total', {direction: connection.direction, status: "close"})
         this.setPeerStatus(connection.peer, 0)
@@ -202,10 +208,12 @@ export default class P2PScanner extends EventEmitter {
 
     onConnectionSent(connection, message) {
         this.metrics.inc('messages_total', {direction: 'sent', type: message.name})
+        this.logger.log('debug', 'P2P sent', {peer: connection.peer.url, msg: message})
     }
 
     onConnectionReceived(connection, message) {
         this.metrics.inc('messages_total', {direction: 'received', type: message.name})
+        this.logger.log('debug', 'P2P received', {peer: connection.peer.url, msg: message})
     }
 
     onConnectionResponse(connection, response) {
@@ -213,19 +221,20 @@ export default class P2PScanner extends EventEmitter {
             'responses_total',
             {direction: 'received', type: response.type, errorReason: response.errorReason}
         )
+        this.logger.log('debug', 'P2P response', {peer: connection.peer.url, response})
     }
 
     onConnectionPing(connection, ping) {
-        console.log(peerToString(connection.peer), `ping, peers count: ${ping.peers.length}`)
+        this.logger.log('verbose', `Ping request`, {peer: connection.peer.url})
     }
 
     onConnectionPong(connection, pong) {
         const peer = connection.peer
         const latency = (Date.now() - peer.lastPingTime) / 1000
         const cntSharedPeers = pong.peers.length
-        // console.log(peerToString(peer), `pong, peers count: ${cntSharedPeers}, share: ${pong.share}`)
 
-        this.network.updatePeers(peer, pong.peers)
+        this.logger.log('verbose', 'Ping response', {peer: peer.url})
+        this.network.updatePeer(peer, pong.port, pong.peers)
 
         if (pong.difficulty > this.network.difficulty) {
             this.network.difficulty = pong.difficulty
@@ -254,7 +263,7 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionNodeInfo(connection, info) {
-        // console.log(peerToString(connection.peer), 'NODE INFO:', info)
+        this.logger.log('verbose', 'Info response', {peer: connection.peer.url})
         const peer = connection.peer
 
         this.metrics.set('peer_info', {

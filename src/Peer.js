@@ -17,6 +17,10 @@ export default class Peer {
         return new Peer(url.hostname, url.port, {pub: url.username})
     }
 
+    get url() {
+        return `${this.publicKey}@${this.host}:${this.port}`
+    }
+
     get publicKey() {
         return this.keypair.pub
     }

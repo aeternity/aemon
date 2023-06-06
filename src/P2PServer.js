@@ -10,26 +10,23 @@ export default class P2PServer extends EventEmitter {
     constructor(network, localPeer) {
         super()
 
-        this.localPeer = localPeer
         this.network = network
+        this.localPeer = localPeer
         this.transportFactory = new P2PNoiseTransportFactory(network, 'responder', localPeer.privateKey)
         this.server = new net.Server()
 
         this.server.on('error', (error) => {
             this.emit('error', error)
-            console.log(`Server Error: ${error.message}`)
         })
 
         this.server.on('listening', (port) => {
             this.emit('listening', port)
-            console.log(`TCP socket server is running:`, this.server.address())
         })
 
         this.server.on('connection', this.onConnection.bind(this))
     }
 
     listen(port, host) {        
-        // console.log('Local peer:', this.localPeer)
         this.server.listen(port, host)
     }
 
@@ -38,14 +35,13 @@ export default class P2PServer extends EventEmitter {
     }
 
     onConnection(socket) {
-        // console.log('NEW SERVER SOCKET:', socket)
+        this.emit('accept', socket)
+
         let peer = this.network.peers.find((peer) => peer.host === socket.remoteAddress)
         if (peer === undefined) {
             const pub = 'rnd_' + crypto.randomBytes(16).toString('hex')
             peer = new Peer(socket.remoteAddress, 3015, {pub})
         }
-
-        // console.log('NEW CONNECTION: ', peer)
 
         const connection = new P2PConnection('inbound', this.network, this.transportFactory, peer, socket)
         connection.handlePings(this.localPeer)

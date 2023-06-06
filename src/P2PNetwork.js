@@ -38,18 +38,15 @@ export default class P2PNetwork extends EventEmitter {
         return peer
     }
 
-    updatePeers(source, peers = []) {
+    updatePeer(source, port = 3015, peers = []) {
         const networkSource = this.addPeer(source)
         const networkPeers = peers.map(this.addPeer.bind(this))
         // const peerKeys = networkPeers.map(peer => peer.publicKey)
 
         networkSource.addPeers(networkPeers)
+        networkSource.port = port
 
-        this.emit('peer.update', source)
-    }
-
-    updatePeerInfo(peer, info) {
-        this.emit('peer.update', peer)
+        this.emit('peer.update', networkSource)
     }
 
     toString() {

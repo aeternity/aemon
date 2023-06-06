@@ -1,4 +1,5 @@
 import http from 'http'
+import winston from 'winston'
 import Peer from './Peer.js'
 import P2PNetwork from './P2PNetwork.js'
 import P2PScanner from './P2PScanner.js'
@@ -7,11 +8,15 @@ import PrometheusMetrics from './Metrics/PrometheusMetrics.js'
 import NoiseWasmSession from './NoiseWasmSession.js'
 import {FateApiEncoder} from '@aeternity/aepp-calldata'
 
-const createKeyPair = (argv) => {
+// The log formatter is using JSON.stringify and this "fix" it's serialization issues
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
+BigInt.prototype.toJSON = function() { return this.toString() }
+
+const createKeyPair = (argv, logger) => {
     let keypair = {pub: argv.publicKey, prv: argv.privateKey}
 
     if (keypair.pub !== undefined) {
-        console.log('Keypair provided', keypair)
+        logger.log({level: 'info', message: 'Using static keypair', keypair})
         return keypair
     }
 
@@ -22,19 +27,55 @@ const createKeyPair = (argv) => {
         prv: apiEncoder.encode('peer_pubkey', prv),
     }
 
-    console.log('Keypair not provided, generating', keypair)
+    logger.log('info', 'Keypair not provided, generating new', keypair)
+
     return keypair
+}
+
+const logFormat = (format) => {
+    switch (format) {
+        case 'json':
+            return winston.format.json()
+        case 'pretty':
+            return winston.format.prettyPrint()
+        case 'cli':
+            return winston.format.cli()
+        case 'simple':
+            return winston.format.simple()
+        default:
+            return winston.format.printf((info) => {
+                const { level, message, timestamp, ...meta } = info
+                return `${timestamp} [${level.toUpperCase()}]: ${message}` + (Object.keys(meta).length ? ` --- ${JSON.stringify(meta)}` : '')
+            })
+    }
+}
+
+const createLogger = (argv) => {
+    return winston.createLogger({
+        level: argv.logLevel,
+        format: winston.format.combine(
+            // winston.format.metadata(),
+            winston.format.timestamp(),
+            logFormat(argv.logFormat),
+        ),
+        // defaultMeta: { service: 'user-service' },
+        transports: [
+            new winston.transports.Console()
+        ],
+    })
 }
 
 export default class Application {
     constructor(argv) {
-        const keypair = createKeyPair(argv)
+        this.logger = createLogger(argv)
+
+        const keypair = createKeyPair(argv, this.logger)
         const peer = new Peer(argv.sourceAddress, argv.externalPort, keypair)
 
         this.network = new P2PNetwork(argv.networkId, argv.genesisHash, argv.peers)
         this.metrics = new NetworkMetrics(new PrometheusMetrics(), this.network)
 
-        this.scanner = new P2PScanner(this.network, peer, this.metrics)
+        this.scanner = new P2PScanner(this.network, peer, this.metrics, this.logger)
         this.scanner.setOption('enableServer', argv.enableServer)
         this.scanner.setOption('connectOnStart', argv.connectOnStart)
         this.scanner.setOption('connectOnDiscovery', argv.connectOnDiscovery)
@@ -58,7 +99,7 @@ export default class Application {
                 res.write(await this.metrics.dump())
                 res.end()
             }).listen((this.metricsPort), () => {
-                console.log("Metrics Server is Running on port 3000")
+                this.logger.log('info', `Metrics server listening on port ${this.metricsPort}`)
             })
         }
     }
@@ -73,7 +114,7 @@ export default class Application {
         }
 
         this.scanner.stop()
-        console.log(this.network.toString())
+        this.logger.log('warn', 'Application stop', this.network)
     }
 
     installTicker() {

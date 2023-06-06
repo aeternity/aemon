@@ -46,4 +46,19 @@ export default class PingMessage {
     get syncAllowed() {
         return this.fields.syncAllowed
     }
+
+    toJSON() {
+        return {
+            name: this.name,
+            vsn: this.vsn,
+            tag: this.tag,
+            port: this.port,
+            share: this.share,
+            difficulty: this.difficulty,
+            genesisHash: this.genesisHash,
+            bestHash: this.bestHash,
+            syncAllowed: this.syncAllowed,
+            peersCount: this.peers.length
+        }
+    }
 }
