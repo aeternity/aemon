@@ -41,13 +41,17 @@ const stub = new class {
     updatePeerLocation(peer, cb) { cb() }
 }
 
+const logger = new class {
+    log(level, msg) {}
+}
+
 test('Connects to initial network peers', t => {
     const {network, clientPeer, serverPeer} = fixtures()
 
     network.addPeer(serverPeer)
 
     const server = new P2PServer(network, serverPeer)
-    const scanner = new P2PScanner(network, clientPeer, new InMemoryMetrics(), stub)
+    const scanner = new P2PScanner(network, clientPeer, new InMemoryMetrics(), logger, stub)
     scanner.setOption('enableServer', false)
     scanner.setOption('connectOnStart', true)
 
@@ -68,7 +72,7 @@ test('Listens for peer connections', t => {
     const {network, clientPeer, serverPeer} = fixtures()
 
     const client = new P2PClient(network, clientPeer, serverPeer)
-    const scanner = new P2PScanner(network, serverPeer, new InMemoryMetrics(), stub)
+    const scanner = new P2PScanner(network, serverPeer, new InMemoryMetrics(), logger, stub)
     scanner.setOption('enableServer', true)
 
     return new Promise((resolve, reject) => {
