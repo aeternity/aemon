@@ -153,7 +153,7 @@ export default class P2PConnection extends EventEmitter {
             genesisHash: this.network.genesisHash,
             difficulty: this.network.difficulty,
             bestHash: this.network.bestHash,
-            syncAllowed: true,
+            syncAllowed: false,
             peers: this.network.peers.slice(0, 32) //32 random sample ?
         })
     }
