@@ -72,7 +72,7 @@ export default class PrometheusMetrics {
             block_latency_seconds: new Histogram({
                 name: prefix + 'block_latency_seconds',
                 help: 'Blocks network propagation latency.',
-                buckets: [0.1, 0.3, 0.5, 1, 2],
+                buckets: [5, 10, 20, 40, 60],
                 labelNames: ['networkId', 'type']
             }),
             miner_version: new Gauge({
