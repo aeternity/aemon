@@ -8,3 +8,8 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['host.docker.internal:3000']
+  - job_name: 'aemon2'
+    metrics_path: '/'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['host.docker.internal:3001']
