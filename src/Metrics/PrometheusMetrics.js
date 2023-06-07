@@ -63,6 +63,12 @@ export default class PrometheusMetrics {
               help: 'Unique network peers seen',
               labelNames: ['networkId']
             }),
+            peer_throughput_bytes: new Histogram({
+                name: prefix + 'peer_throughput_bytes',
+                help: 'Peer network throughput in bytes per second',
+                buckets: [1000, 10000, 100000, 1000000, 1000000],
+                labelNames: ['networkId', 'publicKey']
+            }),
             peer_latency_seconds: new Histogram({
                 name: prefix + 'peer_latency_seconds',
                 help: 'Ping round-trip latency in seconds.',

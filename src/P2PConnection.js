@@ -108,7 +108,7 @@ export default class P2PConnection extends EventEmitter {
         }
 
         if (response.message instanceof PingMessage) {
-            this.emit('pong', response.message)
+            this.emit('pong', response.message, response.size)
         }
 
         if (response.message instanceof NodeInfoMessage) {

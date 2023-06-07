@@ -38,7 +38,8 @@ export default class ResponseMessageSerializer {
             isSuccessful,
             messageTag,
             this.encoder.decodeField('string', errorReason),
-            isSuccessful ? this.serializer.decode(messageTag, message) : null
+            isSuccessful ? this.serializer.decode(messageTag, message) : null,
+            data.length,
         )
     }
 }

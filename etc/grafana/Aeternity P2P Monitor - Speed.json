@@ -97,6 +97,211 @@
         "calculate": false,
         "cellGap": 1,
         "cellValues": {
+          "unit": "binBps"
+        },
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "min": 0,
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Spectral",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "show": true,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": false,
+          "unit": "Bps"
+        }
+      },
+      "pluginVersion": "9.4.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(rate(aemon_peer_throughput_bytes_bucket{networkId=\"$networkId\"}[$__rate_interval])) by (le)",
+          "format": "heatmap",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Network Throughput",
+      "type": "heatmap"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "Bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "  avg(rate(aemon_peer_throughput_bytes_sum{networkId=\"$networkId\"}[5m])/rate(aemon_peer_throughput_bytes_count{networkId=\"$networkId\"}[5m]))",
+          "hide": false,
+          "legendFormat": "avg",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.75, sum(rate(aemon_peer_throughput_bytes_bucket{networkId=\"$networkId\"}[5m])) by (le))",
+          "hide": false,
+          "legendFormat": "75th",
+          "range": true,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(aemon_peer_throughput_bytes_bucket{networkId=\"$networkId\"}[5m])) by (le))",
+          "hide": false,
+          "legendFormat": "95th",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Network Throughput Percentiles",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 11,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "cellValues": {
           "unit": "pps"
         },
         "color": {
@@ -140,7 +345,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(rate(aemon_peer_latency_seconds_bucket[$__rate_interval])) by (le)",
+          "expr": "sum(rate(aemon_peer_latency_seconds_bucket{networkId=\"$networkId\"}[$__rate_interval])) by (le)",
           "format": "heatmap",
           "hide": false,
           "instant": false,
@@ -214,9 +419,9 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 8
       },
-      "id": 10,
+      "id": 12,
       "options": {
         "legend": {
           "calcs": [],
@@ -236,11 +441,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(aemon_peer_latency_seconds_bucket{networkId=\"$networkId\"}[$__interval])) by (le))",
+          "expr": "  avg(rate(aemon_peer_latency_seconds_sum{networkId=\"$networkId\"}[5m])/rate(aemon_peer_latency_seconds_count{networkId=\"$networkId\"}[5m]))",
           "hide": false,
-          "legendFormat": "95th",
+          "legendFormat": "avg",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         },
         {
           "datasource": {
@@ -248,11 +453,23 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.75, sum(rate(aemon_peer_latency_seconds_bucket{networkId=\"$networkId\"}[$__interval])) by (le))",
+          "expr": "histogram_quantile(0.75, sum(rate(aemon_peer_latency_seconds_bucket{networkId=\"$networkId\"}[5m])) by (le))",
           "hide": false,
           "legendFormat": "75th",
           "range": true,
           "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(aemon_peer_latency_seconds_bucket{networkId=\"$networkId\"}[5m])) by (le))",
+          "hide": false,
+          "legendFormat": "95th",
+          "range": true,
+          "refId": "A"
         }
       ],
       "title": "Ping Latency Percentiles",
@@ -283,7 +500,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 16
       },
       "id": 4,
       "options": {
@@ -407,7 +624,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 16
       },
       "id": 2,
       "options": {
@@ -429,11 +646,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(aemon_block_latency_seconds_bucket{networkId=\"$networkId\", type=\"key\"}[10m])) by (le))",
+          "expr": "  avg(rate(aemon_block_latency_seconds_sum{networkId=\"$networkId\", type=\"key\"}[10m])/rate(aemon_block_latency_seconds_count{networkId=\"$networkId\", type=\"key\"}[10m]))",
           "hide": false,
-          "legendFormat": "95th",
+          "legendFormat": "avg",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         },
         {
           "datasource": {
@@ -446,6 +663,18 @@
           "legendFormat": "75th",
           "range": true,
           "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(aemon_block_latency_seconds_bucket{networkId=\"$networkId\", type=\"key\"}[10m])) by (le))",
+          "hide": false,
+          "legendFormat": "95th",
+          "range": true,
+          "refId": "A"
         }
       ],
       "title": "Key Block Latency Percentiles",
@@ -476,7 +705,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 24
       },
       "id": 5,
       "options": {
@@ -600,7 +829,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 24
       },
       "id": 6,
       "options": {
@@ -622,11 +851,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(aemon_block_latency_seconds_bucket{networkId=\"$networkId\", type=\"micro\"}[$__interval])) by (le))",
+          "expr": "  avg(rate(aemon_block_latency_seconds_sum{networkId=\"$networkId\", type=\"micro\"}[5m])/rate(aemon_block_latency_seconds_count{networkId=\"$networkId\", type=\"micro\"}[5m]))",
           "hide": false,
-          "legendFormat": "95th",
+          "legendFormat": "avg",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         },
         {
           "datasource": {
@@ -634,11 +863,23 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.75, sum(rate(aemon_block_latency_seconds_bucket{networkId=\"$networkId\", type=\"micro\"}[$__interval])) by (le))",
+          "expr": "histogram_quantile(0.75, sum(rate(aemon_block_latency_seconds_bucket{networkId=\"$networkId\", type=\"micro\"}[5m])) by (le))",
           "hide": false,
           "legendFormat": "75th",
           "range": true,
           "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(aemon_block_latency_seconds_bucket{networkId=\"$networkId\", type=\"micro\"}[5m])) by (le))",
+          "hide": false,
+          "legendFormat": "95th",
+          "range": true,
+          "refId": "A"
         }
       ],
       "title": "Micro Block Latency Percentiles",
@@ -685,6 +926,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Speed",
   "uid": "t75fbMQVz",
-  "version": 11,
+  "version": 16,
   "weekStart": ""
 }

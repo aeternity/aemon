@@ -228,9 +228,10 @@ export default class P2PScanner extends EventEmitter {
         this.logger.log('verbose', `Ping request`, {peer: connection.peer.url})
     }
 
-    onConnectionPong(connection, pong) {
+    onConnectionPong(connection, pong, responseSizeBytes) {
         const peer = connection.peer
-        const latency = (Date.now() - peer.lastPingTime) / 1000
+        const responseTime = (Date.now() - peer.lastPingTime) / 1000
+        const throughput = Math.round(responseSizeBytes / responseTime)
         const cntSharedPeers = pong.peers.length
 
         this.logger.log('verbose', 'Ping response', {peer: peer.url})
@@ -255,7 +256,8 @@ export default class P2PScanner extends EventEmitter {
             syncAllowed: Number(pong.syncAllowed)
         }, Number(pong.difficulty))
 
-        this.metrics.observe('peer_latency_seconds', {publicKey: peer.publicKey}, latency)
+        this.metrics.observe('peer_latency_seconds', {publicKey: peer.publicKey}, responseTime)
+        this.metrics.observe('peer_throughput_bytes', {publicKey: peer.publicKey}, throughput)
 
         connection.getInfo()
 

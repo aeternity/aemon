@@ -1,11 +1,12 @@
 import Constants from './Constants.js'
 
 export default class ResponseMessage {
-    constructor(success, messageType, errorReason, message) {
+    constructor(success, messageType, errorReason, message, size = 0) {
         this.success = !!success
         this.messageType = Number(messageType)
         this.errorReason = errorReason.toString()
         this.message = message
+        this.size = size
     }
 
     get name() {
