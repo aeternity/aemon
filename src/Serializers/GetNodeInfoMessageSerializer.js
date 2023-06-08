@@ -10,13 +10,13 @@ export default class GetNodeInfoMessageSerializer {
         this.encoder = encoder
     }
 
-    deserialize() {
-        return new GetNodeInfoMessage()
-    }
-
     serialize(message) {
         return [
             ...this.encoder.encodeField('int', message.vsn)
         ]
+    }
+
+    deserialize() {
+        return new GetNodeInfoMessage()
     }
 }

@@ -5,6 +5,7 @@ import PingMessage from '../src/Messages/PingMessage.js'
 import ResponseMessage from '../src/Messages/ResponseMessage.js'
 import FragmentMessage from '../src/Messages/FragmentMessage.js'
 import NodeInfoMessage from '../src/Messages/NodeInfoMessage.js'
+import GetGenerationMessage from '../src/Messages/GetGenerationMessage.js'
 import Peer from '../src/Peer.js'
 
 const serializer = new MessageSerializer()
@@ -126,7 +127,7 @@ test('Deserialize Response message', t => {
             new Peer('127.1.2.3', 3015n, {pub: 'pp_exntnJW9Xv7Yi779esBghuNJ7TG2DXU8BXdjRiNSgrqQw2JZT'})
         ]
     })
-    const response = new ResponseMessage(true, ping.tag, '', ping)
+    const response = new ResponseMessage(true, ping.tag, '', ping, 138)
 
     t.deepEqual(
         serializer.deserialize(new Uint8Array([
@@ -211,5 +212,43 @@ test('Deserialize Fragment message', t => {
             0x00, 0x00, 0x00, 0x03, 0x00, 0x05, 1, 2, 3
         ])),
         fragment
+    )
+})
+
+
+test('Serialize GetGeneration message', t => {
+    const message = new GetGenerationMessage({
+        hash: 'kh_rVfiLy7etewiFM3pRU5uAh2Has9m7HMYJH1psPYZHWQdDbi3b',
+        forward: false,
+    })
+
+    t.deepEqual(
+        serializer.serialize(message),
+        [
+            0,   8, 227,   1, 160, 112, 97, 254,  85,
+          187, 122, 167, 155,  35,  70, 15, 210, 159,
+          255,  80,  30, 164, 185, 140, 18,  72,  84,
+          141,   0, 120,   4, 196, 116, 72, 243,  64,
+            2,   0
+        ]
+    )
+})
+
+test('Deserialize GetGeneration message', t => {
+    const message = new GetGenerationMessage({
+        vsn: 1n,
+        hash: 'kh_rVfiLy7etewiFM3pRU5uAh2Has9m7HMYJH1psPYZHWQdDbi3b',
+        forward: false,
+    })
+
+    t.deepEqual(
+        serializer.deserialize(new Uint8Array([
+            0,   8, 227,   1, 160, 112, 97, 254,  85,
+          187, 122, 167, 155,  35,  70, 15, 210, 159,
+          255,  80,  30, 164, 185, 140, 18,  72,  84,
+          141,   0, 120,   4, 196, 116, 72, 243,  64,
+            2,   0
+        ])),
+        message
     )
 })

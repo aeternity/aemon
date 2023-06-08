@@ -13,6 +13,7 @@ import FragmentMessageSerializer from './Serializers/FragmentMessageSerializer.j
 import KeyBlockMessageSerializer from './Serializers/KeyBlockMessageSerializer.js'
 import MicroBlockMessageSerializer from './Serializers/MicroBlockMessageSerializer.js'
 import TransactionsMessageSerializer from './Serializers/TransactionsMessageSerializer.js'
+import GetGenerationMessageSerializer from './Serializers/GetGenerationMessageSerializer.js'
 
 export default class MessageSerializer {
     #serializers = {}
@@ -31,6 +32,7 @@ export default class MessageSerializer {
             [KeyBlockMessageSerializer.TAG]: new KeyBlockMessageSerializer(encoder),
             [MicroBlockMessageSerializer.TAG]: new MicroBlockMessageSerializer(encoder),
             [TransactionsMessageSerializer.TAG]: new TransactionsMessageSerializer(encoder),
+            [GetGenerationMessageSerializer.TAG]: new GetGenerationMessageSerializer(encoder),
         }
     }
 
