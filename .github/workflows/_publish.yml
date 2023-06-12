@@ -16,7 +16,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            aeternity/aemon
+            ${{ github.repository }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
