@@ -6,6 +6,9 @@ on:
       DOCKERHUB_PASS:
         required: true
 
+env:
+  DOCKER_IMAGE: aeternity/aemon
+
 jobs:
   dockerhub:
     name: "Publish to Dockehub"
@@ -16,7 +19,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ github.repository }}
+            ${{ env.DOCKER_IMAGE }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
