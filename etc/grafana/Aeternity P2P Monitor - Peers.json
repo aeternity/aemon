@@ -468,7 +468,37 @@
           },
           "mappings": []
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Value",
+                  "CHINANET-BACKBONE No.31,Jin-rong Street, CN (AS4134)",
+                  "N/A",
+                  "ASAHI-NET Asahi Net, JP (AS4685)",
+                  "HETZNER-AS, DE (AS24940)",
+                  "MNET-, BG (AS21230)"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
@@ -641,7 +671,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 502
+                "value": 555
               }
             ]
           },
@@ -788,6 +818,18 @@
                 "value": 62
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "version"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 167
+              }
+            ]
           }
         ]
       },
@@ -820,7 +862,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aemon_peer_status{networkId=\"$networkId\"} * on (publicKey) group_left(version, revision, vendor, os) aemon_peer_info{networkId=\"$networkId\"} or on (publicKey) aemon_peer_status{networkId=\"$networkId\"}",
+          "expr": "aemon_peer_status{networkId=\"$networkId\"} * on (instance, publicKey) group_left(version, revision, vendor, os) aemon_peer_info{networkId=\"$networkId\"} or on (instance, publicKey) aemon_peer_status{networkId=\"$networkId\"}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -874,8 +916,7 @@
               "owner": {
                 "aggregations": [
                   "last"
-                ],
-                "operation": "aggregate"
+                ]
               },
               "port": {
                 "aggregations": [
@@ -1167,7 +1208,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum without(__name__, Time, instance, job, country, networkId) (aemon_peer_status{networkId=\"$networkId\", lat!=\"0\", kind!=\"seed\"})",
+          "expr": "sum without(instance, __name__, Time, job, country, networkId) (aemon_peer_status{networkId=\"$networkId\", lat!=\"0\", kind!=\"seed\"})",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1297,6 +1338,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Peers",
   "uid": "I1jhkCL4k",
-  "version": 14,
+  "version": 18,
   "weekStart": ""
 }

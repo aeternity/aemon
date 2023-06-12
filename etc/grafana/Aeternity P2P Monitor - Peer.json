@@ -156,7 +156,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "avg_over_time(aemon_peer_status{publicKey=\"$publicKey\"}[24h])",
+          "expr": "avg_over_time((max by (publicKey) (aemon_peer_status{publicKey=\"$publicKey\"}))[24h:1m])",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -242,7 +242,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "aemon_peer_status{publicKey=\"$publicKey\"}",
+          "expr": "max(aemon_peer_status{publicKey=\"$publicKey\"})",
           "legendFormat": "{{host}}:{{port}}",
           "range": true,
           "refId": "A"
@@ -955,7 +955,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "aemon_peer_difficulty{publicKey=\"$publicKey\"}",
+          "expr": "max(aemon_peer_difficulty{publicKey=\"$publicKey\"})",
           "format": "time_series",
           "instant": false,
           "legendFormat": "difficulty",
@@ -1199,10 +1199,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 16,
-        "w": 24,
-        "x": 0,
-        "y": 26
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 18
       },
       "id": 19,
       "options": {
@@ -1384,6 +1384,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Peer",
   "uid": "nAjf9tLVk",
-  "version": 26,
+  "version": 30,
   "weekStart": ""
 }
