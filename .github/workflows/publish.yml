@@ -4,6 +4,8 @@ on:
   workflow_run:
     workflows: ["Validate"]
     types: [completed]
+    # branches: [ master ]
+    # tags: [ v* ]
 
 jobs:
   dockerhub:
@@ -16,7 +18,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ vars.GITHUB_REPOSITORY }}
+            ${{ env.GITHUB_REPOSITORY }}
           tags: |
             type=ref,event=branch
             type=semver,pattern=v{{version}}
