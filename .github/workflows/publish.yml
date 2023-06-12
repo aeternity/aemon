@@ -12,7 +12,7 @@ on:
 jobs:
   dockerhub:
     name: "Publish to Dockehub"
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-20.04
     steps:
       - name: Docker meta
