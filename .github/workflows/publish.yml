@@ -7,9 +7,6 @@ on:
     # branches: [ master ]
     # tags: [ v* ]
 
-env:
-  DOCKER_IMAGE: aeternity/aemon
-
 jobs:
   dockerhub:
     name: "Publish to Dockehub"
@@ -21,7 +18,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ env.DOCKER_IMAGE }}
+            aeternity/aemon
           tags: |
             type=ref,event=branch
             type=semver,pattern=v{{version}}
