@@ -5,6 +5,7 @@ import ResponseMessage from './Messages/ResponseMessage.js'
 import CloseMessage from './Messages/CloseMessage.js'
 import GetNodeInfoMessage from './Messages/GetNodeInfoMessage.js'
 import NodeInfoMessage from './Messages/NodeInfoMessage.js'
+import GetGenerationMessage from './Messages/GetGenerationMessage.js'
 
 export default class P2PConnection extends EventEmitter {
     constructor(direction, network, transportFactory, peer, socket) {
@@ -20,6 +21,11 @@ export default class P2PConnection extends EventEmitter {
         this.socket.on('error', this.onError.bind(this))
         this.socket.on('close', this.onClose.bind(this))   
         this.socket.on('end', this.onEnd.bind(this))
+
+        this.pingTimer = null
+        this.throughputTimer = null
+        this.lastPingTime = 0
+        this.lastGetGenesisTime = 0
     }
 
     setTimeout(milliseconds) {
@@ -46,6 +52,7 @@ export default class P2PConnection extends EventEmitter {
 
     disconnect() {
         clearInterval(this.pingTimer)
+        clearInterval(this.throughputTimer)
 
         this.stream.end(new CloseMessage())
         this.emit('disconnect')
@@ -102,13 +109,9 @@ export default class P2PConnection extends EventEmitter {
     handleResponse(response) {
         this.emit('response', response)
 
-        if (!response.success) {
-            this.logger.log('warn', 'Invalid response, closing connection', {response})
-            this.disconnect()
-        }
-
         if (response.message instanceof PingMessage) {
-            this.emit('pong', response.message, response.size)
+            this.handlePong(response.message, response.size)
+            // this.emit('pong', response.message, response.size)
         }
 
         if (response.message instanceof NodeInfoMessage) {
@@ -116,9 +119,16 @@ export default class P2PConnection extends EventEmitter {
         }
     }
 
+    handlePong(message, responseSizeBytes) {
+        const responseTime = (Date.now() - this.lastPingTime) / 1000
+        const throughput = Math.round(responseSizeBytes / responseTime)
+
+        this.emit('pong', message, {responseTime, throughput})
+    }
+
     // peer/protocol implementation
     ping(localPeer) {
-        this.peer.lastPingTime = Date.now()
+        this.lastPingTime = Date.now()
         this.send(this.createPing(localPeer))
     }
 
@@ -145,6 +155,16 @@ export default class P2PConnection extends EventEmitter {
         this.send(new GetNodeInfoMessage())
     }
 
+    getGenesis() {
+        this.lastGetGenesisTime = Date.now()
+        this.send(this.createGetGenesis())
+    }
+
+    startMeasureThroughput() {
+        this.getGenesis()
+        this.throughputTimer = setInterval(this.getGenesis.bind(this), 10e3)
+    }
+
     // factory methods
     createPing(localPeer) {
         return new PingMessage({
@@ -155,6 +175,14 @@ export default class P2PConnection extends EventEmitter {
             bestHash: this.network.bestHash,
             syncAllowed: false,
             peers: this.network.peers.slice(0, 32) //32 random sample ?
+        })
+    }
+
+    createGetGenesis() {
+        return new GetGenerationMessage({
+            // hash: this.network.genesisHash,
+            hash: 'kh_V4TWqeiVyzWQcoy7YDTbYSWV7NRB7x1bhN4XVkAaXQL2onHmx',
+            forward: false,
         })
     }
 }

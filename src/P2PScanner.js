@@ -222,16 +222,20 @@ export default class P2PScanner extends EventEmitter {
             {direction: 'received', type: response.type, errorReason: response.errorReason}
         )
         this.logger.log('debug', 'P2P response', {peer: connection.peer.url, response})
+
+        if (!response.success) {
+            this.logger.log('warn', `Error response "${response.errorReason}". Closing connection.`)
+            connection.disconnect()
+        }
     }
 
     onConnectionPing(connection, ping) {
         this.logger.log('verbose', `Ping request`, {peer: connection.peer.url})
     }
 
-    onConnectionPong(connection, pong, responseSizeBytes) {
+    onConnectionPong(connection, pong, info) {
         const peer = connection.peer
-        const responseTime = (Date.now() - peer.lastPingTime) / 1000
-        const throughput = Math.round(responseSizeBytes / responseTime)
+        const {responseTime, throughput} = info
         const cntSharedPeers = pong.peers.length
 
         this.logger.log('verbose', 'Ping response', {peer: peer.url})

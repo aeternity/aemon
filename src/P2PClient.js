@@ -24,6 +24,7 @@ export default class P2PClient extends EventEmitter {
 
         this.connection.on('connect', () => {
             this.connection.startPinging(this.localPeer)
+            this.connection.startMeasureThroughput()
         })
     }
 

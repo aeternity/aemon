@@ -919,13 +919,13 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Aeternity P2P Monitor - Speed",
   "uid": "t75fbMQVz",
-  "version": 16,
+  "version": 17,
   "weekStart": ""
 }

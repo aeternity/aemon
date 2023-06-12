@@ -120,7 +120,7 @@ export default class Encoder {
         const type = Object.keys(ObjectTags).find(key => ObjectTags[key] === tag)
 
         if (type === undefined) {
-            throw new Error('Unsupported tag: ' + tag)
+            throw new Error(`Unsupported object tag: ${tag}`)
         }
 
         if (!Structures.hasOwnProperty(type)) {
