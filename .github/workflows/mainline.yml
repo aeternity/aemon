@@ -1,0 +1,13 @@
+name: Mainline
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  validate:
+    uses: ./.github/workflows/_validate.yml
+  publish:
+    uses: ./.github/workflows/_publish.yml
+    needs: [ validate ]
+    secrets: inherit

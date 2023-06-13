@@ -1,0 +1,13 @@
+name: Release
+
+on:
+  push:
+    tags: [ v* ]
+
+jobs:
+  validate:
+    uses: ./.github/workflows/_validate.yml
+  publish:
+    uses: ./.github/workflows/_publish.yml
+    needs: [ validate ]
+    secrets: inherit
