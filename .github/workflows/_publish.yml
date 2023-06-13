@@ -1,14 +1,14 @@
-name: Publish Artifacts
-
 on:
-  workflow_run:
-    workflows: ["Validate"]
-    types: [completed]
+  workflow_call:
+    secrets:
+      DOCKERHUB_USER:
+        required: true
+      DOCKERHUB_PASS:
+        required: true
 
 jobs:
   dockerhub:
     name: "Publish to Dockehub"
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-20.04
     steps:
       - name: Docker meta
@@ -16,9 +16,10 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ vars.GITHUB_REPOSITORY }}
+            ${{ github.repository }}
           tags: |
             type=ref,event=branch
+            type=ref,event=pr
             type=semver,pattern=v{{version}}
 
       - name: Login to Dockerhub

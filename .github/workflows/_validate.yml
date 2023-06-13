@@ -1,10 +1,5 @@
-name: Validate
-
 on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+  workflow_call:
 
 jobs:
   build_test:
