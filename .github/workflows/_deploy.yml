@@ -1,0 +1,54 @@
+on:
+  workflow_call:
+    secrets:
+      DEPLOY_REPO_TOKEN:
+        required: true
+        default: ${{ secrets.BOT_GITHUB_TOKEN }}
+    inputs:
+      DEPLOY_REPO:
+        description: 'Gitops repository used to deploy'
+        type: string
+        required: true
+        default: aeternity/gitops-apps.git
+      DEPLOY_ENV:
+        description: 'Deploy environment name to deploy to'
+        type: string
+        required: true
+      DEPLOY_PATH:
+        description: 'Deploy path in gitops repository, usually the repository name'
+        type: string
+        required: true
+        default: ${{ github.event.repository.name }}
+      DEPLOY_URL_PREFIX:
+        description: 'URL prefix of the deployment'
+        type: string
+        required: false
+        default: ''
+
+# env:
+#   DEPLOY_REPO: aeternity/gitops-apps.git 
+
+jobs:
+  deploy:
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ inputs.DEPLOY_REPO }}
+          token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+          ref: ${{ inputs.DEPLOY_ENV }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Update Gitops repository
+        uses: aeternity/ae-github-actions/argocd-deploy@v4
+        with:
+          git-sha: ${{ github.sha }}
+          url-prefix: ${{ inputs.DEPLOY_URL_PREFIX }}
+          env: ${{ inputs.DEPLOY_ENV }}
+          app: ${{ inputs.DEPLOY_PATH }}
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          repository: ${{ inputs.DEPLOY_REPO }}
+          github_token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+          branch: ${{ inputs.DEPLOY_ENV }}

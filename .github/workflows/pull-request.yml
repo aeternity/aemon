@@ -7,3 +7,14 @@ on:
 jobs:
   validate:
     uses: ./.github/workflows/_validate.yml
+  publish:
+    uses: ./.github/workflows/_publish.yml
+    needs: [ validate ]
+    secrets: inherit
+  deploy:
+    uses: ./.github/workflows/_deploy.yml
+    needs: [publish]
+    secrets: inherit
+    with:
+      DEPLOY_ENV: dev
+      DEPLOY_URL_PREFIX: pr-${{ github.event.pull_request.number }}
