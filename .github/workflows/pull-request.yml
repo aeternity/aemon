@@ -11,10 +11,19 @@ jobs:
     uses: ./.github/workflows/_publish.yml
     needs: [ validate ]
     secrets: inherit
-  deploy:
+  deploy_testnet:
     uses: ./.github/workflows/_deploy.yml
     needs: [publish]
     secrets: inherit
     with:
       DEPLOY_ENV: dev
       DEPLOY_URL_PREFIX: pr-${{ github.event.pull_request.number }}
+      DEPLOY_PATH: ${{ github.event.repository.name }}-testnet
+  deploy_mainnet:
+    uses: ./.github/workflows/_deploy.yml
+    needs: [publish]
+    secrets: inherit
+    with:
+      DEPLOY_ENV: dev
+      DEPLOY_URL_PREFIX: pr-${{ github.event.pull_request.number }}
+      DEPLOY_PATH: ${{ github.event.repository.name }}-mainnet
