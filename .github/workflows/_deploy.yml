@@ -4,7 +4,7 @@ on:
       DEPLOY_REPO:
         description: 'Gitops repository used to deploy'
         type: string
-        default: aeternity/gitops-apps.git
+        default: aeternity/gitops-apps
       DEPLOY_ENV:
         description: 'Deploy environment name to deploy to'
         type: string
