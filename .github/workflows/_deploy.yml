@@ -1,9 +1,5 @@
 on:
   workflow_call:
-    secrets:
-      DEPLOY_REPO_TOKEN:
-        required: true
-        default: ${{ secrets.BOT_GITHUB_TOKEN }}
     inputs:
       DEPLOY_REPO:
         description: 'Gitops repository used to deploy'
@@ -36,7 +32,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: ${{ inputs.DEPLOY_REPO }}
-          token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
           ref: ${{ inputs.DEPLOY_ENV }}
           persist-credentials: false
           fetch-depth: 0
@@ -53,5 +49,5 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           repository: ${{ inputs.DEPLOY_REPO }}
-          github_token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+          github_token: ${{ secrets.BOT_GITHUB_TOKEN }}
           branch: ${{ inputs.DEPLOY_ENV }}
