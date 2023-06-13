@@ -30,25 +30,25 @@ on:
 
 jobs:
   deploy:
-      - uses: actions/checkout@v2
-        with:
-          repository: ${{ inputs.DEPLOY_REPO }}
-          token: ${{ secrets.DEPLOY_REPO_TOKEN }}
-          ref: ${{ inputs.DEPLOY_ENV }}
-          persist-credentials: false
-          fetch-depth: 0
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.DEPLOY_REPO }}
+        token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+        ref: ${{ inputs.DEPLOY_ENV }}
+        persist-credentials: false
+        fetch-depth: 0
 
-      - name: Update Gitops repository
-        uses: aeternity/ae-github-actions/argocd-deploy@v4
-        with:
-          git-sha: ${{ github.sha }}
-          url-prefix: ${{ inputs.DEPLOY_URL_PREFIX }}
-          env: ${{ inputs.DEPLOY_ENV }}
-          app: ${{ inputs.DEPLOY_PATH }}
+    - name: Update Gitops repository
+      uses: aeternity/ae-github-actions/argocd-deploy@v4
+      with:
+        git-sha: ${{ github.sha }}
+        url-prefix: ${{ inputs.DEPLOY_URL_PREFIX }}
+        env: ${{ inputs.DEPLOY_ENV }}
+        app: ${{ inputs.DEPLOY_PATH }}
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          repository: ${{ inputs.DEPLOY_REPO }}
-          github_token: ${{ secrets.DEPLOY_REPO_TOKEN }}
-          branch: ${{ inputs.DEPLOY_ENV }}
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        repository: ${{ inputs.DEPLOY_REPO }}
+        github_token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+        branch: ${{ inputs.DEPLOY_ENV }}
