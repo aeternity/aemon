@@ -4,7 +4,6 @@ on:
       DEPLOY_REPO:
         description: 'Gitops repository used to deploy'
         type: string
-        required: true
         default: aeternity/gitops-apps.git
       DEPLOY_ENV:
         description: 'Deploy environment name to deploy to'
@@ -13,7 +12,6 @@ on:
       DEPLOY_PATH:
         description: 'Deploy path in gitops repository, usually the repository name'
         type: string
-        required: true
         default: ${{ github.event.repository.name }}
       DEPLOY_URL_PREFIX:
         description: 'URL prefix of the deployment'
