@@ -11,19 +11,15 @@ jobs:
     uses: ./.github/workflows/_publish.yml
     needs: [ validate ]
     secrets: inherit
-  deploy_testnet:
+  deploy:
     uses: ./.github/workflows/_deploy.yml
     needs: [publish]
     secrets: inherit
+    strategy:
+      max-parallel: 1
+      matrix:
+        flavor: [testnet, mainnet]
     with:
       DEPLOY_ENV: dev
-      DEPLOY_APP: "${{ github.event.repository.name }}-testnet"
-      DEPLOY_VERSION: "pr-${{ github.event.pull_request.number }}"
-  deploy_mainnet:
-    uses: ./.github/workflows/_deploy.yml
-    needs: [publish, deploy_testnet]
-    secrets: inherit
-    with:
-      DEPLOY_ENV: dev
-      DEPLOY_APP: "${{ github.event.repository.name }}-mainnet"
+      DEPLOY_APP: "${{ github.event.repository.name }}-${{ matrix.flavor }}"
       DEPLOY_VERSION: "pr-${{ github.event.pull_request.number }}"
