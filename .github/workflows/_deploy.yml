@@ -5,22 +5,22 @@ on:
         description: 'Gitops repository used to deploy'
         type: string
         default: aeternity/gitops-apps
+      DEPLOY_APP:
+        description: 'Deploy application in gitops repository, usually the caller repository name'
+        type: string
+        default: ${{ github.event.repository.name }}
       DEPLOY_ENV:
         description: 'Deploy environment name to deploy to'
         type: string
         required: true
-      DEPLOY_PATH:
-        description: 'Deploy path in gitops repository, usually the repository name'
+      DEPLOY_VERSION:
+        description: 'Application version to deploy'
         type: string
-        default: ${{ github.event.repository.name }}
-      DEPLOY_URL_PREFIX:
-        description: 'URL prefix of the deployment'
+        required: true
+      DEPLOY_TAG:
+        description: 'Application tag to deploy'
         type: string
         required: false
-        default: ''
-
-# env:
-#   DEPLOY_REPO: aeternity/gitops-apps.git 
 
 jobs:
   deploy:
@@ -35,13 +35,38 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Update Gitops repository
-        uses: aeternity/ae-github-actions/argocd-deploy@v4
-        with:
-          git-sha: ${{ github.sha }}
-          url-prefix: ${{ inputs.DEPLOY_URL_PREFIX }}
-          env: ${{ inputs.DEPLOY_ENV }}
-          app: ${{ inputs.DEPLOY_PATH }}
+      - name: Configure git
+        shell: bash
+        run: |
+          git config --local user.email "$(git log --format='%ae' HEAD^!)"
+          git config --local user.name "$(git log --format='%an' HEAD^!)"
+
+      - name: Update application version in Gitops repository
+        if: ${{ inputs.DEPLOY_VERSION != '' }}
+        shell: bash
+        env:
+          APP_ENV: ${{ inputs.DEPLOY_ENV }}
+          APP_VERSION: ${{ inputs.DEPLOY_VERSION }}
+          APP_VERSION_SHA: ${{ github.sha }}
+        run: |
+          ./scripts/app.sh update-version ${{ inputs.DEPLOY_APP }}
+
+      - name: Update application tag in Gitops repository
+        if: ${{ inputs.DEPLOY_TAG != '' }}
+        shell: bash
+        env:
+          APP_ENV: ${{ inputs.DEPLOY_ENV }}
+          APP_VERSION: ${{ inputs.DEPLOY_TAG }}
+        run: |
+          ./scripts/app.sh update-tag ${{ inputs.DEPLOY_APP }}
+
+      - name: Commit Gitops changes
+        shell: bash
+        env:
+          APP_VERSION: ${{ inputs.DEPLOY_TAG || inputs.DEPLOY_VERSION }}
+        run: |
+          git add .
+          git commit -m "Deploy ${{ inputs.DEPLOY_APP }} to ${{ inputs.DEPLOY_ENV }} - ${APP_VERSION} (sha: ${{ github.sha }})"
 
       - name: Push changes
         uses: ad-m/github-push-action@master

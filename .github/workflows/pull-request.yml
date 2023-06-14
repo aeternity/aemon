@@ -17,13 +17,13 @@ jobs:
     secrets: inherit
     with:
       DEPLOY_ENV: dev
-      DEPLOY_URL_PREFIX: "pr-${{ github.event.pull_request.number }}"
-      DEPLOY_PATH: "${{ github.event.repository.name }}-testnet"
+      DEPLOY_APP: "${{ github.event.repository.name }}-testnet"
+      DEPLOY_VERSION: "pr-${{ github.event.pull_request.number }}"
   deploy_mainnet:
     uses: ./.github/workflows/_deploy.yml
     needs: [publish, deploy_testnet]
     secrets: inherit
     with:
       DEPLOY_ENV: dev
-      DEPLOY_URL_PREFIX: "pr-${{ github.event.pull_request.number }}"
-      DEPLOY_PATH: "${{ github.event.repository.name }}-mainnet"
+      DEPLOY_APP: "${{ github.event.repository.name }}-mainnet"
+      DEPLOY_VERSION: "pr-${{ github.event.pull_request.number }}"
