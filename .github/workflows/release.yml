@@ -11,3 +11,15 @@ jobs:
     uses: ./.github/workflows/_publish.yml
     needs: [ validate ]
     secrets: inherit
+  deploy:
+    uses: ./.github/workflows/_deploy.yml
+    needs: [publish]
+    secrets: inherit
+    strategy:
+      max-parallel: 1
+      matrix:
+        flavor: [testnet, mainnet]
+    with:
+      DEPLOY_ENV: dev
+      DEPLOY_APP: "${{ github.event.repository.name }}-${{ matrix.flavor }}"
+      DEPLOY_TAG: ${{ github.ref_name }}
