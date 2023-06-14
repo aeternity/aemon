@@ -16,7 +16,7 @@ on:
       DEPLOY_VERSION:
         description: 'Application version to deploy'
         type: string
-        required: true
+        required: false
       DEPLOY_TAG:
         description: 'Application tag to deploy'
         type: string
