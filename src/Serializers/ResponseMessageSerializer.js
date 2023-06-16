@@ -33,6 +33,9 @@ export default class ResponseMessageSerializer {
         const isSuccessful = this.encoder.decodeField('bool', success)
         const messageTag = Number(this.encoder.decodeField('int', messageType))
 
+        // console.log('RESPONSE MESSAGE:')
+        // console.dir(message, {maxArrayLength: null})
+
         // console.log('messageTag:', messageTag)
         return new ResponseMessage(
             isSuccessful,

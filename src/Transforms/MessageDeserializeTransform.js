@@ -20,7 +20,7 @@ export default class MessageDeserializeTransform extends stream.Transform {
             this.push(message)
             callback()
         } catch (e) {
-            callback(new SerializerError('SERIALIZE', chunk))
+            callback(new SerializerError('DESERIALIZE', chunk))
         }
     }
 }

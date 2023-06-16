@@ -9,6 +9,28 @@ const STRUCT = {
     forward: 'bool',
 }
 
+const FLAGS = {
+    KEY: 0x80000000,
+    INFO: 0x40000000
+}
+
+const KEY_BLOCK_STRUCT = {
+    version: ['uint_32', 4],
+    flags: ['uint_32', 4],
+    height: ['uint_64', 8],
+    prevHash: ['micro_block_hash', 32],
+    prevKeyHash: ['key_block_hash', 32],
+    stateHash: ['block_state_hash', 32],
+    miner: ['account_pubkey', 32],
+    beneficiary: ['account_pubkey', 32],
+    target: ['uint_32', 4],
+    pow: ['binary', 168],
+    nonce: ['uint_64', 8],
+    time: ['uint_64', 8],
+    // since Minerva variable based on INFO flag
+    // info: ['uint_32', 4]
+}
+
 export default class GenerationMessageSerializer {
     static get TAG() {
         return Constants.MSG_GENERATION
@@ -26,29 +48,24 @@ export default class GenerationMessageSerializer {
         // console.log('GENERATION MESSAGE:')
         // console.dir(data, {maxArrayLength: null})
         const objData = RLP.decode(data)
-        const [_vsn, keyBlockData, microBlocksData, forwardData] = RLP.decode(data)
+        const [_vsnData, keyBlockData, microBlocksData, forwardData] = RLP.decode(data)
         const forward = this.encoder.decodeField('bool', forwardData)
 
         // // struct based on version
         // const vsn = this.encoder.decodeField('int', objData[0])
         // const fields = this.encoder.decodeFields(objData, STRUCT)
 
-
-        const keyBlockStruct = {
+        const headStruct = {
             version: ['uint_32', 4],
-            flags: ['uint_32', 4],
-            height: ['uint_64', 8],
-            prevHash: ['micro_block_hash', 32],
-            prevKeyHash: ['key_block_hash', 32],
-            stateHash: ['block_state_hash', 32],
-            miner: ['account_pubkey', 32],
-            beneficiary: ['account_pubkey', 32],
-            target: ['uint_32', 4],
-            pow: ['binary', 168],
-            nonce: ['uint_64', 8],
-            time: ['uint_64', 8],
+            flags: ['uint_32', 4]
+        }
+
+        const {version, flags} = this.encoder.decode(keyBlockData, headStruct)
+
+        const keyBlockStruct = {...KEY_BLOCK_STRUCT}
+        if (Number(flags) & FLAGS.INFO) {
             //binary, but currently interpreted as int/node version
-            info: ['uint_32', 4]
+            keyBlockStruct.info = ['uint_32', 4]
         }
 
         const keyBlock = this.encoder.decode(keyBlockData, keyBlockStruct)
