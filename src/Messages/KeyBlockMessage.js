@@ -1,21 +1,11 @@
-import Constants from './Constants.js'
+import Message from './Message.js'
 
-export default class KeyBlockMessage {
+export default class KeyBlockMessage extends Message {
     constructor(fields) {
+        super('key_block')
+
         //@TODO validation ?
         this.fields = fields
-    }
-
-    get name() {
-        return 'key_block'
-    }
-
-    get tag() {
-        return Constants.MSG_KEY_BLOCK
-    }
-
-    get vsn() {
-        return Constants.KEY_BLOCK_VSN
     }
 
     get version() {

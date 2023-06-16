@@ -1,19 +1,9 @@
-import Constants from './Constants.js'
+import Message from './Message.js'
 
-export default class TransactionsMessage {
+export default class TransactionsMessage extends Message {
     constructor(transactions) {
+        super('txs')
+
         this.transactions = transactions
-    }
-
-    get name() {
-        return 'txs'
-    }
-
-    get tag() {
-        return Constants.MSG_TXS
-    }
-
-    get vsn() {
-        return Constants.TXS_VSN
     }
 }

@@ -4,7 +4,7 @@ import ResponseMessage from '../Messages/ResponseMessage.js'
 
 export default class ResponseMessageSerializer {
     static get TAG() {
-        return Constants.MSG_P2P_RESPONSE
+        return Constants.MSG_RESPONSE
     }
 
     constructor(encoder, serializer) {

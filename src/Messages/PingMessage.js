@@ -1,22 +1,11 @@
-import RLP from 'rlp'
-import Constants from './Constants.js'
+import Message from './Message.js'
 
-export default class PingMessage {
+export default class PingMessage extends Message {
     constructor(fields) {
+        super('ping')
+
         //@TODO validation ?
         this.fields = fields
-    }
-
-    get name() {
-        return 'ping'
-    }
-
-    get vsn() {
-        return Constants.PING_VSN
-    }
-
-    get tag() {
-        return Constants.MSG_PING
     }
 
     get port() {

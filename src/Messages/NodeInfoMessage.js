@@ -1,22 +1,11 @@
-import RLP from 'rlp'
-import Constants from './Constants.js'
+import Message from './Message.js'
 
-export default class NodeInfoMessage {
+export default class NodeInfoMessage extends Message {
     constructor(fields) {
+        super('node_info')
+
         //@TODO validation ?
         this.fields = fields
-    }
-
-    get name() {
-        return 'node_info'
-    }
-
-    get tag() {
-        return Constants.MSG_NODE_INFO
-    }
-
-    get vsn() {
-        return Constants.NODE_INFO_VSN
     }
 
     get version() {

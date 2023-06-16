@@ -1,6 +1,6 @@
 export default Object.freeze({
     MSG_FRAGMENT: 0,
-    MSG_P2P_RESPONSE: 100,
+    MSG_RESPONSE: 100,
     MSG_PING: 1,
     MSG_PING_RSP: 2,
     MSG_GET_HEADER_BY_HASH: 3,
@@ -24,6 +24,7 @@ export default Object.freeze({
     MSG_TX_POOL_SYNC_GET:    22,
     MSG_TX_POOL_SYNC_FINISH: 23,
 
+    FRAGMENT_VSN: 1,
     RESPONSE_VSN: 1,
     PING_VSN: 1,
     GET_MEMPOOL_VSN: 1,

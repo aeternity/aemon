@@ -1,24 +1,14 @@
-import Constants from './Constants.js'
+import Message from './Message.js'
 
-export default class ResponseMessage {
+export default class ResponseMessage extends Message {
     constructor(success, messageType, errorReason, message, size = 0) {
+        super('response')
+
         this.success = !!success
         this.messageType = Number(messageType)
         this.errorReason = errorReason.toString()
         this.message = message
         this.size = size
-    }
-
-    get name() {
-        return 'response'
-    }
-
-    get vsn() {
-        return Constants.RESPONSE_VSN
-    }
-
-    get tag() {
-        return Constants.MSG_P2P_RESPONSE
     }
 
     get type() {

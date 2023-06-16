@@ -1,20 +1,10 @@
-import Constants from './Constants.js'
+import Message from './Message.js'
 
-export default class GetGenerationMessage {
+export default class GetGenerationMessage extends Message {
     constructor(fields) {
+        super('get_generation')
+
         this.fields = fields
-    }
-
-    get name() {
-        return 'get_generation'
-    }
-
-    get tag() {
-        return Constants.MSG_GET_GENERATION
-    }
-
-    get vsn() {
-        return Constants.GET_GENERATION_VSN
     }
 
     get hash() {

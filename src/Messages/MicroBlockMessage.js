@@ -1,21 +1,11 @@
-import Constants from './Constants.js'
+import Message from './Message.js'
 
-export default class MicroBlockMessage {
+export default class MicroBlockMessage extends Message {
     constructor(fields) {
+        super('micro_block')
+
         //@TODO validation ?
         this.fields = fields
-    }
-
-    get name() {
-        return 'micro_block'
-    }
-
-    get tag() {
-        return Constants.MSG_MICRO_BLOCK
-    }
-
-    get vsn() {
-        return Constants.MICRO_BLOCK_VSN
     }
 
     get version() {
