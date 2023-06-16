@@ -1,5 +1,6 @@
 import stream from 'stream'
 import MessageSerializer from '../MessageSerializer.js'
+import SerializerError from '../SerializerError.js'
 
 export default class MessageDeserializeTransform extends stream.Transform {
     constructor(options) {
@@ -17,10 +18,9 @@ export default class MessageDeserializeTransform extends stream.Transform {
             // console.log('Deserialized message: ')
             // console.dir(message, {depth: null})
             this.push(message)
+            callback()
         } catch (e) {
-            console.error('Serializer error', e)
+            callback(new SerializerError('SERIALIZE', chunk))
         }
-
-        callback()
     }
 }

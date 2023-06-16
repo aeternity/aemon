@@ -221,10 +221,15 @@ export default class P2PScanner extends EventEmitter {
             'responses_total',
             {direction: 'received', type: response.type, errorReason: response.errorReason}
         )
+
         this.logger.log('debug', 'P2P response', {peer: connection.peer.url, response})
 
         if (!response.success) {
-            this.logger.log('warn', `Error response "${response.errorReason}". Closing connection.`)
+            this.logger.log(
+                'warn',
+                `Error response "${response.errorReason}". Closing connection.`,
+                {peer: connection.peer.url}
+            )
             connection.disconnect()
         }
     }

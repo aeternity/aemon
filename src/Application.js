@@ -16,7 +16,7 @@ const createKeyPair = (argv, logger) => {
     let keypair = {pub: argv.publicKey, prv: argv.privateKey}
 
     if (keypair.pub !== undefined) {
-        logger.log({level: 'info', message: 'Using static keypair', keypair})
+        logger.log('info', 'Using static keypair', {pub: keypair.pub})
         return keypair
     }
 
@@ -27,7 +27,7 @@ const createKeyPair = (argv, logger) => {
         prv: apiEncoder.encode('peer_pubkey', prv),
     }
 
-    logger.log('info', 'Keypair not provided, generating new', keypair)
+    logger.log('info', 'Keypair not provided, generating new', {pub: keypair.pub})
 
     return keypair
 }

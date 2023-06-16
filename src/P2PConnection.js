@@ -180,9 +180,8 @@ export default class P2PConnection extends EventEmitter {
 
     createGetGenesis() {
         return new GetGenerationMessage({
-            // hash: this.network.genesisHash,
-            hash: 'kh_V4TWqeiVyzWQcoy7YDTbYSWV7NRB7x1bhN4XVkAaXQL2onHmx',
-            forward: false,
+            hash: this.network.genesisHash,
+            forward: true,
         })
     }
 }
