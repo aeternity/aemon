@@ -21,6 +21,10 @@ on:
         description: 'Application tag to deploy'
         type: string
         required: false
+      DEPLOY_HOST_PREFIX:
+        description: 'Deployment hostname prefix, usually $VERSION-'
+        type: string
+        required: false
 
 jobs:
   deploy:
@@ -48,6 +52,7 @@ jobs:
           APP_ENV: ${{ inputs.DEPLOY_ENV }}
           APP_VERSION: ${{ inputs.DEPLOY_VERSION }}
           APP_VERSION_SHA: ${{ github.sha }}
+          APP_HOST_PREFIX: ${{ inputs.DEPLOY_HOST_PREFIX }}
         run: |
           ./scripts/app.sh update-version ${{ inputs.DEPLOY_APP }}
 
