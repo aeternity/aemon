@@ -18,9 +18,10 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
+        env: [dev, stg]
         flavor: [testnet, mainnet]
     with:
-      DEPLOY_ENV: dev
+      DEPLOY_ENV: ${{ matrix.env }}
       DEPLOY_APP: "${{ github.event.repository.name }}-${{ matrix.flavor }}"
       DEPLOY_VERSION: master
       DEPLOY_HOST_PREFIX: ""
