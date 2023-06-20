@@ -144,7 +144,7 @@
           "format": "heatmap",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{le}}",
           "range": true,
           "refId": "B"
         }
@@ -236,8 +236,8 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "  avg(rate(aemon_peer_throughput_bytes_sum{networkId=\"$networkId\"}[5m])/rate(aemon_peer_throughput_bytes_count{networkId=\"$networkId\"}[5m]))",
-          "hide": false,
+          "expr": "  avg(rate(aemon_peer_throughput_bytes_sum{networkId=\"$networkId\"}[10m])/rate(aemon_peer_throughput_bytes_count{networkId=\"$networkId\"}[10m]))",
+          "hide": true,
           "legendFormat": "avg",
           "range": true,
           "refId": "B"
@@ -349,7 +349,7 @@
           "format": "heatmap",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{le}}",
           "range": true,
           "refId": "B"
         }
@@ -442,7 +442,7 @@
           },
           "editorMode": "code",
           "expr": "  avg(rate(aemon_peer_latency_seconds_sum{networkId=\"$networkId\"}[5m])/rate(aemon_peer_latency_seconds_count{networkId=\"$networkId\"}[5m]))",
-          "hide": false,
+          "hide": true,
           "legendFormat": "avg",
           "range": true,
           "refId": "B"
@@ -554,7 +554,7 @@
           "format": "heatmap",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{le}}",
           "range": true,
           "refId": "B"
         }
@@ -759,7 +759,7 @@
           "format": "heatmap",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{le}}",
           "range": true,
           "refId": "B"
         }
@@ -926,6 +926,6 @@
   "timezone": "",
   "title": "Aeternity P2P Monitor - Speed",
   "uid": "t75fbMQVz",
-  "version": 17,
+  "version": 19,
   "weekStart": ""
 }
