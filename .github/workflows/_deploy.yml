@@ -54,7 +54,7 @@ jobs:
           APP_HOST_PREFIX: ${{ inputs.DEPLOY_HOST_PREFIX }}
           APP_VERSION_SHA_LONG: ${{ github.sha }}
         run: |
-          export APP_VERSION_SHA=${APP_VERSION_SHA_LONG::7}
+          export APP_VERSION_SHA=${APP_VERSION_SHA_LONG:0:7}
           ./scripts/app.sh update-version ${{ inputs.DEPLOY_APP }}
 
       - name: Update application tag in Gitops repository
