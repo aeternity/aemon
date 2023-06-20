@@ -42,8 +42,8 @@ jobs:
       - name: Configure git
         shell: bash
         run: |
-          git config --local user.email "$(git log --format='%ae' HEAD^!)"
-          git config --local user.name "$(git log --format='%an' HEAD^!)"
+          git config --local user.email "aeternity-bot@users.noreply.github.com"
+          git config --local user.name "github-actions"
 
       - name: Update application version in Gitops repository
         if: ${{ inputs.DEPLOY_VERSION != '' }}
@@ -51,8 +51,8 @@ jobs:
         env:
           APP_ENV: ${{ inputs.DEPLOY_ENV }}
           APP_VERSION: ${{ inputs.DEPLOY_VERSION }}
-          APP_VERSION_SHA_LONG: ${{ github.sha }}
           APP_HOST_PREFIX: ${{ inputs.DEPLOY_HOST_PREFIX }}
+          APP_VERSION_SHA_LONG: ${{ github.sha }}
         run: |
           export APP_VERSION_SHA=${APP_VERSION_SHA_LONG::7}
           ./scripts/app.sh update-version ${{ inputs.DEPLOY_APP }}
