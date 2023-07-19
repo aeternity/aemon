@@ -2,6 +2,11 @@ import RLP from 'rlp'
 import Constants from '../Messages/Constants.js'
 import TransactionsMessage from '../Messages/TransactionsMessage.js'
 
+const STRUCT = {
+    vsn: 'int',
+    transactions: ['object'],
+}
+
 export default class TransactionsMessageSerializer {
     static get TAG() {
         return Constants.MSG_TXS
@@ -16,8 +21,7 @@ export default class TransactionsMessageSerializer {
     }
 
     deserialize(data) {
-        const [_vsn, txsData] = RLP.decode(data)
-        const transactions = txsData.map(tx => this.encoder.decodeField('object', tx))
+        const {transactions} = this.encoder.deserialize(STRUCT, data)
 
         return new TransactionsMessage(transactions)
     }

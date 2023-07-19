@@ -1,5 +1,4 @@
 import RLP from 'rlp'
-import {FateApiEncoder} from '@aeternity/aepp-calldata'
 import Encoder from './Encoder.js'
 import Constants from './Messages/Constants.js'
 import Message from './Messages/Message.js'
@@ -21,7 +20,6 @@ export default class MessageSerializer {
 
     constructor() {
         const encoder = new Encoder()
-        const apiEncoder = new FateApiEncoder()
 
         this.#serializers = {
             [CloseMessageSerializer.TAG]: new CloseMessageSerializer(encoder),
@@ -63,11 +61,7 @@ export default class MessageSerializer {
             return this.encode(message)
         }
 
-        return [
-            0x0,
-            message.tag,
-            ...RLP.encode(this.encode(message))
-        ]
+        return this.encode(message)
     }
 
     deserialize(data) {

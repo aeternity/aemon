@@ -1,11 +1,10 @@
-import RLP from 'rlp'
 import Constants from '../Messages/Constants.js'
 import GenerationMessage from '../Messages/GenerationMessage.js'
 
 const STRUCT = {
     vsn: 'int',
-    keyBlock: 'object',
-    // microBlocks: ['binary'],
+    keyBlockData: 'binary',
+    microBlocksData: 'binary',
     forward: 'bool',
 }
 
@@ -41,19 +40,11 @@ export default class GenerationMessageSerializer {
     }
 
     serialize(message) {
-        return this.encoder.encodeFields(message, STRUCT)
+        throw new Error('Not implemented.')
     }
 
     deserialize(data) {
-        // console.log('GENERATION MESSAGE:')
-        // console.dir(data, {maxArrayLength: null})
-        const objData = RLP.decode(data)
-        const [_vsnData, keyBlockData, microBlocksData, forwardData] = RLP.decode(data)
-        const forward = this.encoder.decodeField('bool', forwardData)
-
-        // // struct based on version
-        // const vsn = this.encoder.decodeField('int', objData[0])
-        // const fields = this.encoder.decodeFields(objData, STRUCT)
+        const {keyBlockData, microBlocksData, forward} = this.encoder.deserialize(STRUCT, data)
 
         const headStruct = {
             version: ['uint_32', 4],

@@ -1,6 +1,10 @@
 import Constants from '../Messages/Constants.js'
 import CloseMessage from '../Messages/CloseMessage.js'
 
+const STRUCT = {
+    vsn: 'int',
+}
+
 export default class CloseMessageSerializer {
     static get TAG() {
         return Constants.MSG_CLOSE
@@ -10,13 +14,18 @@ export default class CloseMessageSerializer {
         this.encoder = encoder
     }
 
-    deserialize() {
-        return new CloseMessage()
+    serialize(message) {
+        return this.encoder.serialize(
+            Constants.MSG_CLOSE,
+            message.vsn,
+            STRUCT,
+            message
+        )
     }
 
-    serialize(message) {
-        return [
-            ...this.encoder.encodeField('int', message.vsn)
-        ]
+    deserialize(data) {
+        const fields = this.encoder.deserialize(STRUCT, data)
+
+        return new CloseMessage(fields)
     }
 }

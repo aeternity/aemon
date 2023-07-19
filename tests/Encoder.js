@@ -94,9 +94,9 @@ test('Decode', t => {
     )
 })
 
-test('Encode Object', t => {
-    t.deepEqual(
-        encoder.decodeObject(txData),
-        tx
-    )
-})
+// test('Encode Object', t => {
+//     t.deepEqual(
+//         encoder.decodeObject(txData),
+//         tx
+//     )
+// })

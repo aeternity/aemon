@@ -1,6 +1,10 @@
 import Constants from '../Messages/Constants.js'
 import GetNodeInfoMessage from '../Messages/GetNodeInfoMessage.js'
 
+const STRUCT = {
+    vsn: 'int',
+}
+
 export default class GetNodeInfoMessageSerializer {
     static get TAG() {
         return Constants.MSG_GET_NODE_INFO
@@ -11,12 +15,17 @@ export default class GetNodeInfoMessageSerializer {
     }
 
     serialize(message) {
-        return [
-            ...this.encoder.encodeField('int', message.vsn)
-        ]
+        return this.encoder.serialize(
+            Constants.MSG_GET_NODE_INFO,
+            message.vsn,
+            STRUCT,
+            message
+        )
     }
 
-    deserialize() {
-        return new GetNodeInfoMessage()
+    deserialize(data) {
+        const fields = this.encoder.deserialize(STRUCT, data)
+
+        return new GetNodeInfoMessage(fields)
     }
 }

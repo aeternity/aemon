@@ -28,6 +28,7 @@ test('Deserialize Close message', t => {
 
 test('Serialize Ping message', t => {
     const ping = new PingMessage({
+        vsn: 1n,
         port: 3015n,
         share: GOSSIPED_PEERS_COUNT,
         genesisHash: 'kh_pbtwgLrNu23k9PA6XCZnUbtsvEFeQGgavY4FS2do3QP8kcp2z',
@@ -85,6 +86,7 @@ test('Deserialize Ping message', t => {
 
 test('Serialize Response message', t => {
     const ping = new PingMessage({
+        vsn: 1n,
         port: 3015n,
         share: GOSSIPED_PEERS_COUNT,
         genesisHash: 'kh_pbtwgLrNu23k9PA6XCZnUbtsvEFeQGgavY4FS2do3QP8kcp2z',

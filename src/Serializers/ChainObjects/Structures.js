@@ -1,6 +1,6 @@
 export default Object.freeze({
     SIGNED_TX: {
-        signatures: 'signature',
+        signatures: ['signature'],
         transaction: 'object',
     },
     SPEND_TX: {

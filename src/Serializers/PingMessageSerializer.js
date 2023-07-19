@@ -11,12 +11,12 @@ const STRUCT = {
     difficulty: 'int',
     bestHash: 'key_block_hash',
     syncAllowed: 'bool',
-}
-
-const PEER_STRUCT = {
-    host: 'string',
-    port: 'int',
-    publicKey: 'peer_pubkey',
+    peers: 'binary',
+    peers: [{
+        host: 'string',
+        port: 'int',
+        publicKey: 'peer_pubkey',
+    }]
 }
 
 export default class PingMessageSerializer {
@@ -29,27 +29,18 @@ export default class PingMessageSerializer {
     }
 
     serialize(message) {
-        const peers = message.peers.map(peer => RLP.encode(this.encoder.encodeFields(peer, PEER_STRUCT)))
-
-        return [
-            ...this.encoder.encodeFields(message, STRUCT),
-            peers
-        ]
+        return this.encoder.serialize(
+            Constants.MSG_PING,
+            message.vsn,
+            STRUCT,
+            message
+        )
     }
 
     deserialize(data) {
-        const objData = RLP.decode(data)
-        // // struct based on version
-        // const vsn = this.encoder.decodeField('int', objData[0])
-        const fields = this.encoder.decodeFields(objData, STRUCT)
-        fields.peers = objData[7].map(peer => this.deserializePeer(peer))
+        const fields = this.encoder.deserialize(STRUCT, data)
+        fields.peers = fields.peers.map(({host, port, publicKey: pub}) => new Peer(host, port, {pub}))
 
         return new PingMessage(fields)
-    }
-
-    deserializePeer(data) {
-        const {host, port, publicKey: pub} = this.encoder.decodeFields(RLP.decode(data), PEER_STRUCT)
-
-        return new Peer(host, port, {pub})
     }
 }

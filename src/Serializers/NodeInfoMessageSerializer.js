@@ -1,4 +1,3 @@
-import RLP from 'rlp'
 import Constants from '../Messages/Constants.js'
 import NodeInfoMessage from '../Messages/NodeInfoMessage.js'
 
@@ -23,14 +22,16 @@ export default class NodeInfoMessageSerializer {
     }
 
     serialize(message) {
-        return this.encoder.encodeFields(message, STRUCT)
+        return this.encoder.serialize(
+            Constants.MSG_NODE_INFO,
+            message.vsn,
+            STRUCT,
+            message
+        )
     }
 
     deserialize(data) {
-        const objData = RLP.decode(data)
-        // // struct based on version
-        // const vsn = this.encoder.decodeField('int', objData[0])
-        const fields = this.encoder.decodeFields(objData, STRUCT)
+        const fields = this.encoder.deserialize(STRUCT, data)
 
         return new NodeInfoMessage(fields)
     }

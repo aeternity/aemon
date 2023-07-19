@@ -31,6 +31,7 @@ export default class PrimitivesEncoder {
 
         this.decoders = {
             int: this.decodeInt,
+            uint_16: this.decodeInt,
             uint_32: this.decodeInt,
             uint_64: this.decodeInt,
             bool: this.decodeBool,
@@ -41,6 +42,7 @@ export default class PrimitivesEncoder {
 
         this.encoders = {
             int: this.encodeInt,
+            uint_16: (value) => this.encodeTypedInt('uint_16', value),
             uint_32: (value) => this.encodeTypedInt('uint_32', value),
             uint_64: (value) => this.encodeTypedInt('uint_64', value),
             bool: this.encodeBool,
@@ -49,10 +51,18 @@ export default class PrimitivesEncoder {
         }
     }
 
+    supports(type) {
+        return this.decoders.hasOwnProperty(type)
+    }
+
     encode(type, value) {
+        if (!this.encoders.hasOwnProperty(type)) {
+            throw new Error('Unsupported encoder type: ' + type)
+        }
+
         const encoder = this.encoders[type]
 
-        return encoder(value)
+        return (Array.isArray(value)) ? value.map(v => encoder(v)) : encoder(value)
     }
 
     decode(type, value) {
@@ -73,6 +83,10 @@ export default class PrimitivesEncoder {
         let dataView
 
         switch (type) {
+            case 'uint_16':
+                dataView = new DataView(new ArrayBuffer(2))
+                dataView.setUint16(0, Number(value))
+                break;
             case 'uint_32':
                 dataView = new DataView(new ArrayBuffer(4))
                 dataView.setUint32(0, Number(value))

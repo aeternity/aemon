@@ -1,16 +1,24 @@
 import RLP from 'rlp'
 import {FateApiEncoder} from '@aeternity/aepp-calldata'
 import PrimitivesEncoder from './PrimitivesEncoder.js'
+import ObjectSerializer from './ObjectSerializer.js'
 import Structures from './Serializers/ChainObjects/Structures.js'
 import ChainObject from './ChainObjects/ChainObject.js'
 import ObjectTags from './ChainObjects/ObjectTags.js'
+import ChainObjectSerializer from './ChainObjectSerializer.js'
+import SerializerTemplate from './SerializerTemplate.js'
+
+const objMap = (obj, fn) => {
+    return Object.fromEntries(Object.entries(obj).map(([k, v]) => {
+        return [k, fn(k, v)]
+    }))
+}
 
 export default class Encoder {
     constructor() {
-        this.textEnoder = new TextEncoder()
-        this.textDecoder = new TextDecoder()
         this.apiEncoder = new FateApiEncoder()
         this.primEncoder = new PrimitivesEncoder(this.apiEncoder)
+        this.objectSerializer = new ObjectSerializer()
 
         this.decoders = {
             key_block_hash: (value) => this.apiEncoder.encode('key_block_hash', value),
@@ -22,7 +30,7 @@ export default class Encoder {
             peer_pubkey: (value) => this.apiEncoder.encode('peer_pubkey', value),
             account_pubkey: (value) => this.apiEncoder.encode('account_pubkey', value),
             bytearray: (value) => this.apiEncoder.encode('bytearray', value),
-            object: (value) => this.decodeObject(value),
+            object: (value) => this.chainObjectSerializer.deserialize(value),
         }
 
         this.encoders = {
@@ -36,14 +44,33 @@ export default class Encoder {
             account_pubkey: (value) => this.apiEncoder.decode(value),
             bytearray: (value) => this.apiEncoder.decode(value),
         }
+
+        this.serializerTemplate = new SerializerTemplate(this.encoders, this.decoders)
+        this.chainObjectSerializer = new ChainObjectSerializer(this.serializerTemplate)
     }
 
+    serialize(tag, vsn, template, fields) {
+        const binaryFields = this.serializerTemplate.fieldsToBinary(template, fields)
+        const serializerTemplate = this.serializerTemplate.getTemplate(template)
+
+        return this.objectSerializer.serialize(tag, vsn, serializerTemplate, binaryFields)
+    }
+
+    deserialize(template, binaryData) {
+        const deserializerTemplate = this.serializerTemplate.getTemplate(template)
+        const data = this.objectSerializer.deserialize(deserializerTemplate, binaryData)
+
+        return this.serializerTemplate.binaryToFields(template, data)
+    }
+
+    //split to own class?
+    //convert to supported by ObjectSerializer structure and reuse it?
     encode(data, fields) {
         let chunks = []
 
         for (const field in fields) {
             const [type, _size] = fields[field]
-            const encoded = this.encodeField(type, data[field])
+            const encoded = this.#encodeField(type, data[field])
 
             chunks.push(encoded)
         }
@@ -57,25 +84,24 @@ export default class Encoder {
 
         for (const field in fields) {
             const [type, size] = fields[field]
-            // console.log('DECODE FIELD:', type, size, field, data.slice(idx, idx+size))
-            chunks[field] = this.decodeField(type, data.slice(idx, idx+size))
+            chunks[field] = this.#decodeField(type, data.slice(idx, idx+size))
             idx += size
         }
 
         return chunks
     }
 
-    encodeField(type, value) {
+    #encodeField(type, value) {
         if (this.encoders.hasOwnProperty(type)) {
             const encoder = this.encoders[type]
 
-            return encoder(value)
+            return (Array.isArray(type)) ? value.map(v => encoder(v)) : encoder(value)
         }
 
         return this.primEncoder.encode(type, value)
     }
 
-    decodeField(type, value) {
+    #decodeField(type, value) {
         if (this.decoders.hasOwnProperty(type)) {
             const decoder = this.decoders[type]
 
@@ -83,53 +109,5 @@ export default class Encoder {
         }
 
         return this.primEncoder.decode(type, value)
-    }
-
-    encodeFields(data, fields) {
-        const chunks = []
-
-        for (const field in fields) {
-            const type = fields[field]
-            const encoded = this.encodeField(type, data[field])
-            // console.log('ENCODE FIELD:', type, data[field], encoded)
-
-            chunks.push(encoded)
-        }
-
-        return chunks
-    }
-
-    decodeFields(data, fields) {
-        // console.log('STRUCT:', data, fields)
-        let chunks = {}
-        let idx = 0
-
-        for (const field in fields) {
-            const type = fields[field]
-            // console.log('DECODE STRUC FIELD:', type, field, data[idx])
-            chunks[field] = this.decodeField(type, data[idx])
-            idx++
-        }
-
-        return chunks
-    }
-
-    decodeObject(data) {
-        const [tagData, _version, ...rest] = RLP.decode(data)
-        const tag = Number(this.decodeField('int', tagData))
-        const type = Object.keys(ObjectTags).find(key => ObjectTags[key] === tag)
-
-        if (type === undefined) {
-            throw new Error(`Unsupported object tag: ${tag}`)
-        }
-
-        if (!Structures.hasOwnProperty(type)) {
-            return new ChainObject(type.toLowerCase(), {})
-            // throw new Error('Unsupported type: ' + type)
-        }
-
-        const fields = this.decodeFields(rest, Structures[type])
-
-        return new ChainObject(type.toLowerCase(), fields)
     }
 }
