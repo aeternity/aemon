@@ -23,6 +23,7 @@ const ByteArray2Int = (data) => {
     return BigInt('0x' + hex.join(''))
 }
 
+// this is overlaping with general calldata Serializer with some extras: uint_* and id
 export default class PrimitivesEncoder {
     constructor() {
         this.textEnoder = new TextEncoder()
