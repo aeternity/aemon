@@ -1,5 +1,6 @@
 import RLP from 'rlp'
 import Encoder from './Encoder.js'
+import ObjectSerializer from './ObjectSerializer.js'
 import Constants from './Messages/Constants.js'
 import Message from './Messages/Message.js'
 import FragmentMessage from './Messages/FragmentMessage.js'
@@ -15,12 +16,15 @@ import TransactionsMessageSerializer from './Serializers/TransactionsMessageSeri
 import GetGenerationMessageSerializer from './Serializers/GetGenerationMessageSerializer.js'
 import GenerationMessageSerializer from './Serializers/GenerationMessageSerializer.js'
 
+// composite serializer that also handles message tags
 export default class MessageSerializer {
     #serializers = {}
 
     constructor() {
         const encoder = new Encoder()
+        const objectSerializer = new ObjectSerializer()
 
+        // serializers knows about message structure and handle custom serialization
         this.#serializers = {
             [CloseMessageSerializer.TAG]: new CloseMessageSerializer(encoder),
             [PingMessageSerializer.TAG]: new PingMessageSerializer(encoder),
@@ -48,20 +52,16 @@ export default class MessageSerializer {
         return this.#serializers[tag]
     }
 
-    encode(message) {
-        return this.#getSerializer(message.tag).serialize(message)
-    }
-
-    decode(tag, data) {
-        return this.#getSerializer(tag).deserialize(data)
-    }
-
     serialize(message) {
         if (message instanceof FragmentMessage) {
-            return this.encode(message)
+            return this.#getSerializer(message.tag).serialize(message)
         }
 
-        return this.encode(message)
+        return [
+            0x0,
+            message.tag,
+            ...this.#getSerializer(message.tag).serialize(message)
+        ]
     }
 
     deserialize(data) {
@@ -69,7 +69,7 @@ export default class MessageSerializer {
         const rest = data.slice(2)
 
         if (this.#supports(tag)) {
-            return this.decode(tag, rest)
+            return this.#getSerializer(tag).deserialize(rest)
         }
 
         // Build a base message for statistic purposes

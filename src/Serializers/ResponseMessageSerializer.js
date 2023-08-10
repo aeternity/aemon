@@ -22,7 +22,7 @@ export default class ResponseMessageSerializer {
 
     serialize(data) {
         // serialize message without the tag (for some reason!? because the response carry the tag?!)
-        const message = new Uint8Array(this.serializer.encode(data.message).slice(2))
+        const message = new Uint8Array(this.serializer.serialize(data.message).slice(2))
         const response = {...data, message}
 
         return this.encoder.serialize(
@@ -35,12 +35,18 @@ export default class ResponseMessageSerializer {
 
     deserialize(data) {
         const {_vsn, success, messageType, errorReason, message} = this.encoder.deserialize(STRUCT, data)
+        let decodedMessage = null
+
+        if (success) {
+            const messageBin = new Uint8Array([0x0, Number(messageType), ...message])
+            decodedMessage = this.serializer.deserialize(messageBin)
+        }
 
         return new ResponseMessage(
             success,
             messageType,
             errorReason,
-            success ? this.serializer.decode(messageType, message) : null,
+            decodedMessage,
             data.length,
         )
     }

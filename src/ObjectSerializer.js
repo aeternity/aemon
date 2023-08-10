@@ -5,10 +5,13 @@ import Structures from './Serializers/ChainObjects/Structures.js'
 import ChainObject from './ChainObjects/ChainObject.js'
 import ObjectTags from './ChainObjects/ObjectTags.js'
 
+/**
+ * Object serialization according to a types template that takes care for tags and vsn.
+ * Also supports encode and decode data fields according to a template.
+ *
+*/
 export default class ObjectSerializer {
     constructor() {
-        this.textEnoder = new TextEncoder()
-        this.textDecoder = new TextDecoder()
         this.primEncoder = new PrimitivesEncoder(new FateApiEncoder())
     }
 
@@ -17,16 +20,19 @@ export default class ObjectSerializer {
     }
 
     serialize(tag, vsn, template, fields) {
-        const allFields = {tag, ...fields}
-        const data = this.encodeFields(allFields, template)
+        const allFields = {tag, vsn, ...fields}
+        const fullTemplate = {tag: 'int', vsn: 'int', ...template}
+        const data = this.encodeFields(allFields, fullTemplate)
 
-        return [0x0, tag, ...RLP.encode(data)]
+        return [...RLP.encode(data)]
     }
 
     deserialize(template, data) {
         const objData = RLP.decode(data)
+        const fullTemplate = {tag: 'int', vsn: 'int', ...template}
+        const {tag, vsn, ...fields} = this.decodeFields(objData, fullTemplate)
 
-        return this.decodeFields(objData, template)
+        return fields
     }
 
     deserializeHeader(data) {
@@ -63,6 +69,13 @@ export default class ObjectSerializer {
         return this.primEncoder.decode(type, value)
     }
 
+    /**
+     * Encode data fields according to a template
+     *
+     * @param {object} data - An object with field => value items
+     * @param {object} template - An object with field => type items
+     * @returns {array} A poisioned array of encoded fields with preserved order
+    */
     encodeFields(data, template) {
         const chunks = []
 
@@ -76,6 +89,13 @@ export default class ObjectSerializer {
         return chunks
     }
 
+    /**
+     * Decode data fields according to a template
+     *
+     * @param {array} data - An array with positioned values according to the template
+     * @param {object} template - An object with field => type items
+     * @returns {object} An object with decoded field => value items
+    */
     decodeFields(data, template) {
         let chunks = {}
         let idx = 0

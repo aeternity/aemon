@@ -52,13 +52,15 @@ export default class Encoder {
     serialize(tag, vsn, template, fields) {
         const binaryFields = this.serializerTemplate.fieldsToBinary(template, fields)
         const serializerTemplate = this.serializerTemplate.getTemplate(template)
+        const serializedFields = this.objectSerializer.encodeFields(binaryFields, serializerTemplate)
 
-        return this.objectSerializer.serialize(tag, vsn, serializerTemplate, binaryFields)
+        return RLP.encode(serializedFields)
     }
 
     deserialize(template, binaryData) {
+        const fieldsBin = RLP.decode(binaryData)
         const deserializerTemplate = this.serializerTemplate.getTemplate(template)
-        const data = this.objectSerializer.deserialize(deserializerTemplate, binaryData)
+        const data = this.objectSerializer.decodeFields(fieldsBin, deserializerTemplate)
 
         return this.serializerTemplate.binaryToFields(template, data)
     }

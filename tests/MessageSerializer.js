@@ -84,6 +84,26 @@ test('Deserialize Ping message', t => {
     )
 })
 
+test('Serialize Close Response message', t => {
+    const msg = new CloseMessage()
+    const response = new ResponseMessage(true, msg.tag, '', msg)
+
+    t.deepEqual(
+        serializer.serialize(response),
+        [0, 100, 199,1,1,127,128,130,193,1]
+    )
+})
+
+test('Deserialize Close Response message', t => {
+    const msg = new CloseMessage()
+    const response = new ResponseMessage(true, msg.tag, '', msg, 8)
+
+    t.deepEqual(
+        serializer.deserialize(new Uint8Array([0, 100, 199,1,1,127,128,130,193,1])),
+        response
+    )
+})
+
 test('Serialize Response message', t => {
     const ping = new PingMessage({
         vsn: 1n,

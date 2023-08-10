@@ -63,7 +63,7 @@ test('P2P client/server', t => {
 test('Sets remote peer public key from existing peers database', t => {
     const {network, clientPeer, serverPeer} = fixtures()
 
-    const existingPeer = new Peer('::1', clientPeer.port, clientPeer.keypair)
+    const existingPeer = new Peer('127.0.0.1', clientPeer.port, clientPeer.keypair)
     network.addPeer(existingPeer)
 
     const client = new P2PClient(network, clientPeer, serverPeer)
