@@ -123,7 +123,6 @@ export default class P2PScanner extends EventEmitter {
 
     addPeer(peer, cb = () => {}) {
         this.logger.log('verbose', 'Added peer', {peer: peer.url})
-
         this.metrics.inc('network_peers')
         this.locationProvider.updatePeerLocation(peer, () => cb(peer))
     }

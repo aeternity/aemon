@@ -28,7 +28,6 @@ export default class PrimitivesEncoder {
     constructor() {
         this.textEnoder = new TextEncoder()
         this.textDecoder = new TextDecoder()
-        this.apiEncoder = new FateApiEncoder()
 
         this.decoders = {
             int: this.decodeInt,
@@ -38,7 +37,6 @@ export default class PrimitivesEncoder {
             bool: this.decodeBool,
             string: this.decodeString.bind(this),
             binary: this.decodeBinary,
-            id: this.decodeId.bind(this),
         }
 
         this.encoders = {
@@ -73,6 +71,7 @@ export default class PrimitivesEncoder {
 
         const decoder = this.decoders[type]
 
+        // console.log('decode', type, value)
         return (Array.isArray(value)) ? value.map(v => decoder(v)) : decoder(value)
     }
 
@@ -159,26 +158,5 @@ export default class PrimitivesEncoder {
         }
 
         return buffer
-    }
-
-    decodeId(value) {
-        const [tag, ...rest] = value
-
-        switch (tag) {
-            case 1:
-                return this.apiEncoder.encode('account_pubkey', rest)
-            case 2:
-                return this.apiEncoder.encode('name', rest)
-            case 3:
-                return this.apiEncoder.encode('commitment', rest)
-            case 4:
-                return this.apiEncoder.encode('oracle_pubkey', rest)
-            case 5:
-                return this.apiEncoder.encode('contract_pubkey', rest)
-            case 6:
-                return this.apiEncoder.encode('channel', rest)
-            default:
-                throw new Error('Unsupported ID tag: ' + tag)
-        }
     }
 }

@@ -1,5 +1,5 @@
 import stream from 'stream'
-import MessageSerializer from '../MessageSerializer.js'
+import MessageEncoder from '../MessageEncoder.js'
 import SerializerError from '../SerializerError.js'
 
 export default class MessageSerializeTransform extends stream.Transform {
@@ -8,14 +8,13 @@ export default class MessageSerializeTransform extends stream.Transform {
             objectMode: true,
         })
 
-        this.serializer = new MessageSerializer()
+        this.encoder = new MessageEncoder()
     }
 
     _transform(message, encoding, callback) {
         try {
             // console.log('DEBUG: message:', message)
-            const serialized = this.serializer.serialize(message)
-            // console.log('Serialized message: ', serialized)
+            const serialized = this.encoder.encode(message)
             this.push(serialized)
             callback()
         } catch (e) {

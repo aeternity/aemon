@@ -1,14 +1,14 @@
 import Message from './Message.js'
 
 export default class ResponseMessage extends Message {
-    constructor(success, messageType, errorReason, message, size = 0) {
+    constructor(fields) {
         super('response')
 
-        this.success = !!success
-        this.messageType = Number(messageType)
-        this.errorReason = errorReason.toString()
-        this.message = message
-        this.size = size
+        //@TODO validation ?
+        Object.assign(this, fields)
+        this.messageType = Number(this.messageType || this.message.tag)
+        this.success = !!this.success
+        this.errorReason = (this.errorReason || '').toString()
     }
 
     get type() {

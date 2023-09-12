@@ -1,9 +1,9 @@
 import Message from './Message.js'
 
 export default class TransactionsMessage extends Message {
-    constructor(transactions) {
+    constructor(fields) {
         super('txs')
 
-        this.transactions = transactions
+        Object.assign(this, fields)
     }
 }

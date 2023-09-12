@@ -1,42 +1,20 @@
-import RLP from 'rlp'
-import Encoder from './Encoder.js'
-import ObjectSerializer from './ObjectSerializer.js'
-import Constants from './Messages/Constants.js'
-import Message from './Messages/Message.js'
-import FragmentMessage from './Messages/FragmentMessage.js'
-import CloseMessageSerializer from './Serializers/CloseMessageSerializer.js'
-import PingMessageSerializer from './Serializers/PingMessageSerializer.js'
+import MessageFieldsEncoder from './MessageFieldsEncoder.js'
+import MessageFactory from './MessageFactory.js'
 import ResponseMessageSerializer from './Serializers/ResponseMessageSerializer.js'
-import GetNodeInfoMessageSerializer from './Serializers/GetNodeInfoMessageSerializer.js'
-import NodeInfoMessageSerializer from './Serializers/NodeInfoMessageSerializer.js'
 import FragmentMessageSerializer from './Serializers/FragmentMessageSerializer.js'
-import KeyBlockMessageSerializer from './Serializers/KeyBlockMessageSerializer.js'
-import MicroBlockMessageSerializer from './Serializers/MicroBlockMessageSerializer.js'
-import TransactionsMessageSerializer from './Serializers/TransactionsMessageSerializer.js'
-import GetGenerationMessageSerializer from './Serializers/GetGenerationMessageSerializer.js'
-import GenerationMessageSerializer from './Serializers/GenerationMessageSerializer.js'
 
 // composite serializer that also handles message tags
 export default class MessageSerializer {
     #serializers = {}
 
     constructor() {
-        const encoder = new Encoder()
-        const objectSerializer = new ObjectSerializer()
+        this.factory = new MessageFactory()
+        this.fieldsEncoder = new MessageFieldsEncoder()
 
         // serializers knows about message structure and handle custom serialization
         this.#serializers = {
-            [CloseMessageSerializer.TAG]: new CloseMessageSerializer(encoder),
-            [PingMessageSerializer.TAG]: new PingMessageSerializer(encoder),
-            [ResponseMessageSerializer.TAG]: new ResponseMessageSerializer(encoder, this),
-            [GetNodeInfoMessageSerializer.TAG]: new GetNodeInfoMessageSerializer(encoder),
-            [NodeInfoMessageSerializer.TAG]: new NodeInfoMessageSerializer(encoder),
+            [ResponseMessageSerializer.TAG]: new ResponseMessageSerializer(this.fieldsEncoder, this.factory),
             [FragmentMessageSerializer.TAG]: new FragmentMessageSerializer(),
-            [KeyBlockMessageSerializer.TAG]: new KeyBlockMessageSerializer(encoder),
-            [MicroBlockMessageSerializer.TAG]: new MicroBlockMessageSerializer(encoder),
-            [TransactionsMessageSerializer.TAG]: new TransactionsMessageSerializer(encoder),
-            [GetGenerationMessageSerializer.TAG]: new GetGenerationMessageSerializer(encoder),
-            [GenerationMessageSerializer.TAG]: new GenerationMessageSerializer(encoder),
         }
     }
 
@@ -52,34 +30,33 @@ export default class MessageSerializer {
         return this.#serializers[tag]
     }
 
-    serialize(message) {
-        if (message instanceof FragmentMessage) {
-            return this.#getSerializer(message.tag).serialize(message)
+    #deserializeFields(tag, data) {
+        if (this.#supports(tag)) {
+            return this.#getSerializer(tag).deserialize(data)
         }
 
-        return [
-            0x0,
-            message.tag,
-            ...this.#getSerializer(message.tag).serialize(message)
-        ]
+        return this.fieldsEncoder.decode(tag, data)
+    }
+
+    serialize(message) {
+        const {tag, vsn} = message
+
+        if (this.#supports(tag)) {
+            const serialized = this.#getSerializer(message.tag).serialize(message)
+
+            return [0x0, tag, ...serialized]
+        }
+
+        const encoded = this.fieldsEncoder.encode(message)
+
+        return [0x0, tag, ...encoded]
     }
 
     deserialize(data) {
         const tag = data[1]
         const rest = data.slice(2)
+        const fields = this.#deserializeFields(tag, rest)
 
-        if (this.#supports(tag)) {
-            return this.#getSerializer(tag).deserialize(rest)
-        }
-
-        // Build a base message for statistic purposes
-        const key = Object.keys(Constants).find(key => Constants[key] === tag)
-        if (key === undefined) {
-            throw new Error('Unsupported message serializer tag: ' + tag)
-        }
-
-        const name = key.replace('MSG_', '').toLowerCase()
-
-        return new Message(name)
+        return this.factory.create(tag, fields, rest.length)
     }
 }

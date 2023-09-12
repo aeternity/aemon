@@ -11,21 +11,21 @@ export default class FragmentMessageSerializer {
     }
 
     serialize(message) {
-        const buff = Buffer.alloc(6)
-        buff.writeUInt16BE(message.tag, 0)
-        buff.writeUInt16BE(message.index, 2)
-        buff.writeUInt16BE(message.total, 4)
+        const dataView = new DataView(new ArrayBuffer(4))
+        dataView.setUint16(0, message.index)
+        dataView.setUint16(2, message.total)
 
-        return [...Buffer.concat([buff, message.data])]
+        const fields = new Uint8Array(dataView.buffer)
+
+        return new Uint8Array([...fields, ...message.data])
     }
 
     deserialize(data) {
-        const buff = Buffer.from(data)
-        const index = buff.readUInt16BE(0)
-        const total = buff.readUInt16BE(2)
-        const fragmentData = new Uint8Array(buff.subarray(4))
+        const dataView = new DataView(data.buffer)
+        const index = dataView.getUint16(0)
+        const total = dataView.getUint16(2)
+        const fragmentData = data.slice(4)
 
-        // console.log('fragment: ', index, total, fragmentData)
         return new FragmentMessage(index, total, fragmentData)
     }
 }

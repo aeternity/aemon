@@ -56,7 +56,7 @@ export default Object.freeze({
     PAYING_FOR_TX: 82,
     GA_META_TX_AUTH_DATA: 810,
     KEY_BLOCK: 100,
-    MICRO_BLOCK: 101,
+    MICRO_BLOCK_BODY: 101,
     LIGHT_MICRO_BLOCK: 102,
     POF: 200,
 })
