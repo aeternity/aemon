@@ -1,6 +1,6 @@
 import TEMPLATES from './MessageEncoderTemplates.js'
 import MessageSerializer from '../Serializer/MessageSerializer.js'
-import SerializerTemplate from '../SerializerTemplate.js'
+import TemplateFieldsEncoder from '../TemplateFieldsEncoder.js'
 import MessageFactory from '../MessageFactory.js'
 
 export default class MessageEncoder {
@@ -15,7 +15,7 @@ export default class MessageEncoder {
 
         this.messageFactory = new MessageFactory()
         this.messageSerializer = new MessageSerializer()
-        this.serializerTemplate = new SerializerTemplate(encoders, decoders)
+        this.templateFieldsEncoder = new TemplateFieldsEncoder(encoders, decoders)
     }
 
     #binaryToFields(message) {
@@ -26,7 +26,7 @@ export default class MessageEncoder {
         }
 
         const template = TEMPLATES[tag][vsn]
-        const fields = this.serializerTemplate.binaryToFields(template, message)
+        const fields = this.templateFieldsEncoder.binaryToFields(template, message)
 
         Object.assign(message, fields)
 
@@ -42,7 +42,7 @@ export default class MessageEncoder {
 
         const template = TEMPLATES[tag][vsn]
 
-        return {tag, ...this.serializerTemplate.fieldsToBinary(template, message)}
+        return {tag, ...this.templateFieldsEncoder.fieldsToBinary(template, message)}
     }
 
     encode(message) {

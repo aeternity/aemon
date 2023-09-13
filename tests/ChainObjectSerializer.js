@@ -3,9 +3,9 @@ import ChainObject from '../src/ChainObjects/ChainObject.js'
 import PrimitivesEncoder from '../src/PrimitivesEncoder.js'
 import ChainObjectSerializer from '../src/ChainObjects/ChainObjectSerializer.js'
 import TransactionsMessage from '../src/Messages/Models/TransactionsMessage.js'
-import SerializerTemplate from '../src/Messages/SerializerTemplate.js'
+import FieldEncoder from '../src/ChainObjects/FieldEncoder.js'
 
-const serializer = new ChainObjectSerializer(new SerializerTemplate())
+const serializer = new ChainObjectSerializer(new FieldEncoder())
 
 test('Serialize Account', t => {
     t.deepEqual(

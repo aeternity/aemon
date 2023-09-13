@@ -1,7 +1,7 @@
-import MessageFieldsEncoder from '../MessageFieldsEncoder.js'
-import MessageFactory from '../MessageFactory.js'
+import MessageFieldsEncoder from './MessageFieldsEncoder.js'
 import ResponseMessageSerializer from './Serializers/ResponseMessageSerializer.js'
 import FragmentMessageSerializer from './Serializers/FragmentMessageSerializer.js'
+import MessageFactory from '../MessageFactory.js'
 
 // composite serializer that also handles message tags
 export default class MessageSerializer {
@@ -30,6 +30,16 @@ export default class MessageSerializer {
         return this.#serializers[tag]
     }
 
+    #serializeFields(message) {
+        const {tag} = message
+
+        if (this.#supports(tag)) {
+            return this.#getSerializer(tag).serialize(message)
+        }
+
+        return this.fieldsEncoder.encode(message)
+    }
+
     #deserializeFields(tag, data) {
         if (this.#supports(tag)) {
             return this.#getSerializer(tag).deserialize(data)
@@ -40,16 +50,9 @@ export default class MessageSerializer {
 
     serialize(message) {
         const {tag, vsn} = message
+        const serialized = this.#serializeFields(message)
 
-        if (this.#supports(tag)) {
-            const serialized = this.#getSerializer(message.tag).serialize(message)
-
-            return [0x0, tag, ...serialized]
-        }
-
-        const encoded = this.fieldsEncoder.encode(message)
-
-        return [0x0, tag, ...encoded]
+        return [0x0, tag, ...serialized]
     }
 
     deserialize(data) {
