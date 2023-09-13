@@ -4,7 +4,6 @@ import EventEmitter from 'events'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
 import P2PConnection from './P2PConnection.js'
 import Peer from './Peer.js'
-import Constants from './Messages/Constants.js'
 
 export default class P2PServer extends EventEmitter {
     constructor(network, localPeer) {

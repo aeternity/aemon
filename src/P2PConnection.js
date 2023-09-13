@@ -1,11 +1,11 @@
 import net from 'net'
 import EventEmitter from 'events'
-import PingMessage from './Messages/PingMessage.js'
-import ResponseMessage from './Messages/ResponseMessage.js'
-import CloseMessage from './Messages/CloseMessage.js'
-import GetNodeInfoMessage from './Messages/GetNodeInfoMessage.js'
-import NodeInfoMessage from './Messages/NodeInfoMessage.js'
-import GetGenerationMessage from './Messages/GetGenerationMessage.js'
+import PingMessage from './Messages/Models/PingMessage.js'
+import ResponseMessage from './Messages/Models/ResponseMessage.js'
+import CloseMessage from './Messages/Models/CloseMessage.js'
+import GetNodeInfoMessage from './Messages/Models/GetNodeInfoMessage.js'
+import NodeInfoMessage from './Messages/Models/NodeInfoMessage.js'
+import GetGenerationMessage from './Messages/Models/GetGenerationMessage.js'
 
 export default class P2PConnection extends EventEmitter {
     constructor(direction, network, transportFactory, peer, socket) {

@@ -1,14 +1,14 @@
 import test from 'ava'
-import MessageSerializer from '../src/MessageSerializer.js'
-import Constants from '../src/Messages/Constants.js'
-import CloseMessage from '../src/Messages/CloseMessage.js'
-import PingMessage from '../src/Messages/PingMessage.js'
-import ResponseMessage from '../src/Messages/ResponseMessage.js'
-import FragmentMessage from '../src/Messages/FragmentMessage.js'
-import GetNodeInfoMessage from '../src/Messages/GetNodeInfoMessage.js'
-import NodeInfoMessage from '../src/Messages/NodeInfoMessage.js'
-import GetGenerationMessage from '../src/Messages/GetGenerationMessage.js'
-import TransactionsMessage from '../src/Messages/TransactionsMessage.js'
+import MessageSerializer from '../src/Messages/Serializer/MessageSerializer.js'
+import MessageTags from '../src/Messages/MessageTags.js'
+import CloseMessage from '../src/Messages/Models/CloseMessage.js'
+import PingMessage from '../src/Messages/Models/PingMessage.js'
+import ResponseMessage from '../src/Messages/Models/ResponseMessage.js'
+import FragmentMessage from '../src/Messages/Models/FragmentMessage.js'
+import GetNodeInfoMessage from '../src/Messages/Models/GetNodeInfoMessage.js'
+import NodeInfoMessage from '../src/Messages/Models/NodeInfoMessage.js'
+import GetGenerationMessage from '../src/Messages/Models/GetGenerationMessage.js'
+import TransactionsMessage from '../src/Messages/Models/TransactionsMessage.js'
 import ChainObject from '../src/ChainObjects/ChainObject.js'
 import Peer from '../src/Peer.js'
 
@@ -129,7 +129,7 @@ test('Serialize Close Response message', t => {
         success: true,
         message: new Uint8Array([193, 1]),
         message: new CloseMessage(),
-        messageType: Constants.MSG_CLOSE,
+        messageType: MessageTags.MSG_CLOSE,
     })
 
     t.deepEqual(
@@ -143,7 +143,7 @@ test('Deserialize Close Response message', t => {
         success: true,
         message: new Uint8Array([193, 1]),
         message: new CloseMessage(),
-        messageType: Constants.MSG_CLOSE,
+        messageType: MessageTags.MSG_CLOSE,
         size: 8
     })
 
@@ -239,7 +239,7 @@ test('Deserialize Ping Response message', t => {
     const response = new ResponseMessage({
         success: true,
         message,
-        messageType: Constants.MSG_PING,
+        messageType: MessageTags.MSG_PING,
         size: 138
     })
 

@@ -1,9 +1,9 @@
 import test from 'ava'
-import SerializerTemplate from '../src/SerializerTemplate.js'
 import ChainObject from '../src/ChainObjects/ChainObject.js'
 import PrimitivesEncoder from '../src/PrimitivesEncoder.js'
 import ChainObjectSerializer from '../src/ChainObjects/ChainObjectSerializer.js'
-import TransactionsMessage from '../src/Messages/TransactionsMessage.js'
+import TransactionsMessage from '../src/Messages/Models/TransactionsMessage.js'
+import SerializerTemplate from '../src/Messages/SerializerTemplate.js'
 
 const serializer = new ChainObjectSerializer(new SerializerTemplate())
 

@@ -1,8 +1,7 @@
-import MessageSerializer from './MessageSerializer.js'
-import SerializerTemplate from './SerializerTemplate.js'
-import TEMPLATES from './Encoder/MessageTemplates.js'
-import Constants from './Messages/Constants.js'
-import MessageFactory from './MessageFactory.js'
+import TEMPLATES from './MessageEncoderTemplates.js'
+import MessageSerializer from '../Serializer/MessageSerializer.js'
+import SerializerTemplate from '../SerializerTemplate.js'
+import MessageFactory from '../MessageFactory.js'
 
 export default class MessageEncoder {
     constructor() {

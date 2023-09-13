@@ -1,6 +1,6 @@
 import RLP from 'rlp'
-import TEMPLATES from './Messages/Templates.js'
-import PrimitivesEncoder from './PrimitivesEncoder.js'
+import TEMPLATES from './Serializer/MessageSerializerTemplates.js'
+import PrimitivesEncoder from '../PrimitivesEncoder.js'
 
 export default class MessageFieldsEncoder {
     constructor() {

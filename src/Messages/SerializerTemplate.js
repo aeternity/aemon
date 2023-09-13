@@ -1,6 +1,6 @@
 import {FateApiEncoder} from '@aeternity/aepp-calldata'
-import ChainObjectSerializer from './ChainObjects/ChainObjectSerializer.js'
-import IdEncoder from './IdEncoder.js'
+import ChainObjectSerializer from '../ChainObjects/ChainObjectSerializer.js'
+import IdEncoder from '../IdEncoder.js'
 
 const TYPE2SIZE = {
     uint_32: 4,

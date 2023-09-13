@@ -1,11 +1,11 @@
-import Constants from '../Messages/Constants.js'
-import Message from '../Messages/Message.js'
+import MessageTags from '../../MessageTags.js'
+import Message from '../../Models/Message.js'
 
-const TAG = Constants.MSG_RESPONSE
+const TAG = MessageTags.MSG_RESPONSE
 
 export default class ResponseMessageSerializer {
     static get TAG() {
-        return Constants.MSG_RESPONSE
+        return TAG
     }
 
     constructor(fieldsEncoder, messageFactory) {

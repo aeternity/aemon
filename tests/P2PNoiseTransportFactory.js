@@ -3,7 +3,7 @@ import stream from 'stream'
 import test from 'ava'
 import P2PNetwork from '../src/P2PNetwork.js'
 import P2PNoiseTransportFactory from '../src/P2PNoiseTransportFactory.js'
-import CloseMessage from '../src/Messages/CloseMessage.js'
+import CloseMessage from '../src/Messages/Models/CloseMessage.js'
 
 test('Noise Transport', t => {
     const iPrv = 'pp_2mcSsrqC72Lr4YYMZb6zqS8Zd5un4LKRwKphyuqfVd2zCrTEcV'

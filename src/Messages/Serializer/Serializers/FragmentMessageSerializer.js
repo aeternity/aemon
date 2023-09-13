@@ -1,10 +1,10 @@
 import RLP from 'rlp'
-import Constants from '../Messages/Constants.js'
-import FragmentMessage from '../Messages/FragmentMessage.js'
+import MessageTags from '../../MessageTags.js'
+import FragmentMessage from '../../Models/FragmentMessage.js'
 
 export default class FragmentMessageSerializer {
     static get TAG() {
-        return Constants.MSG_FRAGMENT
+        return MessageTags.MSG_FRAGMENT
     }
 
     constructor() {

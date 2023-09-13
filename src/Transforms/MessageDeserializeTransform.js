@@ -1,6 +1,6 @@
 import stream from 'stream'
-import MessageEncoder from '../MessageEncoder.js'
-import SerializerError from '../SerializerError.js'
+import MessageEncoder from '../Messages/Encoder/MessageEncoder.js'
+import SerializerError from './SerializerError.js'
 
 export default class MessageDeserializeTransform extends stream.Transform {
     constructor(options) {

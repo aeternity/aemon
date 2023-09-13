@@ -1,5 +1,5 @@
-import MessageFieldsEncoder from './MessageFieldsEncoder.js'
-import MessageFactory from './MessageFactory.js'
+import MessageFieldsEncoder from '../MessageFieldsEncoder.js'
+import MessageFactory from '../MessageFactory.js'
 import ResponseMessageSerializer from './Serializers/ResponseMessageSerializer.js'
 import FragmentMessageSerializer from './Serializers/FragmentMessageSerializer.js'
 

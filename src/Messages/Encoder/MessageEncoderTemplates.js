@@ -1,7 +1,7 @@
-import Constants from '../Messages/Constants.js'
+import Tags from '../MessageTags.js'
 
 export default Object.freeze({
-    [Constants.MSG_RESPONSE]: {
+    [Tags.MSG_RESPONSE]: {
         1: {
             vsn: 'int',
             success: 'bool',
@@ -10,14 +10,14 @@ export default Object.freeze({
             message: 'p2p_message',
         }
     },
-    [Constants.MSG_GET_GENERATION]: {
+    [Tags.MSG_GET_GENERATION]: {
         1: {
             vsn: 'int',
             hash: 'key_block_hash',
             forward: 'bool',
         }
     },
-    [Constants.MSG_PING]: {
+    [Tags.MSG_PING]: {
         1: {
             vsn: 'int',
             port: 'int',
@@ -36,20 +36,20 @@ export default Object.freeze({
             }]
         }
     },
-    [Constants.MSG_TXS]: {
+    [Tags.MSG_TXS]: {
         1: {
             vsn: 'int',
             transactions: ['chain_object'],
         }
     },
-    [Constants.MSG_MICRO_BLOCK]: {
+    [Tags.MSG_MICRO_BLOCK]: {
         1: {
             vsn: 'int',
             microBlock: 'chain_object',
             light: 'bool',
         }
     },
-    [Constants.MSG_KEY_BLOCK]: {
+    [Tags.MSG_KEY_BLOCK]: {
         1: {
             vsn: 'int',
             keyBlock: {
@@ -60,7 +60,7 @@ export default Object.freeze({
             },
         }
     },
-    [Constants.MSG_GENERATION]: {
+    [Tags.MSG_GENERATION]: {
         1: {
             vsn: 'int',
             keyBlock: {

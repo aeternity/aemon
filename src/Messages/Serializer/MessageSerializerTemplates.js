@@ -1,7 +1,7 @@
-import Constants from './Constants.js'
+import Tags from '../MessageTags.js'
 
 export default Object.freeze({
-    [Constants.MSG_RESPONSE]: {
+    [Tags.MSG_RESPONSE]: {
         1: {
             vsn: 'int',
             success: 'bool',
@@ -10,17 +10,17 @@ export default Object.freeze({
             message: 'binary',
         }
     },
-    [Constants.MSG_CLOSE]: {
+    [Tags.MSG_CLOSE]: {
         1: {
             vsn: 'int',
         }
     },
-    [Constants.MSG_GET_NODE_INFO]: {
+    [Tags.MSG_GET_NODE_INFO]: {
         1: {
             vsn: 'int',
         }
     },
-    [Constants.MSG_NODE_INFO]: {
+    [Tags.MSG_NODE_INFO]: {
         1: {
             vsn: 'int',
             version: 'string',
@@ -32,14 +32,14 @@ export default Object.freeze({
             unverifiedPeers: 'int',
         }
     },
-    [Constants.MSG_GET_GENERATION]: {
+    [Tags.MSG_GET_GENERATION]: {
         1: {
             vsn: 'int',
             hash: 'binary',
             forward: 'bool',
         }
     },
-    [Constants.MSG_PING]: {
+    [Tags.MSG_PING]: {
         1: {
             vsn: 'int',
             port: 'int',
@@ -59,26 +59,26 @@ export default Object.freeze({
             }]
         }
     },
-    [Constants.MSG_TXS]: {
+    [Tags.MSG_TXS]: {
         1: {
             vsn: 'int',
             transactions: ['binary'],
         }
     },
-    [Constants.MSG_MICRO_BLOCK]: {
+    [Tags.MSG_MICRO_BLOCK]: {
         1: {
             vsn: 'int',
             microBlock: 'binary',
             light: 'bool',
         }
     },
-    [Constants.MSG_KEY_BLOCK]: {
+    [Tags.MSG_KEY_BLOCK]: {
         1: {
             vsn: 'int',
             keyBlock: 'binary',
         }
     },
-    [Constants.MSG_GENERATION]: {
+    [Tags.MSG_GENERATION]: {
         1: {
             vsn: 'int',
             keyBlock: 'binary',
