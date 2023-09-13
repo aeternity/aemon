@@ -1,8 +1,8 @@
 import RLP from 'rlp'
-import Structures from './Serializers/ChainObjects/Structures.js'
-import ChainObject from './ChainObjects/ChainObject.js'
-import ObjectTags from './ChainObjects/ObjectTags.js'
-import PrimitivesEncoder from './PrimitivesEncoder.js'
+import ChainObject from './ChainObject.js'
+import ObjectTags from './ChainObjectTags.js'
+import Templates from './ChainObjectTemplates.js'
+import PrimitivesEncoder from '../PrimitivesEncoder.js'
 
 const TYPE2SIZE = {
     uint_32: 4,
@@ -26,7 +26,7 @@ export default class ChainObjectSerializer {
     serialize(chainObject) {
         // console.log('object', chainObject)
 
-        const template = Structures[chainObject.name.toUpperCase()]
+        const template = Templates[chainObject.name.toUpperCase()]
         // console.log('template', template)
 
         const serializedFields = this.#serializeFields(chainObject.tag, chainObject.vsn, template, chainObject)
@@ -45,11 +45,11 @@ export default class ChainObjectSerializer {
             throw new Error(`Unsupported object tag: ${tag}`)
         }
 
-        if (!Structures.hasOwnProperty(type)) {
+        if (!Templates.hasOwnProperty(type)) {
             return new ChainObject(type.toLowerCase(), {})
         }
 
-        const template = Structures[type]
+        const template = Templates[type]
         const fields = this.decodeFields(rest, template)
 
         return new ChainObject(type.toLowerCase(), {vsn, ...fields})
@@ -188,7 +188,7 @@ export default class ChainObjectSerializer {
     }
 
     sizeOfObject(objectName) {
-        const template = Structures[objectName.toUpperCase()]
+        const template = Templates[objectName.toUpperCase()]
         let size = 0
 
         for (const field in template) {
@@ -199,7 +199,7 @@ export default class ChainObjectSerializer {
     }
 
     encodeObject(object) {
-        const template = Structures[object.name.toUpperCase()]
+        const template = Templates[object.name.toUpperCase()]
         const encoded = this.encodeFields(object, template)
 
         // console.log('encoded fields', encoded)
@@ -212,7 +212,7 @@ export default class ChainObjectSerializer {
     // works based on object field sizes used to split on fields
     decodeObject(name, data) {
         // console.log('decodeObject', name, data)
-        const template = Structures[name.toUpperCase()]
+        const template = Templates[name.toUpperCase()]
         const binaryFields = this.splitFields(data, template)
         // console.log('splitted binaryFields', binaryFields)
         const fields = this.decodeFields(binaryFields, template)

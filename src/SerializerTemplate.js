@@ -1,5 +1,5 @@
 import {FateApiEncoder} from '@aeternity/aepp-calldata'
-import ChainObjectSerializer from './ChainObjectSerializer.js'
+import ChainObjectSerializer from './ChainObjects/ChainObjectSerializer.js'
 import IdEncoder from './IdEncoder.js'
 
 const TYPE2SIZE = {
@@ -35,7 +35,7 @@ export default class SerializerTemplate {
             signature: (value) => this.apiEncoder.encode('signature', value),
             peer_pubkey: (value) => this.apiEncoder.encode('peer_pubkey', value),
             account_pubkey: (value) => this.apiEncoder.encode('account_pubkey', value),
-            tx_hash: (value) => this.apiEncoder.encode('transaction_hash', value),
+            tx_hash: (value) => this.apiEncoder.encode('tx_hash', value),
             bytearray: (value) => this.apiEncoder.encode('bytearray', value),
             id: (value) => this.idEncoder.encode(value),
             chain_object: (value) => this.chainObjectSerializer.deserialize(value),

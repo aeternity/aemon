@@ -1,5 +1,3 @@
-import {FateApiEncoder} from '@aeternity/aepp-calldata'
-
 const Int2ByteArray = (value) => {
     const bigInt = BigInt(value)
 

@@ -1,4 +1,4 @@
-import ObjectTags from './ObjectTags.js'
+import ObjectTags from './ChainObjectTags.js'
 
 export default class ChainObject {
     constructor(name, fields) {
