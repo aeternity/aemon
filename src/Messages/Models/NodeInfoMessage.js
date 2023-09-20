@@ -4,7 +4,7 @@ export default class NodeInfoMessage extends Message {
     constructor(fields) {
         super('node_info')
 
-        //@TODO validation ?
+        // @TODO validation ?
         Object.assign(this, fields)
     }
 }

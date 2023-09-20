@@ -19,9 +19,9 @@ export default Object.freeze({
     MSG_NODE_INFO: 126,
     MSG_CLOSE: 127,
 
-    MSG_TX_POOL_SYNC_INIT:   20,
+    MSG_TX_POOL_SYNC_INIT: 20,
     MSG_TX_POOL_SYNC_UNFOLD: 21,
-    MSG_TX_POOL_SYNC_GET:    22,
+    MSG_TX_POOL_SYNC_GET: 22,
     MSG_TX_POOL_SYNC_FINISH: 23,
 
     FRAGMENT_VSN: 1,
@@ -43,9 +43,9 @@ export default Object.freeze({
     BLOCK_TXS_VSN: 1,
     PEER_VSN: 1,
 
-    TX_POOL_SYNC_INIT_VSN:   1,
+    TX_POOL_SYNC_INIT_VSN: 1,
     TX_POOL_SYNC_UNFOLD_VSN: 1,
-    TX_POOL_SYNC_GET_VSN:    1,
+    TX_POOL_SYNC_GET_VSN: 1,
     TX_POOL_SYNC_FINISH_VSN: 1,
 
     GET_NODE_INFO_VSN: 1,

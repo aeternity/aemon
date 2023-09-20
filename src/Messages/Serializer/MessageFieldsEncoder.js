@@ -82,7 +82,7 @@ export default class MessageFieldsEncoder {
     */
     decodeFields(data, template) {
         // console.log('decodeFields', data, template)
-        let chunks = {}
+        const chunks = {}
         let idx = 0
 
         for (const field in template) {

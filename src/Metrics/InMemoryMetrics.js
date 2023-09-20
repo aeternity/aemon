@@ -18,7 +18,7 @@ export default class InMemoryMetrics {
             this.data[metric] = {}
         }
 
-        for (let key of keys) {
+        for (const key of keys) {
             const val = labels[key]
             if (!this.data[metric].hasOwnProperty(key)) {
                 this.data[metric][key] = {}
@@ -44,7 +44,7 @@ export default class InMemoryMetrics {
             return this.data[metric] += i
         }
 
-        for (let key of keys) {
+        for (const key of keys) {
             const val = labels[key]
             this.data[metric][key][val] += i
         }
@@ -58,7 +58,7 @@ export default class InMemoryMetrics {
             return this.data[metric] -= i
         }
 
-        for (let key of keys) {
+        for (const key of keys) {
             const val = labels[key]
             this.data[metric][key][val] -= i
         }
@@ -72,7 +72,7 @@ export default class InMemoryMetrics {
             return this.data[metric] = i
         }
 
-        for (let key of keys) {
+        for (const key of keys) {
             const val = labels[key]
             this.data[metric][key][val] = i
         }

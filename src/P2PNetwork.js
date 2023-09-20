@@ -54,7 +54,7 @@ export default class P2PNetwork extends EventEmitter {
         const networkStr = `networkID: ${this.networkId}, difficulty: ${this.difficulty}, peers: ${cntPeers}`
         const peersString = Array.from(this.#peers).map(([key, peer]) => {
             return `\t${peer.toString()} => ${peer.peers.length}`
-        }).join("\n")
+        }).join('\n')
 
         return `${networkStr}`
         return `----------------------\n${networkStr}\n${peersString}\n----------------------`

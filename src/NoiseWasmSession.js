@@ -1,6 +1,6 @@
 import createNoise from 'noise-c.wasm'
 
-const PROTOCOL_NAME = "Noise_XK_25519_ChaChaPoly_BLAKE2b"
+const PROTOCOL_NAME = 'Noise_XK_25519_ChaChaPoly_BLAKE2b'
 const EMPTY = new Uint8Array()
 
 const createNoisePromise = () => {
@@ -12,13 +12,16 @@ const createNoisePromise = () => {
 const noise = await createNoisePromise()
 
 export default class NoiseWasmSession {
-
     static ROLE_INITIATOR = Symbol('INITIATOR')
+
     static ROLE_RESPONDER = Symbol('RESPONDER')
 
     #handshake = null
+
     #send = null
+
     #receive = null
+
     isInitiator = false
 
     /**
@@ -108,8 +111,8 @@ export default class NoiseWasmSession {
         const buff = this.#handshake.WriteMessage()
         // console.log('NOISE_ACTION_WRITE_MESSAGE', Buffer.from(buff))
 
-        //next state: read or split
-        //however reads are triggered by socket events
+        // next state: read or split
+        // however reads are triggered by socket events
         if (this.#handshake.GetAction() === noise.constants.NOISE_ACTION_READ_MESSAGE) {
         }
 
@@ -117,7 +120,7 @@ export default class NoiseWasmSession {
             this.#handshakeSplit()
         }
 
-        return buff        
+        return buff
     }
 
     #handshakeSplit() {

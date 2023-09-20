@@ -18,6 +18,7 @@ export default class P2PScanner extends EventEmitter {
         this.server = new P2PServer(network, localPeer)
 
         this.locationProvider = locationProvider
+
         if (locationProvider === null) {
             this.locationProvider = new PeerLocationProvider()
         }
@@ -93,7 +94,7 @@ export default class P2PScanner extends EventEmitter {
             return
         }
 
-        if (this.connections['outbound'].has(peer.publicKey)) {
+        if (this.connections.outbound.has(peer.publicKey)) {
             this.logger.log('verbose', 'Already connected to peer, skipping.', {peer: peer.url})
             return
         }
@@ -162,7 +163,7 @@ export default class P2PScanner extends EventEmitter {
     }
 
     markConnected(connection) {
-        this.metrics.inc('connections_total', {direction: connection.direction, status: "connect"})
+        this.metrics.inc('connections_total', {direction: connection.direction, status: 'connect'})
         this.setPeerStatus(connection.peer, 1)
     }
 
@@ -181,26 +182,26 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionDisconnect(connection) {
-        this.metrics.inc('connections_total', {direction: connection.direction, status: "disconnect"})
+        this.metrics.inc('connections_total', {direction: connection.direction, status: 'disconnect'})
     }
 
     onConnectionError(connection, error) {
         this.logger.log('verbose', `Peer connection error: ${error.message}`, {peer: connection.peer.url})
 
-        this.metrics.inc('connections_total', {direction: connection.direction, status: "error"})
+        this.metrics.inc('connections_total', {direction: connection.direction, status: 'error'})
         this.metrics.inc('connection_errors_total', {direction: connection.direction, code: error.code})
         this.setPeerStatus(connection.peer, 0)
     }
 
     onConnectionEnd(connection) {
         // this.logger.log('debug', "Connection end.", {peer: connection.peer.url})
-        this.metrics.inc('connections_total', {direction: connection.direction, status: "end"})
+        this.metrics.inc('connections_total', {direction: connection.direction, status: 'end'})
     }
 
     onConnectionClose(connection, hadError) {
-        this.logger.log('verbose', "Peer connection closed. Error: " + Boolean(hadError), {peer: connection.peer.url})
+        this.logger.log('verbose', 'Peer connection closed. Error: ' + Boolean(hadError), {peer: connection.peer.url})
 
-        this.metrics.inc('connections_total', {direction: connection.direction, status: "close"})
+        this.metrics.inc('connections_total', {direction: connection.direction, status: 'close'})
         this.setPeerStatus(connection.peer, 0)
         this.removeConnection(connection)
     }
@@ -234,11 +235,11 @@ export default class P2PScanner extends EventEmitter {
     }
 
     onConnectionPing(connection, ping) {
-        this.logger.log('verbose', `Ping request`, {peer: connection.peer.url})
+        this.logger.log('verbose', 'Ping request', {peer: connection.peer.url})
     }
 
     onConnectionPong(connection, pong, info) {
-        const peer = connection.peer
+        const {peer} = connection
         const {responseTime, throughput} = info
         const cntSharedPeers = pong.peers.length
 
@@ -274,7 +275,7 @@ export default class P2PScanner extends EventEmitter {
 
     onConnectionNodeInfo(connection, info) {
         this.logger.log('verbose', 'Info response', {peer: connection.peer.url})
-        const peer = connection.peer
+        const {peer} = connection
 
         this.metrics.set('peer_info', {
             host: peer.host,

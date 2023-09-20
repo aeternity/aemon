@@ -81,20 +81,20 @@ export default class PrimitivesEncoder {
         let dataView
 
         switch (type) {
-            case 'uint_16':
-                dataView = new DataView(new ArrayBuffer(2))
-                dataView.setUint16(0, Number(value))
-                break;
-            case 'uint_32':
-                dataView = new DataView(new ArrayBuffer(4))
-                dataView.setUint32(0, Number(value))
-                break;
-            case 'uint_64':
-                dataView = new DataView(new ArrayBuffer(8))
-                dataView.setBigUint64(0, value)
-                break;
-            default:
-                throw new Error('Unsupported int type')
+        case 'uint_16':
+            dataView = new DataView(new ArrayBuffer(2))
+            dataView.setUint16(0, Number(value))
+            break
+        case 'uint_32':
+            dataView = new DataView(new ArrayBuffer(4))
+            dataView.setUint32(0, Number(value))
+            break
+        case 'uint_64':
+            dataView = new DataView(new ArrayBuffer(8))
+            dataView.setBigUint64(0, value)
+            break
+        default:
+            throw new Error('Unsupported int type')
         }
 
         return new Uint8Array(dataView.buffer)

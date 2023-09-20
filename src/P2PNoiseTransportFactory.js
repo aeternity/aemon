@@ -60,7 +60,7 @@ export default class P2PNoiseTransportFactory {
 
         // manually handle handshake writes
         noiseDecrypt.on('handshakeData', data => frameEncoder.write(data))
-        //relay to the duplex stream
+        // relay to the duplex stream
         noiseDecrypt.on('handshake', () => {
             // console.log('handshake with session remote key:', noiseSession.remotePublicKey)
             duplex.emit('handshake', noiseSession.remotePublicKey)

@@ -10,7 +10,7 @@ import {FateApiEncoder} from '@aeternity/aepp-calldata'
 
 // The log formatter is using JSON.stringify and this "fix" it's serialization issues
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
-BigInt.prototype.toJSON = function() { return this.toString() }
+BigInt.prototype.toJSON = function () { return this.toString() }
 
 const createKeyPair = (argv, logger) => {
     let keypair = {pub: argv.publicKey, prv: argv.privateKey}
@@ -34,19 +34,21 @@ const createKeyPair = (argv, logger) => {
 
 const logFormat = (format) => {
     switch (format) {
-        case 'json':
-            return winston.format.json()
-        case 'pretty':
-            return winston.format.prettyPrint()
-        case 'cli':
-            return winston.format.cli()
-        case 'simple':
-            return winston.format.simple()
-        default:
-            return winston.format.printf((info) => {
-                const { level, message, timestamp, ...meta } = info
-                return `${timestamp} [${level.toUpperCase()}]: ${message}` + (Object.keys(meta).length ? ` --- ${JSON.stringify(meta)}` : '')
-            })
+    case 'json':
+        return winston.format.json()
+    case 'pretty':
+        return winston.format.prettyPrint()
+    case 'cli':
+        return winston.format.cli()
+    case 'simple':
+        return winston.format.simple()
+    default:
+        return winston.format.printf((info) => {
+            const {
+                level, message, timestamp, ...meta
+            } = info
+            return `${timestamp} [${level.toUpperCase()}]: ${message}` + (Object.keys(meta).length ? ` --- ${JSON.stringify(meta)}` : '')
+        })
     }
 }
 

@@ -4,13 +4,13 @@ export default class PingMessage extends Message {
     constructor(fields) {
         super('ping')
 
-        //@TODO validation ?
+        // @TODO validation ?
         Object.assign(this, fields)
         this.port = Number(this.port)
     }
 
     toJSON() {
-        const json = Object.assign({}, this)
+        const json = { ...this}
         json.peersCount = this.peers.length
         delete json.peers
 

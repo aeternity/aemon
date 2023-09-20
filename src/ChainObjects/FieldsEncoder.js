@@ -49,7 +49,7 @@ export default class FieldsEncoder {
     */
     decodeFields(data, template) {
         // console.log('decode fields:', data, template)
-        let chunks = {}
+        const chunks = {}
         let idx = 0
 
         for (const field in template) {
@@ -64,12 +64,12 @@ export default class FieldsEncoder {
 
     // Split data stream into fields based on their size
     splitFields(stream, template) {
-        let fields = []
+        const fields = []
         let idx = 0
 
         for (const field in template) {
             const size = this.#sizeOf(template[field])
-            fields.push(stream.slice(idx, idx+size))
+            fields.push(stream.slice(idx, idx + size))
             idx += size
         }
 
@@ -116,7 +116,6 @@ export default class FieldsEncoder {
         }
 
         return this.fieldEncoder.encode(typeInfo, value)
-
     }
 
     #decodeField(typeInfo, value) {

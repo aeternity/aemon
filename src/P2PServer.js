@@ -25,7 +25,7 @@ export default class P2PServer extends EventEmitter {
         this.server.on('connection', this.onConnection.bind(this))
     }
 
-    listen(port, host) {        
+    listen(port, host) {
         this.server.listen(port, host)
     }
 

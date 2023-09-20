@@ -27,7 +27,7 @@ export default Object.freeze({
             header: {
                 type: 'object',
                 template: {
-                    version: 'uint_32', //protocol version?
+                    version: 'uint_32', // protocol version?
                     flags: 'uint_32',
                     height: 'uint_64',
                     prevHash: 'micro_block_hash',
@@ -97,7 +97,7 @@ export default Object.freeze({
             pow: 'pow',
             nonce: 'uint_64',
             time: 'uint_64',
-            //binary, but currently interpreted as int/node version
+            // binary, but currently interpreted as int/node version
             info: 'uint_32'
         }
     },

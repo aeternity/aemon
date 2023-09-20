@@ -19,7 +19,7 @@ export default class P2PConnection extends EventEmitter {
         this.stream = this.socket
 
         this.socket.on('error', this.onError.bind(this))
-        this.socket.on('close', this.onClose.bind(this))   
+        this.socket.on('close', this.onClose.bind(this))
         this.socket.on('end', this.onEnd.bind(this))
 
         this.pingTimer = null
@@ -179,7 +179,7 @@ export default class P2PConnection extends EventEmitter {
             difficulty: this.network.difficulty,
             bestHash: this.network.bestHash,
             syncAllowed: false,
-            peers: this.network.peers.slice(0, 32) //32 random sample ?
+            peers: this.network.peers.slice(0, 32) // 32 random sample ?
         })
     }
 

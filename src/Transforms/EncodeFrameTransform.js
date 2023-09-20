@@ -2,7 +2,7 @@ import stream from 'stream'
 
 const LENGTH_SIZE = 2
 
-//better names (?):
+// better names (?):
 // FrameStream
 // LengthPrefixStream
 

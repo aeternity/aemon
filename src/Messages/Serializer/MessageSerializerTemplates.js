@@ -51,7 +51,7 @@ export default Object.freeze({
             peers: 'binary',
             peers: [{
                 type: 'object',
-                template: {                
+                template: {
                     host: 'string',
                     port: 'int',
                     publicKey: 'binary',

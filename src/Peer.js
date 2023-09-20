@@ -1,5 +1,6 @@
 export default class Peer {
     #peers = new Set()
+
     constructor(host, port, keypair = {}) {
         this.host = host
         this.port = Number(port)

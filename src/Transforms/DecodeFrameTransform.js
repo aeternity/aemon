@@ -3,7 +3,6 @@ import stream from 'stream'
 const LENGTH_SIZE = 2
 
 export default class DecodeFrameTransform extends stream.Transform {
-
     constructor(options) {
         super({
             objectMode: true,

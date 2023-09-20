@@ -17,7 +17,7 @@ export default class PeerLocationProvider {
             peer.country = geo.country
         }
 
-        this.asnClient.query([peer.host], function (err, results) {
+        this.asnClient.query([peer.host], (err, results) => {
             if (err) {
                 console.error(err)
                 return cb()
@@ -26,6 +26,7 @@ export default class PeerLocationProvider {
             const info = results[peer.host]
             if (info !== undefined) {
                 peer.provider = `${info.description} (AS${info.ASN})`
+
                 if (info.ASN === 'NA') {
                     peer.provider = 'N/A'
                 }

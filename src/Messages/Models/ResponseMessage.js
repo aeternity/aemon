@@ -4,7 +4,7 @@ export default class ResponseMessage extends Message {
     constructor(fields) {
         super('response')
 
-        //@TODO validation ?
+        // @TODO validation ?
         Object.assign(this, fields)
         this.messageType = Number(this.messageType || this.message.tag)
         this.success = !!this.success

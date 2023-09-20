@@ -1,42 +1,44 @@
-import {Counter, Gauge, Histogram, collectDefaultMetrics, register} from 'prom-client'
+import {
+    Counter, Gauge, Histogram, collectDefaultMetrics, register
+} from 'prom-client'
 
 export default class PrometheusMetrics {
     constructor(prefix = 'aemon_') {
         this.metrics = {
             connections_total: new Counter({
-              name: prefix + 'connections_total',
-              help: 'Noise connections by state',
-              labelNames: ['direction', 'networkId', 'status'],
+                name: prefix + 'connections_total',
+                help: 'Noise connections by state',
+                labelNames: ['direction', 'networkId', 'status'],
             }),
             connections: new Gauge({
-              name: prefix + 'connections',
-              help: 'Currently open noise connections',
-              labelNames: ['direction', 'networkId', 'status'],
+                name: prefix + 'connections',
+                help: 'Currently open noise connections',
+                labelNames: ['direction', 'networkId', 'status'],
             }),
             connection_errors_total: new Counter({
-              name: prefix + 'connection_errors_total',
-              help: 'Connection errors by type',
-              labelNames: ['direction', 'networkId', 'code'],
+                name: prefix + 'connection_errors_total',
+                help: 'Connection errors by type',
+                labelNames: ['direction', 'networkId', 'code'],
             }),
             messages_total: new Counter({
-              name: prefix + 'messages_total',
-              help: 'P2P messages by type',
-              labelNames: ['networkId', 'direction', 'type'],
+                name: prefix + 'messages_total',
+                help: 'P2P messages by type',
+                labelNames: ['networkId', 'direction', 'type'],
             }),
             responses_total: new Counter({
-              name: prefix + 'responses_total',
-              help: 'P2P message responses by message type',
-              labelNames: ['networkId', 'direction', 'type', 'errorReason'],
+                name: prefix + 'responses_total',
+                help: 'P2P message responses by message type',
+                labelNames: ['networkId', 'direction', 'type', 'errorReason'],
             }),
             peer_status: new Gauge({
-              name: prefix + 'peer_status',
-              help: 'Network peer status up/down',
-              labelNames: ['networkId', 'host', 'port', 'publicKey', 'lat', 'lon', 'country', 'provider', 'owner', 'kind']
+                name: prefix + 'peer_status',
+                help: 'Network peer status up/down',
+                labelNames: ['networkId', 'host', 'port', 'publicKey', 'lat', 'lon', 'country', 'provider', 'owner', 'kind']
             }),
             peer_difficulty: new Gauge({
-              name: prefix + 'peer_difficulty',
-              help: 'Peer difficulty',
-              labelNames: ['networkId', 'publicKey', 'genesisHash', 'syncAllowed']
+                name: prefix + 'peer_difficulty',
+                help: 'Peer difficulty',
+                labelNames: ['networkId', 'publicKey', 'genesisHash', 'syncAllowed']
             }),
             peer_info: new Gauge({
                 name: prefix + 'peer_info',
@@ -49,19 +51,19 @@ export default class PrometheusMetrics {
                 labelNames: ['networkId', 'publicKey', 'kind']
             }),
             network_height: new Gauge({
-              name: prefix + 'network_height',
-              help: 'Current (max) network height gossiped in the network.',
-              labelNames: ['networkId']
+                name: prefix + 'network_height',
+                help: 'Current (max) network height gossiped in the network.',
+                labelNames: ['networkId']
             }),
             network_difficulty: new Gauge({
-              name: prefix + 'network_difficulty',
-              help: 'Network difficulty',
-              labelNames: ['networkId', 'genesisHash']
+                name: prefix + 'network_difficulty',
+                help: 'Network difficulty',
+                labelNames: ['networkId', 'genesisHash']
             }),
             network_peers: new Gauge({
-              name: prefix + 'network_peers',
-              help: 'Unique network peers seen',
-              labelNames: ['networkId']
+                name: prefix + 'network_peers',
+                help: 'Unique network peers seen',
+                labelNames: ['networkId']
             }),
             peer_throughput_bytes: new Histogram({
                 name: prefix + 'peer_throughput_bytes',
