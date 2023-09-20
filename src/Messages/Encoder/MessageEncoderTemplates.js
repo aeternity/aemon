@@ -52,29 +52,14 @@ export default Object.freeze({
     [Tags.MSG_KEY_BLOCK]: {
         1: {
             vsn: 'int',
-            keyBlock: {
-                type: 'binary_chain_object',
-                params: {
-                    objectName: 'key_block',
-                },
-            },
+            keyBlock: 'key_block',
         }
     },
     [Tags.MSG_GENERATION]: {
         1: {
             vsn: 'int',
-            keyBlock: {
-                type: 'binary_chain_object',
-                params: {
-                    objectName: 'key_block',
-                },
-            },
-            microBlocks: [{
-                type: 'binary_chain_object',
-                params: {
-                    objectName: 'micro_block',
-                },
-            }],
+            keyBlock: 'key_block',
+            microBlocks: ['micro_block'],
             forward: 'bool',
         }
     }

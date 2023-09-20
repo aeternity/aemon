@@ -1,12 +1,19 @@
 import {FateApiEncoder} from '@aeternity/aepp-calldata'
-import ChainObjectSerializer from '../ChainObjects/ChainObjectSerializer.js'
+import ChainObjectSerializer from './ChainObjectSerializer.js'
+import ChainObjectEncoder from './ChainObjectEncoder.js'
+import PrimitivesEncoder from '../PrimitivesEncoder.js'
 import IdEncoder from '../IdEncoder.js'
+import FieldsEncoder from './FieldsEncoder.js'
 
 export default class FieldEncoder {
     constructor(additionalEncoders, additionalDecoders) {
+        this.primEncoder = new PrimitivesEncoder()
         this.apiEncoder = new FateApiEncoder()
         this.idEncoder = new IdEncoder(this.apiEncoder)
-        this.chainObjectSerializer = new ChainObjectSerializer(this)
+
+        const fieldsEncoder = new FieldsEncoder(this)
+        this.chainObjectEncoder = new ChainObjectEncoder(fieldsEncoder)
+        this.chainObjectSerializer = new ChainObjectSerializer(fieldsEncoder)
 
         this.decoders = {
             key_block_hash: (value) => this.apiEncoder.encode('key_block_hash', value),
@@ -20,8 +27,10 @@ export default class FieldEncoder {
             tx_hash: (value) => this.apiEncoder.encode('tx_hash', value),
             bytearray: (value) => this.apiEncoder.encode('bytearray', value),
             id: (value) => this.idEncoder.encode(value),
+            key_block: (value, params) => this.chainObjectEncoder.decode('key_block', value),
+            micro_block: (value, params) => this.chainObjectEncoder.decode('micro_block', value),
+            light_micro_block: (value, params) => this.chainObjectEncoder.decode('light_micro_block', value),
             chain_object: (value) => this.chainObjectSerializer.deserialize(value),
-            binary_chain_object: (value, params) => this.chainObjectSerializer.decodeObject(params.objectName, value),
             ...additionalDecoders
         }
 
@@ -37,8 +46,10 @@ export default class FieldEncoder {
             tx_hash: (value) => this.apiEncoder.decode(value),
             bytearray: (value) => this.apiEncoder.decode(value),
             id: (value) => this.idEncoder.decode(value),
+            key_block: (value, params) => this.chainObjectEncoder.encode(value),
+            micro_block: (value, params) => this.chainObjectEncoder.encode(value),
+            light_micro_block: (value, params) => this.chainObjectEncoder.encode(value),
             chain_object: (value) => this.chainObjectSerializer.serialize(value),
-            binary_chain_object: (value, params) => this.chainObjectSerializer.encodeObject(value),
             ...additionalEncoders
         }
     }

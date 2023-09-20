@@ -477,7 +477,6 @@ const generationMessage = new GenerationMessage({
     }),
     microBlocks: [
         new ChainObject('micro_block', {
-            vsn: 1n,
             header: {
                 version: 5n,
                 flags: 0n,
@@ -493,11 +492,9 @@ const generationMessage = new GenerationMessage({
                 vsn: 5n,
                 txs: [
                     new ChainObject('signed_tx', {
-                        vsn: 1n,
                         signatures: [],
                         transaction: new ChainObject('spend_tx', {
                             name: 'spend_tx',
-                            vsn: 1n,
                             sender: 'ak_2nF3Lh7djksbWLzXoNo6x59hnkyBezK8yjR53GPFgha3VdM1K8',
                             recipient: 'ak_2nF3Lh7djksbWLzXoNo6x59hnkyBezK8yjR53GPFgha3VdM1K8',
                             amount: 20000n,
@@ -515,7 +512,7 @@ const generationMessage = new GenerationMessage({
 })
 
 const generationMessageBinary = [
-    0, 12, 249,3,55,1,185,1,112,0,0,0,5,192,0,0,0,0,0,0,0,0,11,181,
+  0, 12, 249,3,55,1,185,1,112,0,0,0,5,192,0,0,0,0,0,0,0,0,11,181,
   245,213,51,205,168,8,248,88,254,15,86,154,248,207,16,87,
   40,15,41,144,18,92,151,40,64,132,149,125,94,42,158,181,
   86,112,97,254,85,187,122,167,155,35,70,15,210,159,255,
@@ -575,5 +572,73 @@ test('Decode Generation message', t => {
     t.deepEqual(
         encoder.decode(new Uint8Array(generationMessageBinary)),
         generationMessage
+    )
+})
+
+const genesisGenerationMessage = new GenerationMessage({
+    forward: true,
+    keyBlock: new ChainObject('key_block', {
+        version: 1n,
+        flags: 2147483648n,
+        height: 0n,
+        prevHash: 'mh_2CipHmrBcC5LrmnggBrAGuxAf2fPDrAt79asKnadME4nyPRzBL',
+        prevKeyHash: 'kh_11111111111111111111111111111111273Yts',
+        stateHash: 'bs_2aBz1QS23piMnSmZGwQk8iNCHLBdHSycPBbA5SHuScuYfHATit',
+        miner: 'ak_11111111111111111111111111111111273Yts',
+        beneficiary: 'ak_11111111111111111111111111111111273Yts',
+        target: 553713663n,
+        pow: new Uint8Array(Array(168).fill(0)),
+        nonce: 0n,
+        time: 0n,
+    }),
+    microBlocks: []
+})
+
+const genesisGenerationMessageBinary = [
+    0,12,249,1,114,1,185,1,108,0,0,0,1,128,
+    0,0,0,0,0,0,0,0,0,0,0,158,
+    79,89,57,49,136,245,229,211,220,44,167,79,
+    151,117,42,149,176,13,160,196,61,156,179,95,
+    106,250,133,59,93,3,170,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,207,14,125,41,37,121,177,152,90,
+    44,169,26,242,102,7,35,207,106,113,25,70,
+    151,21,111,130,36,232,186,254,232,52,26,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,33,0,255,255,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,192,
+    1
+]
+
+test('Encode Genesis Generation message', t => {
+    t.deepEqual(
+        encoder.encode(genesisGenerationMessage),
+        genesisGenerationMessageBinary
+    )
+})
+
+test('Decode Genesis Generation message', t => {
+    t.deepEqual(
+        encoder.decode(new Uint8Array(genesisGenerationMessageBinary)),
+        genesisGenerationMessage
     )
 })

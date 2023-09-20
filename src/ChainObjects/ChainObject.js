@@ -3,7 +3,7 @@ import ObjectTags from './ChainObjectTags.js'
 export default class ChainObject {
     constructor(name, fields) {
         this.name = name
-        this.vsn = 1n
+        this.vsn = fields.version || fields.header?.version || 1n
 
         Object.assign(this, fields)
     }
