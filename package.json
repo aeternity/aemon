@@ -21,7 +21,10 @@
   },
   "devDependencies": {
     "ava": "^5.2.0",
-    "c8": "^7.13.0"
+    "c8": "^7.13.0",
+    "eslint": "8.49.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.28.1"
   },
   "ava": {
     "files": [
@@ -38,6 +41,7 @@
   "scripts": {
     "test": "ava --verbose",
     "test:watch": "ava --verbose --watch",
-    "coverage": "c8 ava"
+    "coverage": "c8 ava",
+    "lint": "eslint src"
   }
 }
