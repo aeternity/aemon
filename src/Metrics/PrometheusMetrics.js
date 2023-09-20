@@ -96,18 +96,18 @@ export default class PrometheusMetrics {
     }
 
     inc(metric, labels = {}, i = 1) {
-        this.metrics[metric].inc(labels, i)
+        this.metrics[metric].inc(labels, Number(i))
     }
 
     dec(metric, labels = {}, i = 1) {
-        this.metrics[metric].dec(labels, i)
+        this.metrics[metric].dec(labels, Number(i))
     }
 
     set(metric, labels = {}, i = 1) {
-        this.metrics[metric].set(labels, i)
+        this.metrics[metric].set(labels, Number(i))
     }
 
     observe(metric, labels = {}, val) {
-        this.metrics[metric].observe(labels, val)
+        this.metrics[metric].observe(labels, Number(val))
     }
 }

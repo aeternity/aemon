@@ -250,7 +250,7 @@ export default class P2PScanner extends EventEmitter {
             this.network.bestHash = pong.bestHash
             this.metrics.set('network_difficulty', {
                 genesisHash: this.network.genesisHash,
-            }, Number(this.network.difficulty))
+            }, this.network.difficulty)
         }
 
         this.metrics.set('node_peers', {
@@ -262,7 +262,7 @@ export default class P2PScanner extends EventEmitter {
             publicKey: peer.publicKey,
             genesisHash: pong.genesisHash,
             syncAllowed: Number(pong.syncAllowed)
-        }, Number(pong.difficulty))
+        }, pong.difficulty)
 
         this.metrics.observe('peer_latency_seconds', {publicKey: peer.publicKey}, responseTime)
         this.metrics.observe('peer_throughput_bytes', {publicKey: peer.publicKey}, throughput)
@@ -298,23 +298,23 @@ export default class P2PScanner extends EventEmitter {
         }, info.unverifiedPeers)
     }
 
-    onConnectionKeyBlock(connection, keyBlock) {
+    onConnectionKeyBlock(connection, {keyBlock}) {
         const latency = (Date.now() - Number(keyBlock.time)) / 1000
 
         if (keyBlock.height > this.network.height) {
             this.network.height = keyBlock.height
-            this.metrics.set('network_height', {}, Number(this.network.height))
+            this.metrics.set('network_height', {}, this.network.height)
         }
 
         this.metrics.observe('block_latency_seconds', {'type': 'key'}, latency)
 
         this.metrics.set('miner_version', {
             beneficiary: keyBlock.beneficiary,
-        }, Number(keyBlock.info))
+        }, keyBlock.info)
     }
 
-    onConnectionMicroBlock(connection, microBlock) {
-        const latency = (Date.now() - Number(microBlock.time)) / 1000
+    onConnectionMicroBlock(connection, {microBlock}) {
+        const latency = (Date.now() - Number(microBlock.header.time)) / 1000
 
         this.metrics.observe('block_latency_seconds', {'type': 'micro'}, latency)
     }
