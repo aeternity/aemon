@@ -9,26 +9,26 @@ export default class NetworkMetrics {
     }
 
     inc(metric, labels = {}, i = 1) {
-        labels.networkId = this.network.networkId
+        const {networkId} = this.network
 
-        return this.metrics.inc(metric, labels, i)
+        return this.metrics.inc(metric, {...labels, networkId}, i)
     }
 
     dec(metric, labels = {}, i = 1) {
-        labels.networkId = this.network.networkId
+        const {networkId} = this.network
 
-        return this.metrics.dec(metric, labels, i)
+        return this.metrics.dec(metric, {...labels, networkId}, i)
     }
 
     set(metric, labels = {}, i = 1) {
-        labels.networkId = this.network.networkId
+        const {networkId} = this.network
 
-        return this.metrics.set(metric, labels, i)
+        return this.metrics.set(metric, {...labels, networkId}, i)
     }
 
-    observe(metric, labels = {}, val) {
-        labels.networkId = this.network.networkId
+    observe(metric, labels = {}, val = 1) {
+        const {networkId} = this.network
 
-        return this.metrics.observe(metric, labels, val)
+        return this.metrics.observe(metric, {...labels, networkId}, val)
     }
 }

@@ -1,21 +1,19 @@
 import stream from 'stream'
-import MessageSerializer from '../MessageSerializer.js'
-import SerializerError from '../SerializerError.js'
+import MessageEncoder from '../Messages/Encoder/MessageEncoder.js'
+import SerializerError from './SerializerError.js'
 
 export default class MessageSerializeTransform extends stream.Transform {
-    constructor(options) {
+    constructor(_options) {
         super({
             objectMode: true,
         })
 
-        this.serializer = new MessageSerializer()
+        this.encoder = new MessageEncoder()
     }
 
-    _transform(message, encoding, callback) {
+    _transform(message, _encoding, callback) {
         try {
-            // console.log('DEBUG: message:', message)
-            const serialized = this.serializer.serialize(message)
-            // console.log('Serialized message: ', serialized)
+            const serialized = this.encoder.encode(message)
             this.push(serialized)
             callback()
         } catch (e) {

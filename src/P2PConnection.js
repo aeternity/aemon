@@ -1,11 +1,10 @@
-import net from 'net'
 import EventEmitter from 'events'
-import PingMessage from './Messages/PingMessage.js'
-import ResponseMessage from './Messages/ResponseMessage.js'
-import CloseMessage from './Messages/CloseMessage.js'
-import GetNodeInfoMessage from './Messages/GetNodeInfoMessage.js'
-import NodeInfoMessage from './Messages/NodeInfoMessage.js'
-import GetGenerationMessage from './Messages/GetGenerationMessage.js'
+import PingMessage from './Messages/Models/PingMessage.js'
+import ResponseMessage from './Messages/Models/ResponseMessage.js'
+import CloseMessage from './Messages/Models/CloseMessage.js'
+import GetNodeInfoMessage from './Messages/Models/GetNodeInfoMessage.js'
+import NodeInfoMessage from './Messages/Models/NodeInfoMessage.js'
+import GetGenerationMessage from './Messages/Models/GetGenerationMessage.js'
 
 export default class P2PConnection extends EventEmitter {
     constructor(direction, network, transportFactory, peer, socket) {
@@ -19,7 +18,7 @@ export default class P2PConnection extends EventEmitter {
         this.stream = this.socket
 
         this.socket.on('error', this.onError.bind(this))
-        this.socket.on('close', this.onClose.bind(this))   
+        this.socket.on('close', this.onClose.bind(this))
         this.socket.on('end', this.onEnd.bind(this))
 
         this.pingTimer = null
@@ -86,7 +85,7 @@ export default class P2PConnection extends EventEmitter {
         this.emit('close', hadError)
     }
 
-    onHandshake(remotePublicKey) {
+    onHandshake(_remotePublicKey) {
         this.peer.connected = true
         this.emit('connect')
     }
@@ -95,7 +94,8 @@ export default class P2PConnection extends EventEmitter {
         this.emit('received', message)
 
         if (message instanceof ResponseMessage) {
-            return this.handleResponse(message)
+            this.handleResponse(message)
+            return
         }
 
         if (message instanceof CloseMessage) {
@@ -134,7 +134,10 @@ export default class P2PConnection extends EventEmitter {
 
     pong(localPeer) {
         const pong = this.createPing(localPeer)
-        const response = new ResponseMessage(true, pong.tag, '', pong)
+        const response = new ResponseMessage({
+            success: true,
+            message: pong
+        })
         this.send(response)
     }
 
@@ -146,7 +149,7 @@ export default class P2PConnection extends EventEmitter {
     }
 
     handlePings(localPeer) {
-        this.on('ping', (ping) => {
+        this.on('ping', (_ping) => {
             this.pong(localPeer)
         })
     }
@@ -174,7 +177,7 @@ export default class P2PConnection extends EventEmitter {
             difficulty: this.network.difficulty,
             bestHash: this.network.bestHash,
             syncAllowed: false,
-            peers: this.network.peers.slice(0, 32) //32 random sample ?
+            peers: this.network.peers.slice(0, 32) // 32 random sample ?
         })
     }
 

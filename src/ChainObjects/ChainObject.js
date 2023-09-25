@@ -1,9 +1,9 @@
-import ObjectTags from './ObjectTags.js'
+import ObjectTags from './ChainObjectTags.js'
 
 export default class ChainObject {
     constructor(name, fields) {
         this.name = name
-        // this.fields = fields
+        this.vsn = fields.version || fields.header?.version || 1n
 
         Object.assign(this, fields)
     }

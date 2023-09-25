@@ -1,13 +1,12 @@
-import net from 'net'
 import stream from 'stream'
 import test from 'ava'
 import P2PNetwork from '../src/P2PNetwork.js'
 import P2PNoiseTransportFactory from '../src/P2PNoiseTransportFactory.js'
-import CloseMessage from '../src/Messages/CloseMessage.js'
+import CloseMessage from '../src/Messages/Models/CloseMessage.js'
 
 test('Noise Transport', t => {
     const iPrv = 'pp_2mcSsrqC72Lr4YYMZb6zqS8Zd5un4LKRwKphyuqfVd2zCrTEcV'
-    const iPub = 'pp_2s6CoAr8tKWN3SMfaauZZXu1Fr7tr8x6BTGoY4kBmCozQi68Bc'
+    const _iPub = 'pp_2s6CoAr8tKWN3SMfaauZZXu1Fr7tr8x6BTGoY4kBmCozQi68Bc'
     const rPub = 'pp_2Kwvz5XJujZDPtE5WtuwSy8Ue8W6STq9qHhmrXABevLBgCcswY'
     const rPrv = 'pp_2H1vmsrHirjFxVPgNzDkufDaxFxiwe9dtCB2hRe6xWjtkZCbvR'
 
@@ -35,7 +34,7 @@ test('Noise Transport', t => {
         iStream.write(new CloseMessage())
     })
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         rStream.on('data', (message) => {
             t.deepEqual(message, new CloseMessage())
             resolve()

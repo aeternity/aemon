@@ -1,5 +1,3 @@
-import {FateApiEncoder} from '@aeternity/aepp-calldata'
-
 const Int2ByteArray = (value) => {
     const bigInt = BigInt(value)
 
@@ -23,24 +21,25 @@ const ByteArray2Int = (data) => {
     return BigInt('0x' + hex.join(''))
 }
 
+// this is overlaping with general calldata Serializer with some extras: uint_* and id
 export default class PrimitivesEncoder {
     constructor() {
         this.textEnoder = new TextEncoder()
         this.textDecoder = new TextDecoder()
-        this.apiEncoder = new FateApiEncoder()
 
         this.decoders = {
             int: this.decodeInt,
+            uint_16: this.decodeInt,
             uint_32: this.decodeInt,
             uint_64: this.decodeInt,
             bool: this.decodeBool,
             string: this.decodeString.bind(this),
             binary: this.decodeBinary,
-            id: this.decodeId.bind(this),
         }
 
         this.encoders = {
             int: this.encodeInt,
+            uint_16: (value) => this.encodeTypedInt('uint_16', value),
             uint_32: (value) => this.encodeTypedInt('uint_32', value),
             uint_64: (value) => this.encodeTypedInt('uint_64', value),
             bool: this.encodeBool,
@@ -49,10 +48,18 @@ export default class PrimitivesEncoder {
         }
     }
 
+    supports(type) {
+        return this.decoders.hasOwnProperty(type)
+    }
+
     encode(type, value) {
+        if (!this.encoders.hasOwnProperty(type)) {
+            throw new Error('Unsupported encoder type: ' + type)
+        }
+
         const encoder = this.encoders[type]
 
-        return encoder(value)
+        return (Array.isArray(value)) ? value.map(v => encoder(v)) : encoder(value)
     }
 
     decode(type, value) {
@@ -73,16 +80,20 @@ export default class PrimitivesEncoder {
         let dataView
 
         switch (type) {
-            case 'uint_32':
-                dataView = new DataView(new ArrayBuffer(4))
-                dataView.setUint32(0, Number(value))
-                break;
-            case 'uint_64':
-                dataView = new DataView(new ArrayBuffer(8))
-                dataView.setBigUint64(0, value)
-                break;
-            default:
-                throw new Error('Unsupported int type')
+        case 'uint_16':
+            dataView = new DataView(new ArrayBuffer(2))
+            dataView.setUint16(0, Number(value))
+            break
+        case 'uint_32':
+            dataView = new DataView(new ArrayBuffer(4))
+            dataView.setUint32(0, Number(value))
+            break
+        case 'uint_64':
+            dataView = new DataView(new ArrayBuffer(8))
+            dataView.setBigUint64(0, value)
+            break
+        default:
+            throw new Error('Unsupported int type')
         }
 
         return new Uint8Array(dataView.buffer)
@@ -97,7 +108,7 @@ export default class PrimitivesEncoder {
     }
 
     decodeBool(buffer) {
-        if (!buffer instanceof Uint8Array) {
+        if (!(buffer instanceof Uint8Array)) {
             throw new Error('Invalid buffer type, expected Uint8Array')
         }
 
@@ -117,7 +128,7 @@ export default class PrimitivesEncoder {
     }
 
     decodeString(buffer) {
-        if (!buffer instanceof Uint8Array) {
+        if (!(buffer instanceof Uint8Array)) {
             throw new Error('Invalid buffer type, expected Uint8Array')
         }
 
@@ -131,7 +142,7 @@ export default class PrimitivesEncoder {
             return encoder.encode(value)
         }
 
-        if (!value instanceof Uint8Array) {
+        if (!(value instanceof Uint8Array)) {
             throw new Error('Invalid value type, expected Uint8Array')
         }
 
@@ -139,31 +150,10 @@ export default class PrimitivesEncoder {
     }
 
     decodeBinary(buffer) {
-        if (!buffer instanceof Uint8Array) {
+        if (!(buffer instanceof Uint8Array)) {
             throw new Error('Invalid buffer type, expected Uint8Array')
         }
 
         return buffer
-    }
-
-    decodeId(value) {
-        const [tag, ...rest] = value
-
-        switch (tag) {
-            case 1:
-                return this.apiEncoder.encode('account_pubkey', rest)
-            case 2:
-                return this.apiEncoder.encode('name', rest)
-            case 3:
-                return this.apiEncoder.encode('commitment', rest)
-            case 4:
-                return this.apiEncoder.encode('oracle_pubkey', rest)
-            case 5:
-                return this.apiEncoder.encode('contract_pubkey', rest)
-            case 6:
-                return this.apiEncoder.encode('channel', rest)
-            default:
-                throw new Error('Unsupported ID tag: ' + tag)
-        }
     }
 }

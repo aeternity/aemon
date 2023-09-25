@@ -4,7 +4,6 @@ import EventEmitter from 'events'
 import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
 import P2PConnection from './P2PConnection.js'
 import Peer from './Peer.js'
-import Constants from './Messages/Constants.js'
 
 export default class P2PServer extends EventEmitter {
     constructor(network, localPeer) {
@@ -26,7 +25,7 @@ export default class P2PServer extends EventEmitter {
         this.server.on('connection', this.onConnection.bind(this))
     }
 
-    listen(port, host) {        
+    listen(port, host) {
         this.server.listen(port, host)
     }
 
@@ -37,7 +36,7 @@ export default class P2PServer extends EventEmitter {
     onConnection(socket) {
         this.emit('accept', socket)
 
-        let peer = this.network.peers.find((peer) => peer.host === socket.remoteAddress)
+        let peer = this.network.peers.find((p) => p.host === socket.remoteAddress)
         if (peer === undefined) {
             const pub = 'rnd_' + crypto.randomBytes(16).toString('hex')
             peer = new Peer(socket.remoteAddress, 3015, {pub})

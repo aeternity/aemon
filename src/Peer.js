@@ -1,9 +1,11 @@
 export default class Peer {
     #peers = new Set()
+
     constructor(host, port, keypair = {}) {
         this.host = host
         this.port = Number(port)
         this.keypair = keypair
+        this.publicKey = keypair.pub
         this.lat = 0
         this.lon = 0
         this.country = ''
@@ -21,9 +23,9 @@ export default class Peer {
         return `${this.publicKey}@${this.host}:${this.port}`
     }
 
-    get publicKey() {
-        return this.keypair.pub
-    }
+    // get publicKey() {
+    //     return this.keypair.pub
+    // }
 
     get privateKey() {
         return this.keypair.prv

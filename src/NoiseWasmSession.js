@@ -1,6 +1,6 @@
 import createNoise from 'noise-c.wasm'
 
-const PROTOCOL_NAME = "Noise_XK_25519_ChaChaPoly_BLAKE2b"
+const PROTOCOL_NAME = 'Noise_XK_25519_ChaChaPoly_BLAKE2b'
 const EMPTY = new Uint8Array()
 
 const createNoisePromise = () => {
@@ -12,19 +12,23 @@ const createNoisePromise = () => {
 const noise = await createNoisePromise()
 
 export default class NoiseWasmSession {
-
     static ROLE_INITIATOR = Symbol('INITIATOR')
+
     static ROLE_RESPONDER = Symbol('RESPONDER')
 
     #handshake = null
+
     #send = null
+
     #receive = null
+
     isInitiator = false
 
     /**
      * Must be called after object creation and after switch to a fallback handshake.
      *
-     * In case of fallback handshake it is not required to specify values that are the same as in previous Initialize() call, those will be used by default
+     * In case of fallback handshake it is not required to specify values
+     * that are the same as in previous Initialize() call, those will be used by default
      *
      * @param {ROLE_INITIATOR|ROLE_RESPONDER} role          Noise role
      * @param {null|Uint8Array}               prologue      Prologue value
@@ -32,12 +36,6 @@ export default class NoiseWasmSession {
      * @param {null|Uint8Array}               remoteKey     Remote static public key
      */
     constructor(role, prologue, localKey, remoteKey) {
-        // if (remoteKey) {
-        //     console.log('Noise session:', role, prologue, localKey.buffer, remoteKey.buffer)
-        // } else {
-        //     console.log('Noise session:', role, prologue, localKey.buffer)
-        // }
-
         this.isInitiator = (role === NoiseWasmSession.ROLE_INITIATOR)
         this.#handshake = noise.HandshakeState(PROTOCOL_NAME, this.#noiseRole(role))
         this.#handshake.Initialize(prologue, localKey, remoteKey)
@@ -56,7 +54,6 @@ export default class NoiseWasmSession {
     }
 
     handshake(data) {
-        // console.log('Handshaking....', this.isHandshaking())
         if (this.#handshake.GetAction() === noise.constants.NOISE_ACTION_SPLIT) {
             return this.#handshakeSplit()
         }
@@ -69,7 +66,6 @@ export default class NoiseWasmSession {
             return this.#handshakeWrite()
         }
 
-        console.log(this.#handshake)
         throw new Error('Unknown action handler for: ', this.#handshake.GetAction())
     }
 
@@ -90,7 +86,6 @@ export default class NoiseWasmSession {
     }
 
     #handshakeRead(data) {
-        // console.log('NOISE_ACTION_READ_MESSAGE', Buffer.from(data))
         this.#handshake.ReadMessage(data)
 
         if (this.#handshake.GetAction() === noise.constants.NOISE_ACTION_WRITE_MESSAGE) {
@@ -106,27 +101,24 @@ export default class NoiseWasmSession {
 
     #handshakeWrite() {
         const buff = this.#handshake.WriteMessage()
-        // console.log('NOISE_ACTION_WRITE_MESSAGE', Buffer.from(buff))
 
-        //next state: read or split
-        //however reads are triggered by socket events
-        if (this.#handshake.GetAction() === noise.constants.NOISE_ACTION_READ_MESSAGE) {
-        }
+        // next state: read or split
+        // however reads are triggered by socket events
+        // if (this.#handshake.GetAction() === noise.constants.NOISE_ACTION_READ_MESSAGE) {
+        // }
 
         if (this.#handshake.GetAction() === noise.constants.NOISE_ACTION_SPLIT) {
             this.#handshakeSplit()
         }
 
-        return buff        
+        return buff
     }
 
     #handshakeSplit() {
-        // console.log('NOISE_ACTION_SPLIT')
         const [send, receive] = this.#handshake.Split()
         this.#send = send
         this.#receive = receive
 
-        // console.log('send, receive:', send, receive)
         return null
     }
 
@@ -144,11 +136,10 @@ export default class NoiseWasmSession {
 
     free() {
         if (this.isHandshaking()) {
-            // console.log('NOISE SESSION - FREE HANDSHAKE', this.#send, this.#receive)
-            return this.#handshake.free()
+            this.#handshake.free()
+            return
         }
 
-        // console.log('NOISE SESSION - FREE CHIPHER')
         this.#send.free()
         this.#receive.free()
     }

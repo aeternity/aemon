@@ -1,14 +1,8 @@
-import net from 'net'
-import stream from 'stream'
 import test from 'ava'
 import P2PNetwork from '../src/P2PNetwork.js'
 import P2PServer from '../src/P2PServer.js'
 import P2PClient from '../src/P2PClient.js'
 import Peer from '../src/Peer.js'
-
-const stub = new class {
-    updatePeerLocation(peer, cb) { cb() }
-}
 
 const randomPort = () => {
     const min = 30015
@@ -45,7 +39,7 @@ test('P2P client/server', t => {
     const client = new P2PClient(network, clientPeer, serverPeer)
     const server = new P2PServer(network, serverPeer)
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         client.connection.on('connect', () => {
             client.connection.ping(clientPeer)
         })
@@ -70,7 +64,7 @@ test('Sets remote peer public key from existing peers database', t => {
     const server = new P2PServer(network, serverPeer)
     server.connectOnStart = false
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         server.on('connection', (connection) => {
             t.is(clientPeer.publicKey, connection.peer.publicKey)
             resolve()
