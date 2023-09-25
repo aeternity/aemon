@@ -43,6 +43,6 @@
     "test": "ava --verbose",
     "test:watch": "ava --verbose --watch",
     "coverage": "c8 ava",
-    "lint": "eslint src"
+    "lint": "eslint src tests"
   }
 }

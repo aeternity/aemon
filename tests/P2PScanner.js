@@ -1,5 +1,4 @@
-import net from 'net'
-import stream from 'stream'
+// eslint-disable-next-line max-classes-per-file
 import test from 'ava'
 import P2PNetwork from '../src/P2PNetwork.js'
 import P2PClient from '../src/P2PClient.js'
@@ -38,12 +37,12 @@ const fixtures = () => {
 }
 
 const stub = new class {
-    updatePeerLocation(peer, cb) { cb() }
-}
+    updatePeerLocation(_peer, cb) { cb() }
+}()
 
 const logger = new class {
-    log(level, msg) {}
-}
+    log(_level, _msg) {}
+}()
 
 test('Connects to initial network peers', t => {
     const {network, clientPeer, serverPeer} = fixtures()
@@ -55,13 +54,12 @@ test('Connects to initial network peers', t => {
     scanner.setOption('enableServer', false)
     scanner.setOption('connectOnStart', true)
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         scanner.on('connection', (connection) => {
             t.is(serverPeer.publicKey, connection.peer.publicKey)
             scanner.stop()
             resolve()
         })
-
 
         server.listen(serverPeer.port, 'localhost')
         scanner.start()
@@ -75,7 +73,7 @@ test('Listens for peer connections', t => {
     const scanner = new P2PScanner(network, serverPeer, new InMemoryMetrics(), logger, stub)
     scanner.setOption('enableServer', true)
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         client.connection.on('pong', (ping) => {
             t.is(serverPeer.port, ping.port)
             client.disconnect()
@@ -87,4 +85,3 @@ test('Listens for peer connections', t => {
         client.connect()
     })
 })
-

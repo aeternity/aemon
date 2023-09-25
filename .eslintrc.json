@@ -11,6 +11,9 @@
     "parserOptions": {
         "ecmaVersion": 13
     },
+    "settings": {
+        "import/core-modules": [ "ava" ]
+    },
     "rules": {
         "semi": ["error", "never"],
         "indent": ["error", 4],
