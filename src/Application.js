@@ -10,7 +10,8 @@ import {FateApiEncoder} from '@aeternity/aepp-calldata'
 
 // The log formatter is using JSON.stringify and this "fix" it's serialization issues
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt#use_within_json
-BigInt.prototype.toJSON = function () { return this.toString() }
+// eslint-disable-next-line no-extend-native
+BigInt.prototype.toJSON = () => this.toString()
 
 const createKeyPair = (argv, logger) => {
     let keypair = {pub: argv.publicKey, prv: argv.privateKey}

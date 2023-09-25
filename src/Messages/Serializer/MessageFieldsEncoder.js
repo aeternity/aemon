@@ -8,13 +8,12 @@ export default class MessageFieldsEncoder {
     }
 
     #encodeField(typeInfo, value) {
-        // console.log('encodeField', typeInfo, value)
         if (Array.isArray(typeInfo)) {
             return value.map(v => this.#encodeField(typeInfo[0], v))
         }
 
         if (Object.getPrototypeOf(typeInfo) === Object.prototype) {
-            const {type, template} = typeInfo
+            const {template} = typeInfo
 
             return RLP.encode(this.encodeFields(value, template))
         }
@@ -28,7 +27,7 @@ export default class MessageFieldsEncoder {
         }
 
         if (Object.getPrototypeOf(typeInfo) === Object.prototype) {
-            const {type, template} = typeInfo
+            const {template} = typeInfo
 
             return this.decodeFields(RLP.decode(value), template)
         }
@@ -37,7 +36,6 @@ export default class MessageFieldsEncoder {
     }
 
     encode(message) {
-        // console.log('FieldsEncoder message:', message)
         const template = TEMPLATES[message.tag][message.vsn]
         const encodedFields = this.encodeFields(message, template)
 
@@ -63,11 +61,12 @@ export default class MessageFieldsEncoder {
         const chunks = []
 
         for (const field in template) {
-            const type = template[field]
-            // console.log('encode filed iter: ', field, type, data[field])
-            const encoded = this.#encodeField(type, data[field])
+            if (Object.hasOwn(template, field)) {
+                const type = template[field]
+                const encoded = this.#encodeField(type, data[field])
 
-            chunks.push(encoded)
+                chunks.push(encoded)
+            }
         }
 
         return chunks
@@ -81,14 +80,15 @@ export default class MessageFieldsEncoder {
      * @returns {object} An object with decoded field => value items
     */
     decodeFields(data, template) {
-        // console.log('decodeFields', data, template)
         const chunks = {}
         let idx = 0
 
         for (const field in template) {
-            const type = template[field]
-            chunks[field] = this.#decodeField(type, data[idx])
-            idx++
+            if (Object.hasOwn(template, field)) {
+                const type = template[field]
+                chunks[field] = this.#decodeField(type, data[idx])
+                idx++
+            }
         }
 
         return chunks

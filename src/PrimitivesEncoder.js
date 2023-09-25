@@ -69,7 +69,6 @@ export default class PrimitivesEncoder {
 
         const decoder = this.decoders[type]
 
-        // console.log('decode', type, value)
         return (Array.isArray(value)) ? value.map(v => decoder(v)) : decoder(value)
     }
 
@@ -109,7 +108,7 @@ export default class PrimitivesEncoder {
     }
 
     decodeBool(buffer) {
-        if (!buffer instanceof Uint8Array) {
+        if (!(buffer instanceof Uint8Array)) {
             throw new Error('Invalid buffer type, expected Uint8Array')
         }
 
@@ -129,7 +128,7 @@ export default class PrimitivesEncoder {
     }
 
     decodeString(buffer) {
-        if (!buffer instanceof Uint8Array) {
+        if (!(buffer instanceof Uint8Array)) {
             throw new Error('Invalid buffer type, expected Uint8Array')
         }
 
@@ -143,7 +142,7 @@ export default class PrimitivesEncoder {
             return encoder.encode(value)
         }
 
-        if (!value instanceof Uint8Array) {
+        if (!(value instanceof Uint8Array)) {
             throw new Error('Invalid value type, expected Uint8Array')
         }
 
@@ -151,7 +150,7 @@ export default class PrimitivesEncoder {
     }
 
     decodeBinary(buffer) {
-        if (!buffer instanceof Uint8Array) {
+        if (!(buffer instanceof Uint8Array)) {
             throw new Error('Invalid buffer type, expected Uint8Array')
         }
 

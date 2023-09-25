@@ -1,9 +1,6 @@
 import EventEmitter from 'events'
 import P2PClient from './P2PClient.js'
 import P2PServer from './P2PServer.js'
-import P2PNoiseTransportFactory from './P2PNoiseTransportFactory.js'
-import InMemoryMetrics from './Metrics/InMemoryMetrics.js'
-import PrometheusMetrics from './Metrics/PrometheusMetrics.js'
 import PeerLocationProvider from './Providers/PeerLocationProvider.js'
 
 export default class P2PScanner extends EventEmitter {
@@ -42,7 +39,7 @@ export default class P2PScanner extends EventEmitter {
         this.network.peers.map(this.addSeedPeer.bind(this))
 
         if (this.options.enableServer) {
-            this.startServer()
+            this.startServer(serverPort, serverHost)
         }
     }
 
@@ -111,7 +108,7 @@ export default class P2PScanner extends EventEmitter {
             return this.addPeer(peer, this.connectToPeer.bind(this))
         }
 
-        this.addPeer(peer)
+        return this.addPeer(peer)
     }
 
     addDiscoveryPeer(peer) {
@@ -119,7 +116,7 @@ export default class P2PScanner extends EventEmitter {
             return this.addPeer(peer, this.connectToPeer.bind(this))
         }
 
-        this.addPeer(peer)
+        return this.addPeer(peer)
     }
 
     addPeer(peer, cb = () => {}) {
@@ -234,7 +231,7 @@ export default class P2PScanner extends EventEmitter {
         }
     }
 
-    onConnectionPing(connection, ping) {
+    onConnectionPing(connection, _ping) {
         this.logger.log('verbose', 'Ping request', {peer: connection.peer.url})
     }
 

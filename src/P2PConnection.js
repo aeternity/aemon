@@ -1,4 +1,3 @@
-import net from 'net'
 import EventEmitter from 'events'
 import PingMessage from './Messages/Models/PingMessage.js'
 import ResponseMessage from './Messages/Models/ResponseMessage.js'
@@ -37,7 +36,6 @@ export default class P2PConnection extends EventEmitter {
     }
 
     encrypt(remoteKey = null) {
-        // console.log('remoteKey', remoteKey)
         this.stream = this.transportFactory.create(this.socket, remoteKey)
         this.stream.on('data', this.onData.bind(this))
         this.stream.on('handshake', this.onHandshake.bind(this))
@@ -87,7 +85,7 @@ export default class P2PConnection extends EventEmitter {
         this.emit('close', hadError)
     }
 
-    onHandshake(remotePublicKey) {
+    onHandshake(_remotePublicKey) {
         this.peer.connected = true
         this.emit('connect')
     }
@@ -96,7 +94,8 @@ export default class P2PConnection extends EventEmitter {
         this.emit('received', message)
 
         if (message instanceof ResponseMessage) {
-            return this.handleResponse(message)
+            this.handleResponse(message)
+            return
         }
 
         if (message instanceof CloseMessage) {
@@ -150,7 +149,7 @@ export default class P2PConnection extends EventEmitter {
     }
 
     handlePings(localPeer) {
-        this.on('ping', (ping) => {
+        this.on('ping', (_ping) => {
             this.pong(localPeer)
         })
     }
@@ -171,7 +170,6 @@ export default class P2PConnection extends EventEmitter {
 
     // factory methods
     createPing(localPeer) {
-        // console.log('network during ping', this.network)
         return new PingMessage({
             port: localPeer.port,
             share: 32n,

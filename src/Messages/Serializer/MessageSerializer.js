@@ -13,7 +13,10 @@ export default class MessageSerializer {
 
         // serializers knows about message structure and handle custom serialization
         this.#serializers = {
-            [ResponseMessageSerializer.TAG]: new ResponseMessageSerializer(this.fieldsEncoder, this.factory),
+            [ResponseMessageSerializer.TAG]: new ResponseMessageSerializer(
+                this.fieldsEncoder,
+                this.factory
+            ),
             [FragmentMessageSerializer.TAG]: new FragmentMessageSerializer(),
         }
     }
@@ -49,7 +52,7 @@ export default class MessageSerializer {
     }
 
     serialize(message) {
-        const {tag, vsn} = message
+        const {tag} = message
         const serialized = this.#serializeFields(message)
 
         return [0x0, tag, ...serialized]

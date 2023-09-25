@@ -1,6 +1,5 @@
 import ChainObject from './ChainObject.js'
 import Templates from './ChainObjectTemplates.js'
-import FieldsEncoder from './FieldsEncoder.js'
 import PrimitivesEncoder from '../PrimitivesEncoder.js'
 
 export default class ChainObjectEncoder {

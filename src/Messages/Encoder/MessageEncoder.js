@@ -10,10 +10,10 @@ export default class MessageEncoder {
         }
 
         const decoders = {
-            p2p_message: (value) => this.messageFactory.create(value.tag, this.#binaryToFields(value))
+            p2p_message: (value) => this.msgFactory.create(value.tag, this.#binaryToFields(value))
         }
 
-        this.messageFactory = new MessageFactory()
+        this.msgFactory = new MessageFactory()
         this.messageSerializer = new MessageSerializer()
         this.templateFieldsEncoder = new TemplateFieldsEncoder(encoders, decoders)
     }
@@ -55,6 +55,6 @@ export default class MessageEncoder {
         const message = this.messageSerializer.deserialize(binaryData)
         const fields = this.#binaryToFields(message)
 
-        return this.messageFactory.create(fields.tag, fields)
+        return this.msgFactory.create(fields.tag, fields)
     }
 }

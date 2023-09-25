@@ -41,7 +41,7 @@ export default class InMemoryMetrics {
 
         const keys = Object.keys(labels)
         if (keys.length === 0) {
-            return this.data[metric] += i
+            this.data[metric] += i
         }
 
         for (const key of keys) {
@@ -55,7 +55,7 @@ export default class InMemoryMetrics {
 
         const keys = Object.keys(labels)
         if (keys.length === 0) {
-            return this.data[metric] -= i
+            this.data[metric] -= i
         }
 
         for (const key of keys) {
@@ -69,7 +69,7 @@ export default class InMemoryMetrics {
 
         const keys = Object.keys(labels)
         if (keys.length === 0) {
-            return this.data[metric] = i
+            this.data[metric] = i
         }
 
         for (const key of keys) {
@@ -78,7 +78,7 @@ export default class InMemoryMetrics {
         }
     }
 
-    observe(metric, labels = {}, val) {
+    observe(metric, labels = {}, val = 1) {
         this.set(metric, labels, val)
     }
 }

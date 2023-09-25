@@ -109,7 +109,7 @@ export default class PrometheusMetrics {
         this.metrics[metric].set(labels, Number(i))
     }
 
-    observe(metric, labels = {}, val) {
+    observe(metric, labels = {}, val = 1) {
         this.metrics[metric].observe(labels, Number(val))
     }
 }

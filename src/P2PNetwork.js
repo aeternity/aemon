@@ -1,6 +1,5 @@
 import EventEmitter from 'events'
 import Peer from './Peer.js'
-import PeerLocationProvider from './Providers/PeerLocationProvider.js'
 
 export default class P2PNetwork extends EventEmitter {
     #peers = new Map()
@@ -16,6 +15,7 @@ export default class P2PNetwork extends EventEmitter {
 
         peers.map(peer => this.addPeer(Peer.withUrl(peer)))
 
+        /* eslint-disable no-param-reassign */
         this.#peers.forEach(peer => {
             peer.owner = 'aeternity'
             peer.kind = 'seed'
@@ -23,7 +23,7 @@ export default class P2PNetwork extends EventEmitter {
     }
 
     get peers() {
-        return Array.from(this.#peers, ([key, peer]) => peer)
+        return Array.from(this.#peers, ([_key, peer]) => peer)
     }
 
     addPeer(peer) {
@@ -31,7 +31,6 @@ export default class P2PNetwork extends EventEmitter {
             return this.#peers.get(peer.publicKey)
         }
 
-        peer.ref = 'NETWORK'
         this.#peers.set(peer.publicKey, peer)
         this.emit('peer.new', peer)
 
@@ -52,11 +51,10 @@ export default class P2PNetwork extends EventEmitter {
     toString() {
         const cntPeers = this.#peers.size
         const networkStr = `networkID: ${this.networkId}, difficulty: ${this.difficulty}, peers: ${cntPeers}`
-        const peersString = Array.from(this.#peers).map(([key, peer]) => {
+        const peersString = Array.from(this.#peers).map(([_key, peer]) => {
             return `\t${peer.toString()} => ${peer.peers.length}`
         }).join('\n')
 
-        return `${networkStr}`
         return `----------------------\n${networkStr}\n${peersString}\n----------------------`
     }
 }

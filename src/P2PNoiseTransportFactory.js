@@ -62,11 +62,10 @@ export default class P2PNoiseTransportFactory {
         noiseDecrypt.on('handshakeData', data => frameEncoder.write(data))
         // relay to the duplex stream
         noiseDecrypt.on('handshake', () => {
-            // console.log('handshake with session remote key:', noiseSession.remotePublicKey)
             duplex.emit('handshake', noiseSession.remotePublicKey)
         })
 
-        socket.on('end', (hadError) => {
+        socket.on('end', (_hadError) => {
             if (noiseSession.isHandshaking()) {
                 duplex.emit('error', new HandshakeError('Connection closed before handshake completion.'))
             }
@@ -87,14 +86,12 @@ export default class P2PNoiseTransportFactory {
         return duplex
     }
 
-    #getNoisePrologue(network) {
+    #getNoisePrologue() {
         const version = Buffer.alloc(8)
         version.writeBigInt64BE(P2P_PROTOCOL_VSN, 0)
 
         const genesis = this.apiEncoder.decode(this.network.genesisHash)
         const networkId = Buffer.from(this.network.networkId, 'utf-8')
-
-        // console.log('Noise prologue:', version, genesis, networkId)
 
         return Buffer.concat([version, genesis, networkId])
     }

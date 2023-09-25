@@ -15,8 +15,9 @@ import Message from './Models/Message.js'
 import Peer from '../Peer.js'
 
 export default class MessageFactory {
-    create(tag, fields, messageSize) {
-        fields.vsn = Number(fields.vsn)
+    create(tag, messageFields, messageSize) {
+        const vsn = Number(messageFields.vsn)
+        const fields = {...messageFields, vsn}
 
         switch (tag) {
         case MessageTags.MSG_FRAGMENT:
@@ -47,19 +48,23 @@ export default class MessageFactory {
     }
 
     createDefaultMessage(tag, fields) {
-        const key = Object.keys(MessageTags).find(key => MessageTags[key] === tag)
-        if (key === undefined) {
+        const tagKey = Object.keys(MessageTags).find(key => MessageTags[key] === tag)
+        if (tagKey === undefined) {
             throw new Error('Unsupported message serializer tag: ' + tag)
         }
 
-        const name = key.replace('MSG_', '').toLowerCase()
+        const name = tagKey.replace('MSG_', '').toLowerCase()
 
         return new Message(name, fields)
     }
 
     createPingMessage(fields) {
-        fields.peers = fields.peers.map(({host, port, publicKey: pub}) => new Peer(host, port, {pub}))
+        const peers = fields.peers.map(({host, port, publicKey: pub}) => {
+            return new Peer(host, port, {pub})
+        })
 
-        return new PingMessage(fields)
+        const hydratedFields = {...fields, peers}
+
+        return new PingMessage(hydratedFields)
     }
 }

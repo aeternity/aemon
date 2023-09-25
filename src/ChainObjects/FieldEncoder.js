@@ -27,9 +27,9 @@ export default class FieldEncoder {
             tx_hash: (value) => this.apiEncoder.encode('tx_hash', value),
             bytearray: (value) => this.apiEncoder.encode('bytearray', value),
             id: (value) => this.idEncoder.encode(value),
-            key_block: (value, params) => this.chainObjectEncoder.decode('key_block', value),
-            micro_block: (value, params) => this.chainObjectEncoder.decode('micro_block', value),
-            light_micro_block: (value, params) => this.chainObjectEncoder.decode('light_micro_block', value),
+            key_block: (value, _params) => this.chainObjectEncoder.decode('key_block', value),
+            micro_block: (value, _params) => this.chainObjectEncoder.decode('micro_block', value),
+            light_micro_block: (value, _params) => this.chainObjectEncoder.decode('light_micro_block', value),
             chain_object: (value) => this.chainObjectSerializer.deserialize(value),
             ...additionalDecoders
         }
@@ -46,9 +46,9 @@ export default class FieldEncoder {
             tx_hash: (value) => this.apiEncoder.decode(value),
             bytearray: (value) => this.apiEncoder.decode(value),
             id: (value) => this.idEncoder.decode(value),
-            key_block: (value, params) => this.chainObjectEncoder.encode(value),
-            micro_block: (value, params) => this.chainObjectEncoder.encode(value),
-            light_micro_block: (value, params) => this.chainObjectEncoder.encode(value),
+            key_block: (value, _params) => this.chainObjectEncoder.encode(value),
+            micro_block: (value, _params) => this.chainObjectEncoder.encode(value),
+            light_micro_block: (value, _params) => this.chainObjectEncoder.encode(value),
             chain_object: (value) => this.chainObjectSerializer.serialize(value),
             ...additionalEncoders
         }

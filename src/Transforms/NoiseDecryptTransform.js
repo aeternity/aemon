@@ -4,7 +4,7 @@ import HandshakeError from '../HandshakeError.js'
 export default class NoiseDecryptTransform extends stream.Transform {
     #session = null
 
-    constructor(session, options) {
+    constructor(session, _options) {
         super({
             objectMode: true,
         })
@@ -26,7 +26,7 @@ export default class NoiseDecryptTransform extends stream.Transform {
         }
     }
 
-    handshake(data, callback) {
+    handshake(data) {
         const handshakeData = this.#session.handshake(data)
         if (handshakeData !== null) {
             this.emit('handshakeData', handshakeData)

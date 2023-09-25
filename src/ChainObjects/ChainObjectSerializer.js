@@ -2,7 +2,6 @@ import RLP from 'rlp'
 import ChainObject from './ChainObject.js'
 import ObjectTags from './ChainObjectTags.js'
 import Templates from './ChainObjectTemplates.js'
-import FieldsEncoder from './FieldsEncoder.js'
 
 export default class ChainObjectSerializer {
     /**
@@ -13,24 +12,19 @@ export default class ChainObjectSerializer {
     }
 
     serialize(chainObject) {
-        // console.log('object', chainObject)
         const {name, tag, vsn} = chainObject
 
         const template = Templates[name.toUpperCase()][vsn]
         if (template === undefined) {
             throw new Error(`Unsupported template version "${vsn}" for object type "${name}"`)
         }
-        // console.log('template', template)
 
         const serializedFields = this.#serializeFields(tag, vsn, template, chainObject)
-        // console.log('serializedFields', serializedFields)
 
         return new Uint8Array(serializedFields)
     }
 
     deserialize(data) {
-        // console.log('ChainObjectSerializer deserialize data:')
-        // console.dir(data, {maxArrayLength: null})
         const {tag, vsn, rest} = this.#deserializeHeader(data)
         const type = Object.keys(ObjectTags).find(key => ObjectTags[key] === Number(tag))
 
@@ -73,7 +67,7 @@ export default class ChainObjectSerializer {
     #deserializeFields(template, data) {
         const objData = RLP.decode(data)
         const fullTemplate = {tag: 'int', vsn: 'int', ...template}
-        const {tag, vsn, ...fields} = this.fieldsEncoder.decodeFields(objData, fullTemplate)
+        const {_tag, _vsn, ...fields} = this.fieldsEncoder.decodeFields(objData, fullTemplate)
 
         return fields
     }

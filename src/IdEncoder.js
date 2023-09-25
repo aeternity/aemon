@@ -24,7 +24,7 @@ export default class IdEncoder {
     encode(value) {
         const [tag, ...rest] = value
 
-        const key = Object.keys(TAGS).find(key => TAGS[key] === tag)
+        const key = Object.keys(TAGS).find(tagKey => TAGS[tagKey] === tag)
         if (key === undefined) {
             throw new Error('Unsupported ID tag: ' + tag)
         }
@@ -36,7 +36,7 @@ export default class IdEncoder {
         const prefix = data.substring(0, 2)
 
         if (!PREFIX2TAG.hasOwnProperty(prefix)) {
-            throw new FormatError(`Invalid ID data format. Unsupported prefix: ${prefix}`)
+            throw new Error(`Invalid ID data format. Unsupported prefix: ${prefix}`)
         }
 
         const tag = PREFIX2TAG[prefix]

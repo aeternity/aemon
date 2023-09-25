@@ -30,11 +30,12 @@ export default class FieldsEncoder {
         const chunks = []
 
         for (const field in template) {
-            const type = template[field]
-            // console.log('encode field iter: ', field, type, data[field])
-            const encoded = this.#encodeField(type, data[field])
+            if (Object.hasOwn(template, field)) {
+                const type = template[field]
+                const encoded = this.#encodeField(type, data[field])
 
-            chunks.push(encoded)
+                chunks.push(encoded)
+            }
         }
 
         return chunks
@@ -48,15 +49,15 @@ export default class FieldsEncoder {
      * @returns {object} An object with decoded field => value items
     */
     decodeFields(data, template) {
-        // console.log('decode fields:', data, template)
         const chunks = {}
         let idx = 0
 
         for (const field in template) {
-            const type = template[field]
-            // console.log('this.#decodeField iter: ', field, type, data[idx])
-            chunks[field] = this.#decodeField(type, data[idx])
-            idx++
+            if (Object.hasOwn(template, field)) {
+                const type = template[field]
+                chunks[field] = this.#decodeField(type, data[idx])
+                idx++
+            }
         }
 
         return chunks
@@ -68,9 +69,11 @@ export default class FieldsEncoder {
         let idx = 0
 
         for (const field in template) {
-            const size = this.#sizeOf(template[field])
-            fields.push(stream.slice(idx, idx + size))
-            idx += size
+            if (Object.hasOwn(template, field)) {
+                const size = this.#sizeOf(template[field])
+                fields.push(stream.slice(idx, idx + size))
+                idx += size
+            }
         }
 
         return fields
@@ -87,7 +90,9 @@ export default class FieldsEncoder {
         if (Object.getPrototypeOf(type) === Object.prototype) {
             let objectSize = 0
             for (const field in type.template) {
-                objectSize += this.#sizeOf(type.template[field])
+                if (Object.hasOwn(type.template, field)) {
+                    objectSize += this.#sizeOf(type.template[field])
+                }
             }
 
             return objectSize
@@ -106,7 +111,7 @@ export default class FieldsEncoder {
         }
 
         if (Object.getPrototypeOf(typeInfo) === Object.prototype) {
-            const {type, template} = typeInfo
+            const {template} = typeInfo
 
             return new Uint8Array(this.encodeFields(value, template).flatMap(e => [...e]))
         }
@@ -124,9 +129,9 @@ export default class FieldsEncoder {
         }
 
         if (Object.getPrototypeOf(typeInfo) === Object.prototype) {
-            const {type, template} = typeInfo
+            const {template} = typeInfo
             const objectFields = this.splitFields(value, template)
-            // console.log('objectFields', objectFields)
+
             return this.decodeFields(objectFields, template)
         }
 

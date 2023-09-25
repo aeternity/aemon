@@ -6,11 +6,9 @@ export default class PeerLocationProvider {
         this.asnClient = new IPToASN()
     }
 
-    updatePeerLocation(peer, cb) {
+    updatePeerLocation(peer, cb) { /* eslint-disable no-param-reassign */
         const geo = geoip.lookup(peer.host)
-        const info = {}
 
-        // console.log('GEO', geo)
         if (geo !== null) {
             peer.lat = Number(geo.ll[0])
             peer.lon = Number(geo.ll[1])
@@ -19,6 +17,7 @@ export default class PeerLocationProvider {
 
         this.asnClient.query([peer.host], (err, results) => {
             if (err) {
+                // eslint-disable-next-line no-console
                 console.error(err)
                 return cb()
             }
@@ -32,7 +31,7 @@ export default class PeerLocationProvider {
                 }
             }
 
-            cb()
+            return cb()
         })
     }
 }

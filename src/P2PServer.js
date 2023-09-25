@@ -36,7 +36,7 @@ export default class P2PServer extends EventEmitter {
     onConnection(socket) {
         this.emit('accept', socket)
 
-        let peer = this.network.peers.find((peer) => peer.host === socket.remoteAddress)
+        let peer = this.network.peers.find((p) => p.host === socket.remoteAddress)
         if (peer === undefined) {
             const pub = 'rnd_' + crypto.randomBytes(16).toString('hex')
             peer = new Peer(socket.remoteAddress, 3015, {pub})

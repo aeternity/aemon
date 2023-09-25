@@ -48,7 +48,6 @@ export default Object.freeze({
             difficulty: 'int',
             bestHash: 'binary',
             syncAllowed: 'bool',
-            peers: 'binary',
             peers: [{
                 type: 'object',
                 template: {

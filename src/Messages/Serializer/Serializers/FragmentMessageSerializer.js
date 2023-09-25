@@ -1,13 +1,9 @@
-import RLP from 'rlp'
 import MessageTags from '../../MessageTags.js'
 import FragmentMessage from '../../Models/FragmentMessage.js'
 
 export default class FragmentMessageSerializer {
     static get TAG() {
         return MessageTags.MSG_FRAGMENT
-    }
-
-    constructor() {
     }
 
     serialize(message) {

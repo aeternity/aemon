@@ -3,7 +3,7 @@ import stream from 'stream'
 export default class NoiseEncryptTransform extends stream.Transform {
     #session = null
 
-    constructor(session, options) {
+    constructor(session, _options) {
         super({
             objectMode: true,
         })
@@ -28,7 +28,6 @@ export default class NoiseEncryptTransform extends stream.Transform {
     handshake(data) {
         const handshakeData = this.#session.handshake(data)
         if (handshakeData !== null) {
-            // console.log('[NoiseConnection] TX:', Buffer.from(handshakeData))
             this.push(handshakeData)
         }
     }

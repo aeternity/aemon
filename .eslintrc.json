@@ -37,6 +37,7 @@
         "import/order": "off",
         "no-plusplus": "off",
         "yoda": "off",
-        "no-unused-vars": ["error", { "varsIgnorePattern": "^_.*$", "argsIgnorePattern": "^_.*$" }]
+        "no-unused-vars": ["error", { "varsIgnorePattern": "^_.*$", "argsIgnorePattern": "^_.*$" }],
+        "import/extensions": "off"
     }
 }

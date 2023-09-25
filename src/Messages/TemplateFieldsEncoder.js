@@ -16,9 +16,9 @@ export default class TemplateFieldsEncoder {
     }
 
     binaryToFields(template, data) {
-        const transformed = objMap(template, (field, type) => this.#binaryToField(type, data[field]))
+        const fields = objMap(template, (field, type) => this.#binaryToField(type, data[field]))
 
-        return {...data, ...transformed}
+        return {...data, ...fields}
     }
 
     #fieldToBinary(typeInfo, value) {
@@ -39,8 +39,6 @@ export default class TemplateFieldsEncoder {
             return this.fieldsToBinary(template, value)
         }
 
-        // console.log('fieldToBinary encode', type, value, params)
-
         return this.fieldEncoder.encode(type, value, params)
     }
 
@@ -60,8 +58,6 @@ export default class TemplateFieldsEncoder {
         if (type === 'object') {
             return this.binaryToFields(template, value)
         }
-
-        // console.log('binaryToField decode', type, value, params)
 
         return this.fieldEncoder.decode(type, value, params)
     }

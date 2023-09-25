@@ -3,7 +3,7 @@ import MessageEncoder from '../Messages/Encoder/MessageEncoder.js'
 import SerializerError from './SerializerError.js'
 
 export default class MessageSerializeTransform extends stream.Transform {
-    constructor(options) {
+    constructor(_options) {
         super({
             objectMode: true,
         })
@@ -11,9 +11,8 @@ export default class MessageSerializeTransform extends stream.Transform {
         this.encoder = new MessageEncoder()
     }
 
-    _transform(message, encoding, callback) {
+    _transform(message, _encoding, callback) {
         try {
-            // console.log('DEBUG: message:', message)
             const serialized = this.encoder.encode(message)
             this.push(serialized)
             callback()
