@@ -21,6 +21,22 @@ const ByteArray2Int = (data) => {
     return BigInt('0x' + hex.join(''))
 }
 
+const ByteArray2Hex = (data) => {
+    return ByteArrayToHexArray(data).join('')
+}
+
+const HexStringToByteArray = (str) => {
+    const match = str.match(/^(0x)?([a-f0-9]*)$/i)
+    if (!match) {
+        throw new Error(`Invalid hex string: ${str}`)
+    }
+
+    return new Uint8Array(match[2]
+        .split(/(.{1,2})/)
+        .filter(el => el)
+        .map(el => parseInt(el, 16)))
+}
+
 // this is overlaping with general calldata Serializer with some extras: uint_* and id
 export default class PrimitivesEncoder {
     constructor() {
@@ -35,6 +51,7 @@ export default class PrimitivesEncoder {
             bool: this.decodeBool,
             string: this.decodeString.bind(this),
             binary: this.decodeBinary,
+            hex: (value) => ByteArray2Hex(value),
         }
 
         this.encoders = {
@@ -45,6 +62,7 @@ export default class PrimitivesEncoder {
             bool: this.encodeBool,
             string: this.encodeString.bind(this),
             binary: this.encodeBinary,
+            hex: (value) => HexStringToByteArray(value),
         }
     }
 

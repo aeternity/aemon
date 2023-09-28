@@ -101,4 +101,19 @@ export default Object.freeze({
             info: 'uint_32'
         }
     },
+    COMPILER_SOPHIA: {
+        3: {
+            sourceHash: 'hex',
+            typeInfo: [{
+                hash: 'binary',
+                name: 'binary',
+                payable: 'bool',
+                argType: 'binary',
+                returnType: 'binary'
+            }],
+            byteCode: 'binary',
+            compilerVersion: 'string',
+            payable: 'bool'
+        }
+    }
 })
