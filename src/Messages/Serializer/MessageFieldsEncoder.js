@@ -1,6 +1,6 @@
 import RLP from 'rlp'
 import TEMPLATES from './MessageSerializerTemplates.js'
-import PrimitivesEncoder from '../../PrimitivesEncoder.js'
+import PrimitivesEncoder from '@aeternity/aepp-calldata/src/PrimitivesEncoder.js'
 
 export default class MessageFieldsEncoder {
     constructor() {

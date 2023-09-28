@@ -1,4 +1,4 @@
-import FieldEncoder from '../ChainObjects/FieldEncoder.js'
+import FieldEncoder from '@aeternity/aepp-calldata/src/ChainObjects/FieldEncoder.js'
 
 const objMap = (obj, fn) => {
     return Object.fromEntries(Object.entries(obj).map(([k, v]) => {
