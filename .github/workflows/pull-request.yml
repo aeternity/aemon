@@ -23,4 +23,4 @@ jobs:
       DEPLOY_ENV: dev
       DEPLOY_APP: "${{ github.event.repository.name }}-${{ matrix.flavor }}"
       DEPLOY_VERSION: "pr-${{ github.event.number }}"
-      APP_HOST_PREFIX: "pr-${{ github.event.number }}"
+      DEPLOY_HOST_PREFIX: "pr-${{ github.event.number }}"
