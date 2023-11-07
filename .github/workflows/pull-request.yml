@@ -9,8 +9,8 @@ env:
 
 jobs:
   validate:
-    uses: aeternity/github-actions/.github/workflows/_validate-npm.yml@master
+    uses: ${{ env.GH_WORKFLOWS }}/_validate-npm.yml@master
   publish:
-    uses: aeternity/github-actions/.github/workflows/_publish-docker.yml@master
+    uses: ${{ env.GH_WORKFLOWS }}/_publish-docker.yml@master
     needs: [ validate ]
     secrets: inherit
