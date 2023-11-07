@@ -4,10 +4,13 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  GH_WORKFLOWS: aeternity/github-actions/.github/workflows
+
 jobs:
   validate:
-    uses: ./.github/workflows/_validate.yml
+    uses: $GH_WORKFLOWS/_validate-npm.yml@master
   publish:
-    uses: ./.github/workflows/_publish.yml
+    uses: $GH_WORKFLOWS/_publish.yml@master
     needs: [ validate ]
     secrets: inherit
