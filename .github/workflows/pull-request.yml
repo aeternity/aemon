@@ -11,3 +11,15 @@ jobs:
     uses: aeternity/github-actions/.github/workflows/_publish-docker.yml@master
     needs: [ validate ]
     secrets: inherit
+  deploy:
+    uses: aeternity/github-actions/.github/workflows/_deploy-gitops.yml@master
+    needs: [publish]
+    secrets: inherit
+    strategy:
+      max-parallel: 1
+      matrix:
+        flavor: [testnet, mainnet]
+    with:
+      DEPLOY_ENV: dev
+      DEPLOY_APP: "${{ github.event.repository.name }}-${{ matrix.flavor }}"
+      DEPLOY_VERSION: "pr-${{ github.event.number }}"
