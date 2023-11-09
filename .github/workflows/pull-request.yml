@@ -11,3 +11,5 @@ jobs:
     uses: aeternity/github-actions/.github/workflows/_publish-docker.yml@v1.0.0
     needs: [ validate ]
     secrets: inherit
+    with:
+      DOCKERHUB_REPO: aeternitybot/aemon

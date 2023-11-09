@@ -1,0 +1,14 @@
+name: "Pull Request Cleanup"
+
+on:
+  pull_request:
+    branches: [ master ]
+    types: [ closed ]
+
+jobs:
+  delete-tag:
+    uses: aeternity/github-actions/.github/workflows/_delete-tag-docker.yml@v1.0.0
+    secrets: inherit
+    with:
+      DOCKERHUB_REPO: aeternitybot/aemon
+      DOCKERHUB_TAG: "pr-${{ github.event.number }}"
