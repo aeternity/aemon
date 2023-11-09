@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  DOCKERHUB_REPO: ${{ secrets.DOCKERHUB_USER }}/${{ github.event.repository.name }}
+
 jobs:
   validate:
     uses: aeternity/github-actions/.github/workflows/_validate-npm.yml@v1.0.0
@@ -12,4 +15,4 @@ jobs:
     needs: [ validate ]
     secrets: inherit
     with:
-      DOCKERHUB_REPO: aeternitybot/aemon
+      DOCKERHUB_REPO: ${{ env.DOCKERHUB_REPO }}
