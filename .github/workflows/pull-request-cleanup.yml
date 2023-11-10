@@ -7,7 +7,7 @@ on:
 
 jobs:
   delete-tag:
-    uses: aeternity/github-actions/.github/workflows/_delete-tag-docker.yml@v1.0.0
+    uses: aeternity/github-actions/.github/workflows/_delete-tag-docker.yml@v1.1.0
     secrets: inherit
     with:
       DOCKERHUB_REPO: aeternitybot/aemon
