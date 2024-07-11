@@ -40,6 +40,7 @@
     "temp-directory": "build/.nyc_output"
   },
   "scripts": {
+    "build": "echo \"Build OK\"",
     "test": "ava --verbose",
     "test:watch": "ava --verbose --watch",
     "coverage": "c8 ava",
